@@ -1,0 +1,70 @@
+{
+  "dailyTasks": [
+    {
+      "id": 1,
+      "text": "Review React documentation",
+      "completed": true,
+      "priority": "high",
+      "estimatedTime": 30,
+      "category": "education"
+    },
+    {
+      "id": 2,
+      "text": "Complete morning workout",
+      "completed": true,
+      "priority": "medium",
+      "estimatedTime": 45,
+      "category": "health"
+    },
+    {
+      "id": 3,
+      "text": "Read 30 minutes",
+      "completed": false,
+      "priority": "low",
+      "estimatedTime": 30,
+      "category": "personal"
+    },
+    {
+      "id": 4,
+      "text": "Work on side project",
+      "completed": false,
+      "priority": "high",
+      "estimatedTime": 120,
+      "category": "work"
+    }
+  ],
+  "weeklyTasks": [
+    {
+      "id": 5,
+      "text": "Plan next sprint",
+      "completed": true,
+      "priority": "high",
+      "estimatedTime": 60,
+      "category": "work"
+    },
+    {
+      "id": 6,
+      "text": "Update portfolio website",
+      "completed": false,
+      "priority": "medium",
+      "estimatedTime": 180,
+      "category": "work"
+    },
+    {
+      "id": 7,
+      "text": "Practice coding interview questions",
+      "completed": false,
+      "priority": "high",
+      "estimatedTime": 90,
+      "category": "education"
+    },
+    {
+      "id": 8,
+      "text": "Write blog post",
+      "completed": false,
+      "priority": "low",
+      "estimatedTime": 120,
+      "category": "personal"
+    }
+  ]
+}

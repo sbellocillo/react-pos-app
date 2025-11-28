@@ -1,0 +1,66 @@
+{
+  "goals": [
+    {
+      "id": 1,
+      "title": "Learning Progress",
+      "current": 7,
+      "total": 10,
+      "description": "Complete React fundamentals course",
+      "category": "education",
+      "priority": "high",
+      "deadline": "2025-12-31"
+    },
+    {
+      "id": 2,
+      "title": "Fitness Goals",
+      "current": 15,
+      "total": 20,
+      "description": "Workout sessions this month",
+      "category": "health",
+      "priority": "medium",
+      "deadline": "2025-11-30"
+    },
+    {
+      "id": 3,
+      "title": "Reading Challenge",
+      "current": 8,
+      "total": 12,
+      "description": "Books to read this year",
+      "category": "personal",
+      "priority": "low",
+      "deadline": "2025-12-31"
+    },
+    {
+      "id": 4,
+      "title": "Project Milestones",
+      "current": 3,
+      "total": 5,
+      "description": "Major features implemented",
+      "category": "work",
+      "priority": "high",
+      "deadline": "2025-12-15"
+    }
+  ],
+  "categories": [
+    {
+      "name": "education",
+      "color": "#4f46e5",
+      "icon": "📚"
+    },
+    {
+      "name": "health",
+      "color": "#10b981",
+      "icon": "💪"
+    },
+    {
+      "name": "personal",
+      "color": "#f59e0b",
+      "icon": "🎯"
+    },
+    {
+      "name": "work",
+      "color": "#ef4444",
+      "icon": "💼"
+    }
+  ]
+}
