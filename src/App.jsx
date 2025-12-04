@@ -8,6 +8,7 @@ import Customers from './pages/Customers';
 import OrderTypes from './pages/OrderTypes';
 import PaymentMethods from './pages/PaymentMethods';
 import Roles from './pages/Roles';
+import CreditCards from './pages/CreditCards';
 import Status from './pages/Status';
 import TaxConfig from './pages/TaxConfig';
 import Users from './pages/Users';
@@ -66,6 +67,7 @@ function Dashboard() {
     { id: 'orderItems', label: 'Order Items', icon: <TbShoppingCart />, path: '/orderitems' },
     { id: 'orderTypes', label: 'Order Types', icon: <TbClipboard />, path: '/ordertypes' },
     { id: 'paymentMethods', label: 'Payment Methods', icon: <TbCash />, path: '/paymentmethods' },
+    { id: 'creditCards', label: 'Credit Cards', icon: <TbCash />, path: '/creditcards' },
     { id: 'roles', label: 'Roles', icon: <TbUsers />, path: '/roles' },
     { id: 'status', label: 'Status', icon: <TbBolt />, path: '/status' },
     { id: 'users', label: 'Users', icon: <TbUser />, path: '/users' },
@@ -262,6 +264,7 @@ function MainLayout({ children }) {
     { id: 'orderItems', label: 'Order Items', icon: <TbShoppingCart />, path: '/orderitems' },
     { id: 'orderTypes', label: 'Order Types', icon: <TbClipboard />, path: '/ordertypes' },
     { id: 'paymentMethods', label: 'Payment Methods', icon: <TbCash />, path: '/paymentmethods' },
+    { id: 'creditCards', label: 'Credit Cards', icon: <TbCash />, path: '/creditcards' },
     { id: 'roles', label: 'Roles', icon: <TbUsers />, path: '/roles' },
     { id: 'status', label: 'Status', icon: <TbBolt />, path: '/status' },
     { id: 'users', label: 'Users', icon: <TbUser />, path: '/users' },
@@ -503,6 +506,13 @@ function App() {
           <ProtectedRoute>
             <MainLayout>
               <Roles />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/creditcards" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <CreditCards />
             </MainLayout>
           </ProtectedRoute>
         } />

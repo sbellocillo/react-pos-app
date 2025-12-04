@@ -117,6 +117,7 @@ const OrderMenu = ({ onBack }) => {
     discount: '',
     paymentMethod: '',
     orderType: '',
+    cardNumber: '',
     memo: '',
     items: []
   });
@@ -135,6 +136,7 @@ const OrderMenu = ({ onBack }) => {
       discount: '',
       paymentMethod: '',
       orderType: '',
+      cardNumber: '',
       memo: '',
       items: []
     });
@@ -307,6 +309,7 @@ const OrderMenu = ({ onBack }) => {
       discount: '',
       paymentMethod: '',
       orderType: '',
+      cardNumber: '',
       memo: '',
       items: []
     });
@@ -314,9 +317,14 @@ const OrderMenu = ({ onBack }) => {
 
   const placeOrder = () => {
     if (orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType) {
-
       alert('Please complete all required fields and add items to the order.');
+      return;
+    }
 
+    // Check if card number is required (non-cash payment)
+    const selectedPaymentMethod = paymentMethods.find(m => m.id === currentOrder.paymentMethod);
+    if (selectedPaymentMethod && selectedPaymentMethod.name?.toLowerCase() !== 'cash' && !currentOrder.cardNumber) {
+      alert('Please enter the card number for non-cash payment.');
       return;
     }
 
@@ -449,6 +457,13 @@ const OrderMenu = ({ onBack }) => {
 
     if (!currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType) {
       alert('Please select customer, payment method, and order type before printing receipt.');
+      return;
+    }
+
+    // Check if card number is required (non-cash payment)
+    const selectedPaymentMethod = paymentMethods.find(m => m.id === currentOrder.paymentMethod);
+    if (selectedPaymentMethod && selectedPaymentMethod.name?.toLowerCase() !== 'cash' && !currentOrder.cardNumber) {
+      alert('Please enter the card number for non-cash payment before printing receipt.');
       return;
     }
 
@@ -1277,6 +1292,42 @@ const OrderMenu = ({ onBack }) => {
                       }}>🔍</span>
                     </div>
                   </div>
+
+                  {/* Card Number Field - Only show when payment method is not Cash */}
+                  {currentOrder.paymentMethod && paymentMethods.find(m => m.id === currentOrder.paymentMethod)?.name?.toLowerCase() !== 'cash' && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <label style={{
+                        display: 'block',
+                        marginBottom: '0.5rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        fontSize: '0.9rem'
+                      }}>
+                        💳 Card Number *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter card number"
+                        value={currentOrder.cardNumber}
+                        onChange={(e) => {
+                          // Only allow numbers and limit to 16 digits
+                          const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                          setCurrentOrder(prev => ({ ...prev, cardNumber: value }));
+                        }}
+                        maxLength="16"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          border: '2px solid #e5e7eb',
+                          borderRadius: '8px',
+                          fontSize: '0.95rem',
+                          outline: 'none'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = '#dc2626'}
+                        onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                      />
+                    </div>
+                  )}
                 </div>
                 {/* Category Tabs */}
                 <div style={{
@@ -1688,16 +1739,28 @@ const OrderMenu = ({ onBack }) => {
                 }}>
                   <button
                     onClick={placeOrder}
-                    disabled={orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType}
+                    disabled={(() => {
+                      const selectedPaymentMethod = paymentMethods.find(m => m.id === currentOrder.paymentMethod);
+                      const needsCardNumber = selectedPaymentMethod && selectedPaymentMethod.name?.toLowerCase() !== 'cash' && !currentOrder.cardNumber;
+                      return orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType || needsCardNumber;
+                    })()}
                     style={{
-                      background: orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType ? '#9ca3af' : '#dc2626',
+                      background: (() => {
+                        const selectedPaymentMethod = paymentMethods.find(m => m.id === currentOrder.paymentMethod);
+                        const needsCardNumber = selectedPaymentMethod && selectedPaymentMethod.name?.toLowerCase() !== 'cash' && !currentOrder.cardNumber;
+                        return orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType || needsCardNumber ? '#9ca3af' : '#dc2626';
+                      })(),
                       color: 'white',
                       border: 'none',
                       borderRadius: '12px',
                       padding: '1rem 2rem',
                       fontSize: '1.1rem',
                       fontWeight: '600',
-                      cursor: orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType ? 'not-allowed' : 'pointer',
+                      cursor: (() => {
+                        const selectedPaymentMethod = paymentMethods.find(m => m.id === currentOrder.paymentMethod);
+                        const needsCardNumber = selectedPaymentMethod && selectedPaymentMethod.name?.toLowerCase() !== 'cash' && !currentOrder.cardNumber;
+                        return orderItems.length === 0 || !currentOrder.customer || !currentOrder.paymentMethod || !currentOrder.orderType || needsCardNumber ? 'not-allowed' : 'pointer';
+                      })(),
                       transition: 'all 0.3s ease',
                       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                     }}

@@ -170,6 +170,14 @@ export const apiEndpoints = {
         delete: (id) => api.delete(`/payment-methods/${id}`),
     },
 
+    // Credit Cards
+    creditCards: {
+        getAll: () => api.get('/card-networks'),
+        create: (data) => api.post('/card-networks', data),
+        update: (id, data) => api.put(`/card-networks/${id}`, data),
+        delete: (id) => api.delete(`/card-networks/${id}`),
+    },
+
     // Tax Config
     taxConfig: {
         getAll: () => api.get('/tax-config'),
