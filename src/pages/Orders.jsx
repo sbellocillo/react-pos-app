@@ -205,11 +205,11 @@ const Orders = () => {
     let response = await apiEndpoints.orders.getAll();
     console.log("get all orders", response.data.data);
     setOrders(response.data.data);
-    try {
+    /*try {
       let response = await axios.get('/api/orders');
     } catch (e) {
 
-    }
+    }*/
   }
 
   let getAllPaymentMethods = async () => {

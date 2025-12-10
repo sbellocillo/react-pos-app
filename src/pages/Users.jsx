@@ -97,7 +97,7 @@ const Users = () => {
   let getAllRoles = async () => {
     try {
       let response = await apiEndpoints.roles.getAll();
-      console.log("response", response);
+      console.log("Get all roles response", response);
       setRoles(response.data.data);
     } catch (error) {
       console.error('Error fetching roles:', error);
