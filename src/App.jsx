@@ -22,6 +22,11 @@ import {
   TbCash, TbUser, TbBolt, TbReceipt
 } from "react-icons/tb";
 
+import { TfiLayoutGrid3 } from "react-icons/tfi";
+import { IoReceiptOutline } from "react-icons/io5";
+import { FaClockRotateLeft } from "react-icons/fa6";
+import { GoGraph } from "react-icons/go";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 
 let objCurrentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
@@ -249,118 +254,124 @@ let getTheFirstCharacter = (st) => {
   return st.charAt(0).toUpperCase();
 }
 
+// --- MAIN LAYOUT (Fixed Sidebar + Scrollable Content + Centered Icons) ---
 function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Unified icon style
+  const iconStyle = { width: '30px', height: '30px' };
+
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <AiFillAccountBook />, path: '/' },
-    //{ id: 'orderMenu', label: 'Order Menu', icon: <TbShoppingCart />, path: '/ordermenu' },
-    { id: 'items', label: 'Items', icon: <TbBox />, path: '/items' },
-    { id: 'itemTypes', label: 'Item Types', icon: <TbClipboard />, path: '/itemtypes' },
-    { id: 'locations', label: 'Locations', icon: <TbMapPin />, path: '/locations' },
-    { id: 'customers', label: 'Customers', icon: <TbUsers />, path: '/customers' },
-    { id: 'orders', label: 'Orders', icon: <TbFileInvoice />, path: '/orders' },
-    { id: 'orderItems', label: 'Order Items', icon: <TbShoppingCart />, path: '/orderitems' },
-    { id: 'orderTypes', label: 'Order Types', icon: <TbClipboard />, path: '/ordertypes' },
-    { id: 'paymentMethods', label: 'Payment Methods', icon: <TbCash />, path: '/paymentmethods' },
-    { id: 'creditCards', label: 'Credit Cards', icon: <TbCash />, path: '/creditcards' },
-    { id: 'roles', label: 'Roles', icon: <TbUsers />, path: '/roles' },
-    { id: 'status', label: 'Status', icon: <TbBolt />, path: '/status' },
-    { id: 'users', label: 'Users', icon: <TbUser />, path: '/users' },
-    { id: 'taxConfig', label: 'Tax Config', icon: <TbReceipt />, path: '/taxconfig' }
+    { id: 'dashboard', icon: <TfiLayoutGrid3 style={iconStyle} />, path: '/' },
+    { id: 'items', icon: <IoReceiptOutline style={iconStyle} />, path: '/items' },
+    { id: 'itemTypes', icon: <TbUsers style={iconStyle} />, path: '/itemtypes' },
+    { id: 'locations', icon: <FaClockRotateLeft style={iconStyle} />, path: '/locations' },
+    { id: 'customers', icon: <GoGraph style={iconStyle} />, path: '/customers' },
+    // Add other items here...
   ];
 
-
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f1f5f9' }}>
-      {/* Left Sidebar */}
+    // 1. OUTER CONTAINER: Fixed to 100vh, Hidden overflow prevents whole page scroll
+    <div style={{ 
+      display: 'flex', 
+      height: '100vh', 
+      overflow: 'hidden', 
+      background: '#f1f5f9' 
+    }}>
+      
+      {/* 2. LEFT SIDEBAR: Stays fixed full height */}
       <div style={{
-        width: '250px',
+        width: '100px', // Compact width
         background: 'white',
         boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        height: '100%',
+        zIndex: 10
       }}>
         {/* Logo */}
         <div style={{
-          padding: '5px',
+          padding: '10px',
           borderBottom: '1px solid #e5e7eb',
-          textAlign: 'center'
+          textAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
         }}>
-          <img src="https://8932109.app.netsuite.com/core/media/media.nl?id=65916&c=8932109&h=yVp7zmJXhqC031gbC_N9zx3FZJPxQ_D-_AyBKYfYnen0vK7f" alt="RIBSHACK Logo" style={{ width: '60px', height: '40px', marginBottom: '10px' }} />
-          <div style={{
-            fontSize: '15px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: 0
-          }}>Point of Sale System</div>
+          <RxHamburgerMenu style={{ width: '30px', height: '30px', margin: '10px 0' }} />
         </div>
 
         {/* Navigation Menu */}
-        <nav style={{ flex: 1, padding: '1rem 0' }}>
-          {menuItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => navigate(item.path)}
-              onMouseEnter={(e) => {
-                if (location.pathname !== item.path) {
-                  e.target.style.background = '#fef2f2';
-                  e.target.style.color = '#ef4444';
-                  e.target.style.borderLeft = '4px solid #ef4444';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== item.path) {
-                  e.target.style.background = 'transparent';
-                  e.target.style.color = '#6b7280';
-                  e.target.style.borderLeft = '4px solid transparent';
-                }
-              }}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '15px 20px',
-                background: location.pathname === item.path ? '#fef2f2' : 'transparent',
-                border: 'none',
-                borderLeft: location.pathname === item.path ? '4px solid #ef4444' : '4px solid transparent',
-                color: location.pathname === item.path ? '#ef4444' : '#6b7280',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: location.pathname === item.path ? '600' : '400',
-                transition: 'all 0.2s ease',
-                textAlign: 'left'
-              }}
-            >
-              <span style={{ marginRight: '10px' }}>{item.icon}</span>{item.label}
-            </button>
-          ))}
+        <nav style={{ flex: 1, padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {menuItems.map(item => {
+            const isActive = location.pathname === item.path;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => navigate(item.path)}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#fef2f2';
+                    e.currentTarget.style.color = '#ef4444';
+                    e.currentTarget.style.borderLeft = '4px solid #ef4444';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                    e.currentTarget.style.borderLeft = '4px solid transparent';
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center', // Centers the icon horizontally
+                  padding: '15px 0',
+                  
+                  // Active State Logic
+                  background: isActive ? '#fef2f2' : 'transparent',
+                  color: isActive ? '#ef4444' : '#6b7280',
+                  border: 'none',
+                  borderLeft: isActive ? '4px solid #ef4444' : '4px solid transparent',
+                  
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: isActive ? '600' : '400',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <span>{item.icon}</span>
+              </button>
+            );
+          })}
         </nav>
 
+        {/* Bottom User Section */}
         <div style={{
-          padding: '1.5rem 2rem',
+          padding: '1.5rem 0',
           borderTop: '1px solid #e5e7eb',
-          background: '#f8fafc'
+          background: '#f8fafc',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: '#ef4444',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 'bold',
-              marginRight: '1rem'
-            }}>{getTheFirstCharacter(objCurrentUser.username)}</div>
-            <div>
-              <div style={{ fontWeight: '600', color: '#1e293b' }}>{objCurrentUser.role_name}</div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>{objCurrentUser.username}</div>
-            </div>
-          </div>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: '#ef4444',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 'bold'
+          }}>{getTheFirstCharacter(objCurrentUser.username)}</div>
+
           <button
             onClick={() => {
               localStorage.removeItem('authToken');
@@ -368,7 +379,7 @@ function MainLayout({ children }) {
               window.location.href = '/login';
             }}
             style={{
-              width: '100%',
+              width: '50%',
               background: '#ef4444',
               color: 'white',
               border: 'none',
@@ -377,25 +388,24 @@ function MainLayout({ children }) {
               cursor: 'pointer',
               fontSize: '0.9rem',
               fontWeight: '500',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              justifyContent: 'center'
             }}
-            onMouseOver={(e) => {
-              e.target.style.background = '#dc2626';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = '#ef4444';
-            }}
+            onMouseOver={(e) => { e.currentTarget.style.background = '#dc2626'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = '#ef4444'; }}
           >
-            🚪 Logout
+            🚪
           </button>
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* 3. MAIN CONTENT: Independent Scroll Area */}
       <div style={{
         flex: 1,
-        padding: '2rem',
-        overflow: 'auto'
+        height: '100%',
+        overflowY: 'auto', // Enables vertical scrolling here only
+        padding: '2rem'
       }}>
         <div style={{
           background: '#f1f5f9',
@@ -407,7 +417,8 @@ function MainLayout({ children }) {
             margin: '0',
             padding: '2rem',
             borderRadius: '12px',
-            minHeight: 'calc(100vh - 8rem)',
+            // Ensure content area is at least full height minus margins
+            minHeight: 'calc(100% - 2rem)', 
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
           }}>
             {children}
