@@ -125,8 +125,19 @@ function Dashboard() {
         </button>
       </div>
 
-      {/* Order Menu Button */}
-      <div style={{ marginTop: '2rem', marginBottom: '3rem' }}>
+      {/* --- ORDER MENU: Horizontal Scrollable Row --- */}
+      <div style={{ 
+          marginTop: '2rem', 
+          marginBottom: '3rem',
+          display: 'flex',            // Flexbox
+          flexDirection: 'row',       // Row layout
+          flexWrap: 'nowrap',         // NO WRAPPING (Forces scroll)
+          overflowX: 'auto',          // Enable Horizontal Scroll
+          justifyContent: 'flex-start', // Align left
+          gap: '1rem',                // Space between buttons
+          paddingBottom: '10px'       // Padding for scrollbar
+      }}>
+        {/* Button 1 */}
         <button
           onClick={() => navigate('/ordermenu')}
           style={{
@@ -135,7 +146,7 @@ function Dashboard() {
             border: 'none',
             borderRadius: '20px',
             padding: '1.5rem 3rem',
-            fontSize: '1.5rem',
+            fontSize: '1.25rem',
             fontWeight: 'bold',
             cursor: 'pointer',
             display: 'flex',
@@ -143,8 +154,8 @@ function Dashboard() {
             gap: '1rem',
             boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
             transition: 'all 0.3s ease',
-            margin: '0 auto',
-            minWidth: '300px',
+            minWidth: '300px',        // Fixed width ensures they don't shrink
+            flexShrink: 0,            // PREVENTS shrinking
             justifyContent: 'center'
           }}
           onMouseOver={(e) => {
@@ -156,16 +167,115 @@ function Dashboard() {
             e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
           }}
         >
-          <span>Order Menu</span>
+          <span>MEALS</span>
+        </button>
+
+        {/* Button 2 (Example Duplicate) */}
+        <button
+          onClick={() => navigate('/ordermenu')}
+          style={{
+            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            padding: '1.5rem 3rem',
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
+            transition: 'all 0.3s ease',
+            minWidth: '300px',
+            flexShrink: 0,
+            justifyContent: 'center'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = 'translateY(-3px)';
+            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
+          }}
+        >
+          <span>ALA CARTE</span>
+        </button>
+
+         {/* Button 3 (Example Duplicate) */}
+         <button
+          onClick={() => navigate('/ordermenu')}
+          style={{
+            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            padding: '1.5rem 3rem',
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
+            transition: 'all 0.3s ease',
+            minWidth: '300px',
+            flexShrink: 0,
+            justifyContent: 'center'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = 'translateY(-3px)';
+            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
+          }}
+        >
+          <span>BEVERAGES</span>
+        </button>
+
+         {/* Button 4 (Example Duplicate) */}
+         <button
+          onClick={() => navigate('/ordermenu')}
+          style={{
+            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            padding: '1.5rem 3rem',
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
+            transition: 'all 0.3s ease',
+            minWidth: '300px',
+            flexShrink: 0,
+            justifyContent: 'center'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = 'translateY(-3px)';
+            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
+          }}
+        >
+          <span>SAUCES AND ADD-ONS</span>
         </button>
       </div>
 
-      {/* Quick Access Menu */}
+      {/* --- QUICK ACCESS MENU: 5-Column Grid --- */}
       <div style={{ marginTop: '2rem' }}>
         <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Quick Access Menu</h3>
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          display: 'grid',                          // <--- Reverted to Grid
+          gridTemplateColumns: 'repeat(5, 1fr)',    // <--- Exactly 5 Columns
           gap: '1rem',
           marginBottom: '3rem'
         }}>
@@ -186,18 +296,19 @@ function Dashboard() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 minHeight: '120px',
+                // Removed fixed width so grid controls sizing
                 fontSize: '0.9rem',
                 fontWeight: '500'
               }}
               onMouseOver={(e) => {
-                e.target.style.borderColor = '#dc2626';
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 15px rgba(220, 38, 38, 0.1)';
+                e.currentTarget.style.borderColor = '#dc2626';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 15px rgba(220, 38, 38, 0.1)';
               }}
               onMouseOut={(e) => {
-                e.target.style.borderColor = '#e5e7eb';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = '#e5e7eb';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <span style={{ fontSize: '2rem' }}>{item.icon}</span>
@@ -254,16 +365,15 @@ let getTheFirstCharacter = (st) => {
   return st.charAt(0).toUpperCase();
 }
 
-// --- MAIN LAYOUT (Fixed Sidebar + Scrollable Content + Centered Icons) ---
 function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Unified icon style
   const iconStyle = { width: '30px', height: '30px' };
 
   const menuItems = [
     { id: 'dashboard', icon: <TfiLayoutGrid3 style={iconStyle} />, path: '/' },
+    //{ id: 'orderMenu', label: 'Order Menu', icon: <TbShoppingCart />, path: '/ordermenu' },
     { id: 'items', icon: <IoReceiptOutline style={iconStyle} />, path: '/items' },
     { id: 'itemTypes', icon: <TbUsers style={iconStyle} />, path: '/itemtypes' },
     { id: 'locations', icon: <FaClockRotateLeft style={iconStyle} />, path: '/locations' },
