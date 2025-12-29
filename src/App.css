@@ -1,0 +1,314 @@
+/* --- KIOSK MODE SCALING & RESET --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1e1e1e; /* Dark background for letterboxing */
+    overflow: hidden; /* Prevent native scrollbars */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-scale-wrapper {
+    width: 1920px;
+    height: 1080px;
+    background-color: #f1f5f9;
+    position: relative;
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- SCROLLBAR CUSTOMIZATION --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* --- MAIN LAYOUT STRUCTURE --- */
+.main-layout-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    background: #f1f5f9;
+    overflow: hidden;
+    position: relative; /* Anchor for absolute positioning */
+}
+
+/* --- COLLAPSIBLE SIDEBAR (Floating) --- */
+.sidebar {
+    position: absolute; /* Floats on top */
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 110px;
+    background: white;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000; /* Highest priority */
+    
+    /* Animation: Start hidden off-screen */
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.open {
+    transform: translateX(0); /* Slide in */
+}
+
+.sidebar-logo {
+    height: 70px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.nav-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0;
+    background: transparent;
+    border: none;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+}
+
+.nav-item.active {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+}
+
+.sidebar-bottom-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sidebar-footer {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* --- OVERLAY (Background Dimmer) --- */
+.sidebar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 900; /* Below sidebar, above content */
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- RIGHT SIDE WRAPPER (Full Width) --- */
+.right-side-wrapper {
+    width: 100%; /* Full width now */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- HEADER STYLES --- */
+.dashboard-header {
+    background: white;
+    height: 70px;
+    width: 100%;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+}
+
+.header-search {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.search-input {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    width: 300px;
+    outline: none;
+}
+
+.header-info-group {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.info-block {
+    text-align: right;
+}
+
+.info-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.info-subtitle {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
+}
+
+/* --- MAIN CONTENT SCROLL AREA --- */
+.main-content-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background: #f1f5f9;
+}
+
+/* --- PAGE SPECIFIC STYLES --- */
+.section-title {
+    margin: 2rem 0 1rem 0;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* Categories Row */
+.itm-cat-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 10px;
+}
+
+.itm-cat-btn {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    min-width: 200px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    color: #333;
+}
+
+.itm-cat-btn.active {
+    background: #B74C4C;
+    color: white;
+    border-color: #B74C4C;
+}
+
+.itm-cat-btn:hover:not(.active) {
+    background: #f9fafb;
+    transform: translateY(-2px);
+}
+
+/* Items Grid */
+.menu-itm-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.menu-itm-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+}
+
+.menu-itm-card:hover {
+    border-color: #dc2626;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-label {
+    font-weight: 500;
+    color: #333;
+}

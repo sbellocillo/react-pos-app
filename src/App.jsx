@@ -1,69 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import ItemTypes from './pages/ItemTypes';
-import Items from './pages/Items';
-import Locations from './pages/Locations';
-import Customers from './pages/Customers';
-import OrderTypes from './pages/OrderTypes';
-import PaymentMethods from './pages/PaymentMethods';
-import Roles from './pages/Roles';
-import CreditCards from './pages/CreditCards';
-import Status from './pages/Status';
-import TaxConfig from './pages/TaxConfig';
-import Users from './pages/Users';
-import Orders from './pages/Orders';
-import OrderItems from './pages/OrderItems';
-import OrderMenu from './pages/OrderMenu';
-import Login from './pages/Login';
+import './App.css';
+
+// --- ICONS & ASSETS IMPORT ---
 import { AiFillAccountBook } from "react-icons/ai";
 import {
   TbShoppingCart, TbBox, TbClipboard, TbMapPin, TbUsers, TbFileInvoice,
   TbCash, TbUser, TbBolt, TbReceipt
 } from "react-icons/tb";
-
-import { TfiLayoutGrid3 } from "react-icons/tfi";
-import { IoReceiptOutline } from "react-icons/io5";
-import { FaClockRotateLeft } from "react-icons/fa6";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
 
+// Image Imports
+import squaredMenuIcon from './assets/images/squared-menu.png';
+import billIcon from './assets/images/bill.png';
+import queueIcon from './assets/images/queue.png';
+import historyIcon from './assets/images/history.png';
+import graphIcon from './assets/images/graph.png';
+import settingsIcon from './assets/images/settings.png';
+import helpIcon from './assets/images/help.png';
+import signOutIcon from './assets/images/sign-out.png';
 
+// Placeholder Pages
+import Items from './pages/Items';
+import ItemTypes from './pages/ItemTypes';
+import Locations from './pages/Locations';
+import Customers from './pages/Customers';
+import Orders from './pages/Orders';
+import OrderItems from './pages/OrderItems';
+import OrderTypes from './pages/OrderTypes';
+import PaymentMethods from './pages/PaymentMethods';
+import Roles from './pages/Roles';
+import Status from './pages/Status';
+import Users from './pages/Users';
+import TaxConfig from './pages/TaxConfig';
+import CreditCards from './pages/CreditCards';
+import OrderMenu from './pages/OrderMenu';
+import Login from './pages/Login';
+
+
+// --- UTILS ---
 let objCurrentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
+let getTheFirstCharacter = (st) => {
+  if (!st) return "U";
+  return st.charAt(0).toUpperCase();
+}
+
+// --- DASHBOARD COMPONENT ---
 function Dashboard() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem('currentUser');
-    if (userData) {
-      setCurrentUser(JSON.parse(userData));
-      console.log("1 Current User:", JSON.parse(userData));
-      objCurrentUser = JSON.parse(userData);
-      if (objChecker(objCurrentUser) == false) {
-        console.log("Invalid user data, redirecting to login.");
-        navigate('/login');
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    navigate('/login');
-  };
-
-  let objChecker = (obj) => {
-    for (let i in obj) {
-      return true;
-    }
-    return false;
-  }
+  
+  // State for Active Category Tab
+  const [activeCategory, setActiveCategory] = useState('MEALS');
+  const categories = ['MEALS', 'ALA CARTE', 'BEVERAGES', 'SAUCES & ADD-ONS'];
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <AiFillAccountBook />, path: '/' },
-    //  { id: 'orderMenu', label: 'Order Menu', icon: <TbShoppingCart />, path: '/ordermenu' },
     { id: 'items', label: 'Items', icon: <TbBox />, path: '/items' },
     { id: 'itemTypes', label: 'Item Types', icon: <TbClipboard />, path: '/itemtypes' },
     { id: 'locations', label: 'Locations', icon: <TbMapPin />, path: '/locations' },
@@ -80,379 +73,104 @@ function Dashboard() {
   ];
 
   return (
-    <div>
-      {/* User Info Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
-        color: 'white',
-        padding: '1rem 2rem',
-        borderRadius: '12px',
-        marginBottom: '2rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.5rem' }}>RIBSHACK POS Dashboard</h2>
-            {currentUser && (
-              <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>
-                Welcome, {currentUser.username} | {currentUser.role_name} | {currentUser.location_name}
-              </p>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={handleLogout}
-          style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: 'white',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '8px',
-            padding: '0.5rem 1rem',
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-          }}
-        >
-          🚪 Logout
-        </button>
+    <div className='app-container'>
+      <h3 className='section-title'>Categories</h3>
+
+      {/* Dynamic Category Tabs */}
+      <div className='itm-cat-container'>
+        {categories.map((category) => (
+          <button 
+            key={category} 
+            className={`itm-cat-btn ${activeCategory === category ? 'active' : ''}`}
+            onClick={() => setActiveCategory(category)}
+          >
+            <span>{category}</span>
+          </button>
+        ))}
       </div>
 
-      {/* --- ORDER MENU: Horizontal Scrollable Row --- */}
-      <div style={{ 
-          marginTop: '2rem', 
-          marginBottom: '3rem',
-          display: 'flex',            // Flexbox
-          flexDirection: 'row',       // Row layout
-          flexWrap: 'nowrap',         // NO WRAPPING (Forces scroll)
-          overflowX: 'auto',          // Enable Horizontal Scroll
-          justifyContent: 'flex-start', // Align left
-          gap: '1rem',                // Space between buttons
-          paddingBottom: '10px'       // Padding for scrollbar
-      }}>
-        {/* Button 1 */}
-        <button
-          onClick={() => navigate('/ordermenu')}
-          style={{
-            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            padding: '1.5rem 3rem',
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
-            transition: 'all 0.3s ease',
-            minWidth: '300px',        // Fixed width ensures they don't shrink
-            flexShrink: 0,            // PREVENTS shrinking
-            justifyContent: 'center'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
-          }}
-        >
-          <span>MEALS</span>
-        </button>
-
-        {/* Button 2 (Example Duplicate) */}
-        <button
-          onClick={() => navigate('/ordermenu')}
-          style={{
-            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            padding: '1.5rem 3rem',
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
-            transition: 'all 0.3s ease',
-            minWidth: '300px',
-            flexShrink: 0,
-            justifyContent: 'center'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
-          }}
-        >
-          <span>ALA CARTE</span>
-        </button>
-
-         {/* Button 3 (Example Duplicate) */}
-         <button
-          onClick={() => navigate('/ordermenu')}
-          style={{
-            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            padding: '1.5rem 3rem',
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
-            transition: 'all 0.3s ease',
-            minWidth: '300px',
-            flexShrink: 0,
-            justifyContent: 'center'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
-          }}
-        >
-          <span>BEVERAGES</span>
-        </button>
-
-         {/* Button 4 (Example Duplicate) */}
-         <button
-          onClick={() => navigate('/ordermenu')}
-          style={{
-            background: 'linear-gradient(135deg, #9b0000ff 0%, #f70000ff 100%)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            padding: '1.5rem 3rem',
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
-            transition: 'all 0.3s ease',
-            minWidth: '300px',
-            flexShrink: 0,
-            justifyContent: 'center'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 10px 25px rgba(139, 92, 246, 0.3)';
-          }}
-        >
-          <span>SAUCES AND ADD-ONS</span>
-        </button>
-      </div>
-
-      {/* --- QUICK ACCESS MENU: 5-Column Grid --- */}
-      <div style={{ marginTop: '2rem' }}>
-        <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Quick Access Menu</h3>
-        <div style={{
-          display: 'grid',                          // <--- Reverted to Grid
-          gridTemplateColumns: 'repeat(5, 1fr)',    // <--- Exactly 5 Columns
-          gap: '1rem',
-          marginBottom: '3rem'
-        }}>
+      {/* Quick Access Grid */}
+      <div>
+        <h3 className='section-title'>Items</h3>
+        <div className='menu-itm-grid'>
           {menuItems.filter(item => item.id !== 'dashboard').map(item => (
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              style={{
-                background: 'white',
-                border: '2px solid #e5e7eb',
-                borderRadius: '12px',
-                padding: '1.5rem',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.5rem',
-                minHeight: '120px',
-                // Removed fixed width so grid controls sizing
-                fontSize: '0.9rem',
-                fontWeight: '500'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.borderColor = '#dc2626';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 15px rgba(220, 38, 38, 0.1)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.borderColor = '#e5e7eb';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              className='menu-itm-card'
             >
-              <span style={{ fontSize: '2rem' }}>{item.icon}</span>
-              <span style={{ color: '#1e293b' }}>{item.label}</span>
+              <span className='card-icon'>{item.icon}</span>
+              <span className='card-label'>{item.label}</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Statistics Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '1.5rem',
-        marginTop: '2rem'
-      }}>
-        <div style={{
-          background: 'white',
-          padding: '2rem',
-          borderRadius: '12px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h3 style={{ color: '#4f46e5', marginBottom: '1rem' }}>Today's Sales</h3>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>$1,234.56</div>
-          <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>+12% from yesterday</div>
-        </div>
-        <div style={{
-          background: 'white',
-          padding: '2rem',
-          borderRadius: '12px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h3 style={{ color: '#10b981', marginBottom: '1rem' }}>Orders</h3>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>45</div>
-          <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>+8 new orders</div>
-        </div>
-        <div style={{
-          background: 'white',
-          padding: '2rem',
-          borderRadius: '12px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h3 style={{ color: '#f59e0b', marginBottom: '1rem' }}>Items Sold</h3>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>127</div>
-          <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Across all locations</div>
         </div>
       </div>
     </div>
   );
 }
 
-let getTheFirstCharacter = (st) => {
-  if (!st) return "A";
-  return st.charAt(0).toUpperCase();
-}
-
+// --- MAIN LAYOUT COMPONENT ---
 function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
+  
+  // 1. STATE: Sidebar Visibility
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    navigate('/login');
+  };
 
   const iconStyle = { width: '30px', height: '30px' };
 
-  const menuItems = [
-    { id: 'dashboard', icon: <TfiLayoutGrid3 style={iconStyle} />, path: '/' },
-    //{ id: 'orderMenu', label: 'Order Menu', icon: <TbShoppingCart />, path: '/ordermenu' },
-    { id: 'items', icon: <IoReceiptOutline style={iconStyle} />, path: '/items' },
-    { id: 'itemTypes', icon: <TbUsers style={iconStyle} />, path: '/itemtypes' },
-    { id: 'locations', icon: <FaClockRotateLeft style={iconStyle} />, path: '/locations' },
-    { id: 'customers', icon: <GoGraph style={iconStyle} />, path: '/customers' },
-    // Add other items here...
+  const sideMenuItems = [
+    { id: 'dashboard', icon: <img src={squaredMenuIcon} style={iconStyle} alt="Dashboard" />, path: '/' },
+    { id: 'items', icon: <img src={billIcon} style={iconStyle} alt="Items" />, path: '/items' },
+    { id: 'itemTypes', icon: <img src={queueIcon} style={iconStyle} alt="Types" />, path: '/itemtypes' },
+    { id: 'locations', icon: <img src={historyIcon} style={iconStyle} alt="Locations" />, path: '/locations' },
+    { id: 'customers', icon: <img src={graphIcon} style={iconStyle} alt="Customers" />, path: '/customers' },
   ];
 
   return (
-    // 1. OUTER CONTAINER: Fixed to 100vh, Hidden overflow prevents whole page scroll
-    <div style={{ 
-      display: 'flex', 
-      height: '100vh', 
-      overflow: 'hidden', 
-      background: '#f1f5f9' 
-    }}>
+    <div className='main-layout-container'>
       
-      {/* 2. LEFT SIDEBAR: Stays fixed full height */}
-      <div style={{
-        width: '100px', // Compact width
-        background: 'white',
-        boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        zIndex: 10
-      }}>
-        {/* Logo */}
-        <div style={{
-          padding: '10px',
-          borderBottom: '1px solid #e5e7eb',
-          textAlign: 'center',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <RxHamburgerMenu style={{ width: '30px', height: '30px', margin: '10px 0' }} />
+      {/* 2. OVERLAY: Visible only when sidebar is open */}
+      {isSidebarOpen && (
+        <div className='sidebar-overlay' onClick={() => setIsSidebarOpen(false)} />
+      )}
+
+      {/* 3. SIDEBAR: 'open' class slides it in */}
+      <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className='sidebar-logo'>
+          <button 
+            onClick={() => setIsSidebarOpen(false)} 
+            style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
+          >
+            <RxHamburgerMenu style={{ width: '28px', height: '28px', color: '#333' }} />
+          </button>
         </div>
 
-        {/* Navigation Menu */}
-        <nav style={{ flex: 1, padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {menuItems.map(item => {
+        <nav className='sidebar-nav'>
+          {sideMenuItems.map(item => {
             const isActive = location.pathname === item.path;
-
             return (
               <button
                 key={item.id}
-                onClick={() => navigate(item.path)}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = '#fef2f2';
-                    e.currentTarget.style.color = '#ef4444';
-                    e.currentTarget.style.borderLeft = '4px solid #ef4444';
-                  }
+                onClick={() => {
+                    navigate(item.path);
+                    setIsSidebarOpen(false); // Close on nav
                 }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#6b7280';
-                    e.currentTarget.style.borderLeft = '4px solid transparent';
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center', // Centers the icon horizontally
-                  padding: '15px 0',
-                  
-                  // Active State Logic
-                  background: isActive ? '#fef2f2' : 'transparent',
-                  color: isActive ? '#ef4444' : '#6b7280',
-                  border: 'none',
-                  borderLeft: isActive ? '4px solid #ef4444' : '4px solid transparent',
-                  
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: isActive ? '600' : '400',
-                  transition: 'all 0.2s ease',
-                }}
+                className={`nav-item ${isActive ? 'active' : ''}`}
               >
                 <span>{item.icon}</span>
               </button>
@@ -460,206 +178,129 @@ function MainLayout({ children }) {
           })}
         </nav>
 
-        {/* Bottom User Section */}
-        <div style={{
-          padding: '1.5rem 0',
-          borderTop: '1px solid #e5e7eb',
-          background: '#f8fafc',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            background: '#ef4444',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 'bold'
-          }}>{getTheFirstCharacter(objCurrentUser.username)}</div>
+        <div className='sidebar-bottom-actions'>
+           <button onClick={() => navigate('/')} className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}>
+             <img src={settingsIcon} style={iconStyle} alt="Settings" />
+           </button>
+           <button onClick={() => navigate('/')} className='nav-item'>
+             <img src={helpIcon} style={iconStyle} alt="Help" />
+           </button>
+        </div>
 
-          <button
-            onClick={() => {
-              localStorage.removeItem('authToken');
-              localStorage.removeItem('currentUser');
-              window.location.href = '/login';
-            }}
-            style={{
-              width: '50%',
-              background: '#ef4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '0.75rem',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-            onMouseOver={(e) => { e.currentTarget.style.background = '#dc2626'; }}
-            onMouseOut={(e) => { e.currentTarget.style.background = '#ef4444'; }}
-          >
-            🚪
+        <div className='sidebar-footer'>
+          <button onClick={handleLogout} className='nav-item'>
+            <img src={signOutIcon} style={iconStyle} alt="Sign Out" />
           </button>
         </div>
       </div>
 
-      {/* 3. MAIN CONTENT: Independent Scroll Area */}
-      <div style={{
-        flex: 1,
-        height: '100%',
-        overflowY: 'auto', // Enables vertical scrolling here only
-        padding: '2rem'
-      }}>
-        <div style={{
-          background: '#f1f5f9',
-          minHeight: '100%',
-          borderRadius: '12px'
-        }}>
-          <div style={{
-            background: 'white',
-            margin: '0',
-            padding: '2rem',
-            borderRadius: '12px',
-            // Ensure content area is at least full height minus margins
-            minHeight: 'calc(100% - 2rem)', 
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
-          }}>
-            {children}
+      {/* 4. CONTENT WRAPPER */}
+      <div className='right-side-wrapper'>
+        
+        {/* Header */}
+        <div className='dashboard-header'>
+          <div className='header-search'>
+             <div 
+               style={{ marginRight: '1rem', cursor: 'pointer' }}
+               onClick={() => setIsSidebarOpen(true)} // <-- OPEN SIDEBAR BUTTON
+             >
+                <RxHamburgerMenu style={{ width: '24px', height: '24px' }} />
+             </div>
+             <input type="text" placeholder="Search..." className='search-input' />
           </div>
+
+          <div className='header-info-group'>
+              <div className='info-block'>
+                  <div className='info-title' style={{ color: 'green' }}>ONLINE</div>
+                  <div className='info-subtitle'>POS Status</div>
+              </div>
+
+              <div className='info-block'>
+                  <div className='info-title'>12:45 PM</div>
+                  <div className='info-subtitle'>Oct 25, 2023</div>
+              </div>
+
+              <div className='user-profile'>
+                  <div className='info-block'>
+                      <div className='info-title'>{currentUser?.username || 'Admin'}</div>
+                      <div className='info-subtitle'>Clocked in at 08:00</div>
+                  </div>
+                   <div className='user-avatar'>
+                      {getTheFirstCharacter(currentUser?.username)}
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className='main-content-scroll-area'>
+            {children}
         </div>
       </div>
     </div>
   );
 }
 
-// Protected Route Component
+// --- PROTECTED ROUTE ---
 function ProtectedRoute({ children }) {
   const isAuthenticated = localStorage.getItem('authToken');
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return children;
 }
 
+// --- APP COMPONENT ---
 function App() {
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const horizontalScale = windowWidth / 1920;
+      const verticalScale = windowHeight / 1080;
+      const newScale = Math.min(horizontalScale, verticalScale);
+      setScale(newScale);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); 
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/ordermenu" element={
-          <ProtectedRoute>
-            <OrderMenu onBack={() => window.history.back()} />
-          </ProtectedRoute>
-        } />
-        <Route path="/" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/items" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Items />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/itemtypes" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <ItemTypes />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/locations" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Locations />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/customers" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Customers />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/orders" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Orders />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/orderitems" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <OrderItems />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/ordertypes" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <OrderTypes />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/paymentmethods" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <PaymentMethods />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/roles" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Roles />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/creditcards" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <CreditCards />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/status" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Status />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/users" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Users />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/taxconfig" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <TaxConfig />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </Router>
+    <div className='app-scale-wrapper' style={{ transform: `scale(${scale})` }}>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/ordermenu" element={
+            <ProtectedRoute>
+              <OrderMenu onBack={() => window.history.back()} />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/" element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/items" element={<ProtectedRoute><MainLayout><Items /></MainLayout></ProtectedRoute>} />
+          <Route path="/itemtypes" element={<ProtectedRoute><MainLayout><ItemTypes /></MainLayout></ProtectedRoute>} />
+          <Route path="/locations" element={<ProtectedRoute><MainLayout><Locations /></MainLayout></ProtectedRoute>} />
+          <Route path="/customers" element={<ProtectedRoute><MainLayout><Customers /></MainLayout></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><MainLayout><Orders /></MainLayout></ProtectedRoute>} />
+          <Route path="/orderitems" element={<ProtectedRoute><MainLayout><OrderItems /></MainLayout></ProtectedRoute>} />
+          <Route path="/ordertypes" element={<ProtectedRoute><MainLayout><OrderTypes /></MainLayout></ProtectedRoute>} />
+          <Route path="/paymentmethods" element={<ProtectedRoute><MainLayout><PaymentMethods /></MainLayout></ProtectedRoute>} />
+          <Route path="/roles" element={<ProtectedRoute><MainLayout><Roles /></MainLayout></ProtectedRoute>} />
+          <Route path="/creditcards" element={<ProtectedRoute><MainLayout><CreditCards /></MainLayout></ProtectedRoute>} />
+          <Route path="/status" element={<ProtectedRoute><MainLayout><Status /></MainLayout></ProtectedRoute>} />
+          <Route path="/users" element={<ProtectedRoute><MainLayout><Users /></MainLayout></ProtectedRoute>} />
+          <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

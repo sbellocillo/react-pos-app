@@ -185,6 +185,44 @@ export const apiEndpoints = {
         update: (id, data) => api.put(`/tax-config/${id}`, data),
         delete: (id) => api.delete(`/tax-config/${id}`),
     },
+
+    layouts: {
+        getAll: () => api.get('layouts'),
+        getDefaults: () => api.get('/layouts/defaults'),
+        getByItemType: (itemTypeId) => api.get(`/layouts/item-type/${itemTypeId}`),
+        getById: (id) => api.get(`/layouts/${id}`),
+        create: (data) => api.post('/layouts', data),
+        update: (id, data) => api.put(`/layouts/${id}`, data),
+        delete: (id) => api.delete(`/layouts/${id}`),
+    },
+
+    layoutIndices: {
+        getAll: () => api.get('/layout-indices'),
+        getActive: () => api.get('/layout-indices/active'),
+        getById: () => api.get(`/layout-idnices/${id}`),
+        getByGridIndex: (gridIndex) => api.get(`layout-indices/grid/${gridIndex}`),
+    },
+
+    layoutPosTerminal: {
+        getAll: () => api.get('/layout-pos-terminals'),
+        getByLocations: (locationId) => api.get(`/layout-pos-terminals/layout/${layoutId}/location/${locationId}`),
+        getByLayoutAndLocation: (layoutId, locationId) => api.get(`/layout-pos-terminals/layout/${layoutId}/location/${locationId}`),
+        getById: (id) => api.get(`/layout-pos-terminals/${id}`),
+        create: (data) => api.post('/layout-pos-terminals', data),
+        bulkCreate: (data) => api.post('/layout-pos-terminals/bulk', data),
+        update: (id, data) => api.put(`/layout-pos-terminals/${id}`, data),
+        delete: (id) => api.delete(`/layout-pos-terminals/${id}`),
+        deleteByLocation: (locationId) => api.delete(`/layout-pos-terminals/locations/${locationId}`),
+    },
+
+    layoutTemplates: {
+        getAll: (layoutId) => api.get(layoutId ? `/layout-templates?layout_id=${layoutId}` : '/layout-templates'),
+        getById: (id) => api.get(`/layout-templates/${id}`),
+        create: (data) => api.post('/layout-templates', data),
+        bulkSave: (data) => api.post('/layout-templates/bulk', data),
+        delete: (id) => api.delete(`/layout-templates/${id}`),
+        deleteByLayout: (layoutId) => api.delete(`/layout-templates/layouts/${layoutId}`),
+    }
 };
 
 export default api;
