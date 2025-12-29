@@ -7,7 +7,12 @@ import './App.css';
 import { AiFillAccountBook } from "react-icons/ai";
 import {
   TbShoppingCart, TbBox, TbClipboard, TbMapPin, TbUsers, TbFileInvoice,
-  TbCash, TbUser, TbBolt, TbReceipt
+  TbCash, TbUser, TbBolt, TbReceipt,
+  TbToolsKitchen2,
+  TbShoppingBag,
+  TbTruckDelivery,
+  TbDots,  
+  TbEdit   
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -48,64 +53,312 @@ let getTheFirstCharacter = (st) => {
   return st.charAt(0).toUpperCase();
 }
 
+// --- ORDER BILL COMPONENT ---
+function OrderBillPanel() {
+    return (
+        <div className='bill-panel'>
+            {/* Header */}
+            <div className='bill-header'>
+                <h2 className='bill-title'>New Order Bill</h2>
+                <button style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <TbDots size={24} color="#9ca3af" />
+                </button>
+            </div>
+
+            {/* Order Type Toggles */}
+            <div className='order-type-group'>
+                <button className='order-type-btn active'>
+                    <TbToolsKitchen2 size={18} /> Dine In
+                </button>
+                <button className='order-type-btn'>
+                    <TbShoppingBag size={18} /> Takeout
+                </button>
+                <button className='order-type-btn'>
+                    <TbTruckDelivery size={18} /> Delivery
+                </button>
+            </div>
+
+            {/* Info Grid */}
+            <div className='bill-info-grid'>
+                <span>Order Number</span> <span className='bill-info-value'>#00123</span>
+                <span>Date</span> <span className='bill-info-value'>10/25/2023</span>
+                <span>Time</span> <span className='bill-info-value'>12:45 PM</span>
+                <span>Cashier</span> <span className='bill-info-value'>Jane Doe</span>
+            </div>
+
+            {/* Ordered Items List */}
+            <h3 className='bill-items-header'>Ordered Items</h3>
+            <div className='bill-items-list'>
+                {/* Mock Item 1 */}
+                <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Korean Spicy Pork</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 250.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+                
+                {/* Mock Item 2 */}
+                <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>2</div>
+                        <span className='bill-item-name'>Cucumber Lemonade</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 180.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 3 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 4 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 5 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 6 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 7 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                 {/* Mock Item 8 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                {/* Mock Item 9 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                {/* Mock Item 10 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                {/* Mock Item 11 */}
+                 <div className='bill-item-row'>
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                        <div className='bill-item-qty'>1</div>
+                        <span className='bill-item-name'>Kimchi Side</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className='bill-item-price'>₱ 50.00</span>
+                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer Summary */}
+            <div style={{ marginTop: 'auto' }}>
+                <div className='bill-summary'>
+                    <div className='summary-row'>
+                        <span>Sub Total</span>
+                        <span>₱ XX.XX</span>
+                    </div>
+                    <div className='summary-row'>
+                        <span>Discount</span>
+                        <span>₱ XX.XX</span>
+                    </div>
+                    <div className='summary-row'>
+                        <span>Tax</span>
+                        <span>₱ XX.XX</span>
+                    </div>
+                </div>
+
+                <button className='pay-button'>
+                    ₱ XXXX.XX
+                </button>
+            </div>
+        </div>
+    );
+}
+
 // --- DASHBOARD COMPONENT ---
 function Dashboard() {
   const navigate = useNavigate();
-  
-  // State for Active Category Tab
-  const [activeCategory, setActiveCategory] = useState('MEALS');
-  const categories = ['MEALS', 'ALA CARTE', 'BEVERAGES', 'SAUCES & ADD-ONS'];
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <AiFillAccountBook />, path: '/' },
-    { id: 'items', label: 'Items', icon: <TbBox />, path: '/items' },
-    { id: 'itemTypes', label: 'Item Types', icon: <TbClipboard />, path: '/itemtypes' },
-    { id: 'locations', label: 'Locations', icon: <TbMapPin />, path: '/locations' },
-    { id: 'customers', label: 'Customers', icon: <TbUsers />, path: '/customers' },
-    { id: 'orders', label: 'Orders', icon: <TbFileInvoice />, path: '/orders' },
-    { id: 'orderItems', label: 'Order Items', icon: <TbShoppingCart />, path: '/orderitems' },
-    { id: 'orderTypes', label: 'Order Types', icon: <TbClipboard />, path: '/ordertypes' },
-    { id: 'paymentMethods', label: 'Payment Methods', icon: <TbCash />, path: '/paymentmethods' },
-    { id: 'creditCards', label: 'Credit Cards', icon: <TbCash />, path: '/creditcards' },
-    { id: 'roles', label: 'Roles', icon: <TbUsers />, path: '/roles' },
-    { id: 'status', label: 'Status', icon: <TbBolt />, path: '/status' },
-    { id: 'users', label: 'Users', icon: <TbUser />, path: '/users' },
-    { id: 'taxConfig', label: 'Tax Config', icon: <TbReceipt />, path: '/taxconfig' }
-  ];
+  const [layouts, setLayouts] = useState([]);
+  const [activeLayoutId, setActiveLayoutId] = useState(null);
+  const [gridItems, setGridItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Fetch Layouts
+  useEffect (() => {
+    const fetchLayouts = async () => {
+      try {
+        const response = await apiEndpoints.layouts.getAll();
+        console.log("Layouts API Response:", response.data);
+
+        if (response.data && response.data.success) {
+          const fetchedLayouts = response.data.data;
+          setLayouts(fetchedLayouts);
+
+          // Select first layout automatically
+          if ( fetchedLayouts.length > 0) {
+            handleLayoutClick(fetchedLayouts[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching layouts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLayouts();
+  }, []);
+
+  // Fetch Grid items
+  const handleLayoutClick = async (layout) => {
+    setActiveLayoutId(layout.id);
+
+    // Get location_id from local storage (default to 15)
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const locationId = currentUser.location_id || 15;
+
+    try {
+      const response = await apiEndpoints.layoutPosTerminal.getByLayoutAndLocation(layout.id, locationId);
+
+      if (response.data && response.data.success) {
+        setGridItems(response.data.data);
+      } else {
+        setGridItems([]);
+      }
+    } catch (error) {
+      console.error("Error fetching grid items:", error);
+      setGridItems([]);
+    }
+  };
 
   return (
     <div className='app-container'>
-      <h3 className='section-title'>Categories</h3>
+        <div className='dashboard-container'>
+            
+            {/* LEFT SIDE: Menu Section */}
+            <div className='menu-section'>
+                {/*Categories Row*/}
+                <h3 className='section-title'>CATEGORIES</h3>
 
-      {/* Dynamic Category Tabs */}
-      <div className='itm-cat-container'>
-        {categories.map((category) => (
-          <button 
-            key={category} 
-            className={`itm-cat-btn ${activeCategory === category ? 'active' : ''}`}
-            onClick={() => setActiveCategory(category)}
-          >
-            <span>{category}</span>
-          </button>
-        ))}
-      </div>
+                <div className='itm-cat-container'>
+                    {loading ? (
+                    <p style={{padding: '1rem'}}>Loading menu...</p>
+                    ) : layouts.length === 0 ? (
+                    <div style={{ padding: '1rem', color: 'red', border: '1px dashed red', borderRadius: '8px'}}>
+                        No Layouts Found. Check database connection.
+                    </div>
+                    ) : (
+                    layouts.map((layout) => (
+                        <button
+                        key={layout.id}
+                        className={`itm-cat-btn ${activeLayoutId === layout.id ? 'active' : ''}`}
+                        onClick={() => handleLayoutClick(layout)}
+                        >
+                        <span>{layout.name ? layout.name.toUpperCase() : 'UNNAMED'}</span>
+                        </button>
+                    ))
+                    )}
+                </div>
 
-      {/* Quick Access Grid */}
-      <div>
-        <h3 className='section-title'>Items</h3>
-        <div className='menu-itm-grid'>
-          {menuItems.filter(item => item.id !== 'dashboard').map(item => (
-            <button
-              key={item.id}
-              onClick={() => navigate(item.path)}
-              className='menu-itm-card'
-            >
-              <span className='card-icon'>{item.icon}</span>
-              <span className='card-label'>{item.label}</span>
-            </button>
-          ))}
+                {/*Items Menu Grid*/}
+                <div>
+                    <h3 className='section-title'>ITEMS</h3>
+
+                    {!loading && gridItems.length === 0 && (
+                    <p style={{ color: '#666', fontStyle: 'italic'}}>No items assigned to this layout.</p>
+                    )}
+
+                    <div className='menu-itm-grid'>
+                    {gridItems.map((pos) => (
+                        <button 
+                        key={pos.id}
+                        className='menu-itm-card'
+                        onClick={() => console.log("Clicked item:", pos.item_name)}
+                        >
+                        <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
+                        </button>
+                    ))}
+                    </div>
+                </div>
+            </div>
+            
+            {/* RIGHT SIDE: Bill Panel */}
+            <OrderBillPanel />
+            
         </div>
-      </div>
     </div>
   );
 }
