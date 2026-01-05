@@ -190,6 +190,7 @@ export const apiEndpoints = {
         getAll: () => api.get('layouts'),
         getDefaults: () => api.get('/layouts/defaults'),
         getByItemType: (itemTypeId) => api.get(`/layouts/item-type/${itemTypeId}`),
+        getByLocation: (locationId) => api.get(`/layouts/location/${locationId}`),
         getById: (id) => api.get(`/layouts/${id}`),
         create: (data) => api.post('/layouts', data),
         update: (id, data) => api.put(`/layouts/${id}`, data),

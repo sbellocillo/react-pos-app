@@ -43,6 +43,8 @@ import TaxConfig from './pages/TaxConfig';
 import CreditCards from './pages/CreditCards';
 import OrderMenu from './pages/OrderMenu';
 import Login from './pages/Login';
+import Settings from './pages/Settings';
+import Help from './pages/Help';
 
 
 // --- UTILS ---
@@ -259,8 +261,12 @@ function Dashboard() {
   // Fetch Layouts
   useEffect (() => {
     const fetchLayouts = async () => {
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      const locationId = currentUser.location_id || 15;
+
       try {
-        const response = await apiEndpoints.layouts.getAll();
+        const response = await apiEndpoints.layouts.getByLocation(locationId);
         console.log("Layouts API Response:", response.data);
 
         if (response.data && response.data.success) {
@@ -368,6 +374,31 @@ function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval (() => {
+      setCurrentDate(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
   
   // 1. STATE: Sidebar Visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -433,14 +464,28 @@ function MainLayout({ children }) {
         </nav>
 
         <div className='sidebar-bottom-actions'>
-           <button onClick={() => navigate('/')} className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}>
+          {/*Settings Button*/}
+           <button onClick={() => {
+                  navigate('/settings');
+                  setIsSidebarOpen(false);
+                } 
+              }
+              className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
+            >
              <img src={settingsIcon} style={iconStyle} alt="Settings" />
            </button>
-           <button onClick={() => navigate('/')} className='nav-item'>
+          {/*Help Button*/}
+           <button onClick={() => {
+                navigate('/help');
+                setIsSidebarOpen(false);
+              }
+           } 
+            className='nav-item'
+            >
              <img src={helpIcon} style={iconStyle} alt="Help" />
            </button>
         </div>
-
+          {/*Signout Button*/}
         <div className='sidebar-footer'>
           <button onClick={handleLogout} className='nav-item'>
             <img src={signOutIcon} style={iconStyle} alt="Sign Out" />
@@ -470,8 +515,8 @@ function MainLayout({ children }) {
               </div>
 
               <div className='info-block'>
-                  <div className='info-title'>12:45 PM</div>
-                  <div className='info-subtitle'>Oct 25, 2023</div>
+                  <div className='info-title'>{formatTime(currentDate)}</div>
+                  <div className='info-subtitle'>{formatDate(currentDate)}</div>
               </div>
 
               <div className='user-profile'>
@@ -552,6 +597,8 @@ function App() {
           <Route path="/status" element={<ProtectedRoute><MainLayout><Status /></MainLayout></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><MainLayout><Users /></MainLayout></ProtectedRoute>} />
           <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+          <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>
     </div>
