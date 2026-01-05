@@ -16,6 +16,7 @@ import {
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { FaTrash } from "react-icons/fa6";
 
 // Image Imports
 import squaredMenuIcon from './assets/images/squared-menu.png';
@@ -56,197 +57,118 @@ let getTheFirstCharacter = (st) => {
 }
 
 // --- ORDER BILL COMPONENT ---
-function OrderBillPanel() {
-    return (
-        <div className='bill-panel'>
-            {/* Header */}
-            <div className='bill-header'>
-                <h2 className='bill-title'>New Order Bill</h2>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                    <TbDots size={24} color="#9ca3af" />
-                </button>
+function OrderBillPanel({
+  cartItems,
+  onRemoveItem,
+  onUpdateQuantity,
+  orderType,
+  setOrderType,
+  onCheckout,
+  totals,
+  isProcessing
+}) {
+  const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
+
+  return (
+    <div className='bill-panel'>
+      {/* Header */}
+      <div className='bill-header'>
+        <h2 className='bill-title'>New Order Bill</h2>
+        <button style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+          <TbDots size={24} color="#9ca3af" />
+        </button>
+      </div>
+
+      {/* Order Type Toggles */}
+      <div className='order-type-group'>
+        {[
+          { id: 1, label: 'Dine In', icon: <TbToolsKitchen2 size={18} />},
+          { id: 2, label: 'Takeout', icon: <TbShoppingBag size={18}/>},
+          { id: 3, label: 'Delivery', icon: <TbTruckDelivery size={18}/>},
+        ].map((type) => (
+          <button
+            key={type.id}
+            className={`order-type-btn ${orderType === type.id ? 'active' : ''}`}
+            onClick={() => setOrderType(type.id)}
+          >
+            {type.icon} {type.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Info Grid */}
+      <div className='bill-info-grid'>
+        <span>Order Number</span> <span className='bill-info-value'>#NEW</span>
+        <span>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
+        <span>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
+        <span>Cashier</span> <span className='bill-info-value'>Jane Doe</span>
+      </div>
+
+      {/* Ordered Items List */}
+      <h3 className='bill-items-header'>Ordered Items</h3>
+      <div className='bill-items-list'>
+        {cartItems.length === 0 ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#999'}}>
+            No items added
+          </div>
+        ) : (
+          cartItems.map((item, index) => (
+            <div className='bill-item-row' key={`${item.id}-${index}`}>
+              <div style={{ display: 'flex', alignItems: 'center', flex: 2, minWidth: 0}}>
+                <div
+                  className='bill-item-qty'
+                  onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                  style={{cursor: 'pointer'}}
+                >
+                  {item.quantity}
+                </div>
+                <span className='bill-item-name'>{item.item_name}</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px'}}>
+                <span className='bill-item-price'>
+                  {formatCurrency(item.price * item.quantity)}
+                </span>
+                <FaTrash
+                  size={16}
+                  color="#ef4444"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => onRemoveItem(item.id)}
+                />
+              </div>
             </div>
+          ))
+        )}
+      </div>
 
-            {/* Order Type Toggles */}
-            <div className='order-type-group'>
-                <button className='order-type-btn active'>
-                    <TbToolsKitchen2 size={18} /> Dine In
-                </button>
-                <button className='order-type-btn'>
-                    <TbShoppingBag size={18} /> Takeout
-                </button>
-                <button className='order-type-btn'>
-                    <TbTruckDelivery size={18} /> Delivery
-                </button>
-            </div>
-
-            {/* Info Grid */}
-            <div className='bill-info-grid'>
-                <span>Order Number</span> <span className='bill-info-value'>#00123</span>
-                <span>Date</span> <span className='bill-info-value'>10/25/2023</span>
-                <span>Time</span> <span className='bill-info-value'>12:45 PM</span>
-                <span>Cashier</span> <span className='bill-info-value'>Jane Doe</span>
-            </div>
-
-            {/* Ordered Items List */}
-            <h3 className='bill-items-header'>Ordered Items</h3>
-            <div className='bill-items-list'>
-                {/* Mock Item 1 */}
-                <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Korean Spicy Pork</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 250.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-                
-                {/* Mock Item 2 */}
-                <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>2</div>
-                        <span className='bill-item-name'>Cucumber Lemonade</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 180.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 3 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 4 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 5 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 6 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 7 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                 {/* Mock Item 8 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                {/* Mock Item 9 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                {/* Mock Item 10 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-
-                {/* Mock Item 11 */}
-                 <div className='bill-item-row'>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                        <div className='bill-item-qty'>1</div>
-                        <span className='bill-item-name'>Kimchi Side</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className='bill-item-price'>₱ 50.00</span>
-                        <TbEdit size={16} color="#9ca3af" style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Footer Summary */}
-            <div style={{ marginTop: 'auto' }}>
-                <div className='bill-summary'>
-                    <div className='summary-row'>
-                        <span>Sub Total</span>
-                        <span>₱ XX.XX</span>
-                    </div>
-                    <div className='summary-row'>
-                        <span>Discount</span>
-                        <span>₱ XX.XX</span>
-                    </div>
-                    <div className='summary-row'>
-                        <span>Tax</span>
-                        <span>₱ XX.XX</span>
-                    </div>
-                </div>
-
-                <button className='pay-button'>
-                    ₱ XXXX.XX
-                </button>
-            </div>
+      {/* Footer Summary*/}
+      <div style={{ marginTop: 'auto' }}>
+        <div className='bill-summary'>
+          <div className='summary-row'>
+            <span>Sub Total</span>
+            <span>{formatCurrency(totals.subtotal)}</span>
+          </div>
+          <div className='summary-row'>
+            <span>Discount</span>
+            <span>₱ 0.00</span>
+          </div>
+          <div className='summary-row'>
+            <span>Tax (12%)</span>
+            <span>{formatCurrency(totals.tax)}</span>
+          </div>
         </div>
-    );
+
+        <button
+          className='pay-button'
+          onClick={onCheckout}
+          disabled={isProcessing || cartItems.length === 0}
+          style={{ opacity: isProcessing ? 0.7 : 1}}
+        >
+          {isProcessing ? 'PROCESSING...' : formatCurrency(totals.total)}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // --- DASHBOARD COMPONENT ---
@@ -257,6 +179,9 @@ function Dashboard() {
   const [activeLayoutId, setActiveLayoutId] = useState(null);
   const [gridItems, setGridItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
+  const [orderType, setOrderType] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   // Fetch Layouts
   useEffect (() => {
@@ -309,6 +234,94 @@ function Dashboard() {
       setGridItems([]);
     }
   };
+  
+  // Add Item to Cart
+  const handleAddToCart = (item) => {
+    setCartItems(prevCart => {
+      const existingItem = prevCart.find(cartItem => cartItem.item_id === item.item_id);
+      if (existingItem) {
+        return prevCart.map(cartItem =>
+          cartItem.item_id === item.item_id
+           ? {...cartItem, quantity: cartItem.quantity + 1}
+           : cartItem
+        );
+      } else {
+        return [...prevCart, {
+          id: item.id,
+          item_id: item.item_id,
+          item_name: item.item_name,
+          price: item.price || 0,
+          quantity: 1
+        }];
+      }
+    });
+  };
+
+  // Remove Item
+  const handleRemoveItem = (id) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  // Update Quantity
+  const handleUpdateQuantity = (id, newQty) => {
+    if (newQty < 1) return;
+    setCartItems(prev => prev.map(item =>
+      item.id === id ? { ...item, quantity: newQty } : item
+    ));
+  };
+
+  // Calculate Totals
+  const calculateTotals = () => {
+    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const taxRate = 0.12;
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax;
+    return { subtotal, tax, total };
+  };
+
+  // Checkout
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    setIsProcessing(true);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const totals = calculateTotals();
+
+    const orderPayload = {
+      customer_id: 1,
+      status_id: 1,
+      order_type_id: orderType,
+      tax_percentage: 0.12,
+      tax_amount: totals.tax,
+      subtotal: totals.subtotal,
+      total: totals.total,
+      role_id: currentUser.role_id || 1,
+      location_id: currentUser.location_id || 15,
+      payment_method_id: 1,
+      card_network_id: null,
+      created_by: currentUser.id || 1,
+      items: cartItems.map(item => ({
+        item_id: item.item_id,
+        quantity: item.quantity,
+        rate: item.price,
+        tax_percentage: 0.12,
+        tax_amount: (item.price * item.quantity) * 0.12,
+        amount: (item.price * item.quantity)
+      }))
+    };
+
+    try {
+      const response = await apiEndpoints.orders.create(orderPayload);
+      if (response.status === 201 || response.status === 200) {
+        alert(`Order Created ID: ${response.data.orderid || 'New'}`);
+        setCartItems([]);
+      }
+    } catch (error) {
+      console.error("Checkout Error:", error);
+      alert("Failed to create order.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className='app-container'>
@@ -352,7 +365,7 @@ function Dashboard() {
                         <button 
                         key={pos.id}
                         className='menu-itm-card'
-                        onClick={() => console.log("Clicked item:", pos.item_name)}
+                        onClick={() => handleAddToCart(pos)}
                         >
                         <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
                         </button>
@@ -362,7 +375,16 @@ function Dashboard() {
             </div>
             
             {/* RIGHT SIDE: Bill Panel */}
-            <OrderBillPanel />
+            <OrderBillPanel
+              cartItems={cartItems}
+              onRemoveItem={handleRemoveItem}
+              onUpdateQuantity={handleUpdateQuantity}
+              orderType={orderType}
+              setOrderType={setOrderType}
+              onCheckout={handleCheckout}
+              totals={calculateTotals()}
+              isProcessing={isProcessing} 
+            />
             
         </div>
     </div>
