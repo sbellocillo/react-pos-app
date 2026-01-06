@@ -12,7 +12,8 @@ import {
   TbShoppingBag,
   TbTruckDelivery,
   TbDots,  
-  TbEdit   
+  TbEdit,   
+  TbNote
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -68,16 +69,96 @@ function OrderBillPanel({
   isProcessing
 }) {
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
+  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+  // State for modal
+  const [isOptionsModalOpen, setIsOptionsModalOPen] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
+  const [isNoteFieldVisible, setIsNoteFieldVisible] = useState(false);
+
+  // Handler for modal options
+  const handleOPtionClick = (action) => {
+    console.log(`Action triggered: ${action}`);
+    setIsOptionsModalOPen(false);
+
+    switch (action) {
+      case 'newOrder':
+        onClearCart();
+        setOrderNote('');
+        setIsNoteFieldVisible(false);
+        break;
+      case 'voidOrder':
+        alert('Void order functionality not yet implemented.');
+        break;
+      case 'splitBill':
+        alert('Split Bill functionality not yet implemented.');
+        break;
+      case 'cancelOrder':
+        onClearCart();
+        setOrderNote('');
+        setIsNoteFieldVisible(false);
+        break;
+      case 'reportIssue':
+        alert('Report Issue functionality not yet implemented.');
+        break;
+      case 'addOrderNote':
+        setIsNoteFieldVisible(true);
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
-    <div className='bill-panel'>
+    <div className='bill-panel' style={{ position: 'relative' }}>
       {/* Header */}
       <div className='bill-header'>
         <h2 className='bill-title'>New Order Bill</h2>
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button
+          onClick={() => setIsOptionsModalOPen(true)} 
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <TbDots size={24} color="#9ca3af" />
         </button>
       </div>
+
+      {/* Options Modal */}
+      {isOptionsModalOpen && (
+       <>
+    {/* 1. Overlay to close modal when clicking outside */}
+    <div 
+      className="modal-overlay" 
+      onClick={() => setIsOptionsModalOPen(false)} 
+    />
+    
+    {/* 2. The Modal Box */}
+    <div className="options-modal">
+      
+      {/* 3. The "OPTIONS" Header (Matches image) */}
+      <h3 className="options-header">OPTIONS</h3>
+      
+      <ul className="options-list">
+        <li>
+          <button onClick={() => handleOPtionClick('newOrder')}>New Order</button>
+        </li>
+        <li>
+          <button onClick={() => handleOPtionClick('voidOrder')}>Void Order</button>
+        </li>
+        <li>
+          <button onClick={() => handleOPtionClick('splitBill')}>Split Bill</button>
+        </li>
+        <li>
+          <button onClick={() => handleOPtionClick('cancelOrder')}>Cancel Order</button>
+        </li>
+        <li>
+          <button onClick={() => handleOPtionClick('reportIssue')}>Report Issue</button>
+        </li>
+        <li>
+          <button onClick={() => handleOPtionClick('addOrderNote')}>Add Order Note</button>
+        </li>
+      </ul>
+    </div>
+  </>
+      )}
 
       {/* Order Type Toggles */}
       <div className='order-type-group'>
@@ -101,7 +182,7 @@ function OrderBillPanel({
         <span>Order Number</span> <span className='bill-info-value'>#NEW</span>
         <span>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
         <span>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
-        <span>Cashier</span> <span className='bill-info-value'>Jane Doe</span>
+        <span>Cashier</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
       </div>
 
       {/* Ordered Items List */}
@@ -140,6 +221,29 @@ function OrderBillPanel({
           ))
         )}
       </div>
+
+      {/* Order Note Field */}
+      {isNoteFieldVisible && (
+        <div style={{ padding: '10px 20px' }}>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <TbNote size={16} style={{ marginRight: '5px'}} />
+            <span style={{ fontWeight: 'bold' }}>Order Note:</span>
+          </div>
+          <textarea
+            value={orderNote}
+            onChange={(e) => setOrderNote(e.target.value)}
+            placeholder='Add a note for this order...'
+            style={{
+              width: '100%',
+              padding: '8px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              resize: 'vertical',
+              minHeight: '60px'
+            }}
+          />
+        </div>
+      )}
 
       {/* Footer Summary*/}
       <div style={{ marginTop: 'auto' }}>

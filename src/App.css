@@ -373,6 +373,91 @@ body, html {
     margin: 0;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.2); /* Slight dimming of background */
+  z-index: 999;
+}
+
+/* --- The Main Modal Box --- */
+.options-modal {
+  position: absolute;
+  top: 50px;           /* Pushes it just below the ... button */
+  right: 20px;         /* Aligns with the right edge */
+  width: 220px;
+  background-color: #ffffff;
+  border-radius: 12px; /* Rounded corners like iOS/Android menus */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Soft drop shadow */
+  border: 1px solid #e5e7eb;
+  z-index: 1000;
+  overflow: hidden;    /* Ensures content doesn't spill out of rounded corners */
+  animation: scaleIn 0.1s ease-out;
+}
+
+/* --- The "OPTIONS" Header --- */
+.options-header {
+  margin: 0;
+  padding: 16px 20px 8px 20px; /* Top padding for breathing room */
+  font-size: 13px;
+  font-weight: 800;    /* Extra bold */
+  color: #000;         /* Pitch black text */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- The List --- */
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- List Items (The lines) --- */
+.options-list li {
+  border-bottom: 1px solid #f3f4f6; /* Light gray divider */
+}
+
+.options-list li:last-child {
+  border-bottom: none; /* No divider for the last item */
+}
+
+/* --- The Buttons --- */
+.options-list button {
+  width: 100%;
+  text-align: left;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937; /* Dark gray text */
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+/* Hover Effect */
+.options-list button:hover {
+  background-color: #f9fafb; /* Very light gray on hover */
+}
+
+/* --- Animation (Optional) --- */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .order-type-group {
     display: flex;
     gap: 0.5rem;
