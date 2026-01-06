@@ -4,10 +4,10 @@
 body, html {
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #1e1e1e; /* Dark background for letterboxing */
-    overflow: hidden; /* Prevent native scrollbars */
+    /* width: 100vw;
+    height: 100vh; */
+    background-color: #1e1e1e;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,8 +24,8 @@ body, html {
 }
 
 .app-scale-wrapper {
-    width: 1920px;
-    height: 1080px;
+    /* width: 1920px;
+    height: 1080px; */
     background-color: #f1f5f9;
     position: relative;
     overflow: hidden;
@@ -188,23 +188,35 @@ body, html {
 }
 
 .search-input {
+    padding-left: 38px;
+    margin-right: 1rem;
     background: #f9fafb;
     border: 1px solid #e5e7eb;
-    padding: 0.5rem 1rem;
     border-radius: 8px;
     width: 600px;
     height: 45px;
     outline: none;
+
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
 }
 
 .header-info-group {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 12rem;
 }
 
 .info-block {
-    text-align: right;
+    text-align: left;
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+.date-time {
+    text-align: center;
+    font-family: 'Instrument Sans', sans-serif;
 }
 
 .info-title {
@@ -213,9 +225,54 @@ body, html {
 }
 
 .info-subtitle {
-    font-size: 0.8rem;
-    color: #6b7280;
+    font-size: 15px;
+    color: #000000;
 }
+
+.pos-status-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.info-subtitle {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.info-title.online {
+  font-size: 14px;
+  font-weight: 700;
+  color: #16a34a; 
+  letter-spacing: 0.5px;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 25px;
+}
+
+.signal-bars .bar {
+  width: 3px;
+  background: #6c6c6c;
+  border-radius: 2px;
+}
+
+.signal-bars .b1 { height: 5px; }
+.signal-bars .b2 { height: 10px; }
+.signal-bars .b3 { height: 15px; }
+.signal-bars .b4 { height: 20px; }
+.signal-bars .b5 { height: 25px; }
+
 
 .user-profile {
     display: flex;
@@ -247,10 +304,11 @@ body, html {
 
 /* --- PAGE SPECIFIC STYLES --- */
 .section-title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     margin: 1rem 0 1rem 0;
     color: #1e293b;
     font-weight: 400;
+    font-size: 20px;
 }
 
 /* Categories Row */
@@ -266,19 +324,46 @@ body, html {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 1.5rem 3rem;
+    padding: 1rem 1.5rem;
     font-size: 1.1rem;
-    font-weight: 700;
+    /* font-weight: 500; */
     cursor: pointer;
-    min-width: 200px;
+    width: auto;
     flex-shrink: 0;
     transition: all 0.2s;
     color: #333;
+    user-select: none;
+    flex: 1;
 }
+
+.itm-cat-btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* .itm-cat-btn {
+  flex: 1;
+  user-select: none;
+} */
+
+.drag-handle {
+  cursor: grab;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
 
 .itm-cat-btn.active {
     background: #B74C4C;
     color: white;
+    font-weight: 600;
     border-color: #B74C4C;
 }
 
@@ -345,14 +430,14 @@ body, html {
 }
 
 .bill-panel {
-    width: 600px;
+    width: 400px;
     background: white;
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    height: 955px;
+    height: auto;
     overflow: hidden;
     font-family: 'Montserrat', sans-serif;
     margin-top: 1rem;

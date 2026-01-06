@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navig
 import { apiEndpoints } from './services/api';
 import './App.css';
 
-// --- ICONS & ASSETS IMPORT ---
 import { AiFillAccountBook } from "react-icons/ai";
 import {
   TbShoppingCart, TbBox, TbClipboard, TbMapPin, TbUsers, TbFileInvoice,
@@ -19,7 +18,6 @@ import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaTrash } from "react-icons/fa6";
 
-// Image Imports
 import squaredMenuIcon from './assets/images/squared-menu.png';
 import billIcon from './assets/images/bill.png';
 import queueIcon from './assets/images/queue.png';
@@ -29,7 +27,6 @@ import settingsIcon from './assets/images/settings.png';
 import helpIcon from './assets/images/help.png';
 import signOutIcon from './assets/images/sign-out.png';
 
-// Placeholder Pages
 import Items from './pages/Items';
 import ItemTypes from './pages/ItemTypes';
 import Locations from './pages/Locations';
@@ -48,8 +45,18 @@ import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { TbGripVertical } from "react-icons/tb";
+// import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-// --- UTILS ---
+
 let objCurrentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
 let getTheFirstCharacter = (st) => {
@@ -57,7 +64,44 @@ let getTheFirstCharacter = (st) => {
   return st.charAt(0).toUpperCase();
 }
 
-// --- ORDER BILL COMPONENT ---
+function SortableCategoryButton({
+  layout,
+  activeLayoutId,
+  handleLayoutClick,
+  className, 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: layout.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="itm-cat-btn-wrapper">
+      <button
+        type="button"
+        className={className}
+        onClick={() => handleLayoutClick(layout)}
+      >
+        <span>{layout.name ? layout.name.toUpperCase() : "UNNAMED"}</span>
+      </button>
+
+      <span className="drag-handle" {...attributes} {...listeners}>
+        <TbGripVertical size={18} />
+      </span>
+    </div>
+  );
+}
+
 function OrderBillPanel({
   cartItems,
   onRemoveItem,
@@ -71,12 +115,10 @@ function OrderBillPanel({
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
-  // State for modal
   const [isOptionsModalOpen, setIsOptionsModalOPen] = useState(false);
   const [orderNote, setOrderNote] = useState('');
   const [isNoteFieldVisible, setIsNoteFieldVisible] = useState(false);
 
-  // Handler for modal options
   const handleOPtionClick = (action) => {
     console.log(`Action triggered: ${action}`);
     setIsOptionsModalOPen(false);
@@ -110,7 +152,8 @@ function OrderBillPanel({
   };
 
   return (
-    <div className='bill-panel' style={{ position: 'relative' }}>
+    // <div className='bill-panel' style={{ position: 'relative' }}>
+    <div className='bill-panel'>
       {/* Header */}
       <div className='bill-header'>
         <h2 className='bill-title'>New Order Bill</h2>
@@ -279,6 +322,12 @@ function OrderBillPanel({
 function Dashboard() {
   const navigate = useNavigate();
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const locationId = currentUser.location_id || 15;
+
+  const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
+
+
   const [layouts, setLayouts] = useState([]);
   const [activeLayoutId, setActiveLayoutId] = useState(null);
   const [gridItems, setGridItems] = useState([]);
@@ -286,6 +335,26 @@ function Dashboard() {
   const [cartItems, setCartItems] = useState([]);
   const [orderType, setOrderType] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [sortableLayouts, setSortableLayouts] = useState([]);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    setSortableLayouts((prev) => {
+      const oldIndex = prev.findIndex((item) => item.id === active.id);
+      const newIndex = prev.findIndex((item) => item.id === over.id);
+
+      const newArr = arrayMove(prev, oldIndex, newIndex);
+
+      // ✅ Save layout order to localStorage
+      localStorage.setItem(layoutOrderKey, JSON.stringify(newArr.map((l) => l.id)));
+
+      return newArr;
+    });
+  };
+
   
   // Fetch Layouts
   useEffect (() => {
@@ -301,6 +370,31 @@ function Dashboard() {
         if (response.data && response.data.success) {
           const fetchedLayouts = response.data.data;
           setLayouts(fetchedLayouts);
+
+          // ✅ Load saved order from localStorage
+          const savedOrder = JSON.parse(localStorage.getItem(layoutOrderKey) || "[]");
+
+          if (savedOrder.length > 0) {
+            // reorder fetchedLayouts to match savedOrder
+            const ordered = [
+              ...fetchedLayouts
+                .filter((l) => savedOrder.includes(l.id))
+                .sort((a, b) => savedOrder.indexOf(a.id) - savedOrder.indexOf(b.id)),
+              // include any new layouts not in savedOrder
+              ...fetchedLayouts.filter((l) => !savedOrder.includes(l.id)),
+            ];
+
+            setSortableLayouts(ordered);
+
+            // optional: auto select first layout
+            if (ordered.length > 0) handleLayoutClick(ordered[0]);
+          } else {
+            setSortableLayouts(fetchedLayouts);
+
+            // optional: auto select first layout
+            if (fetchedLayouts.length > 0) handleLayoutClick(fetchedLayouts[0]);
+          }
+
 
           // Select first layout automatically
           if ( fetchedLayouts.length > 0) {
@@ -431,51 +525,56 @@ function Dashboard() {
     <div className='app-container'>
         <div className='dashboard-container'>
             
-            {/* LEFT SIDE: Menu Section */}
             <div className='menu-section'>
-                {/*Categories Row*/}
-                <h3 className='section-title'>CATEGORIES</h3>
+              <h3 className='section-title'>CATEGORIES</h3>
 
-                <div className='itm-cat-container'>
-                    {loading ? (
-                    <p style={{padding: '1rem'}}>Loading menu...</p>
-                    ) : layouts.length === 0 ? (
-                    <div style={{ padding: '1rem', color: 'red', border: '1px dashed red', borderRadius: '8px'}}>
-                        No Layouts Found. Check database connection.
-                    </div>
-                    ) : (
-                    layouts.map((layout) => (
-                        <button
-                        key={layout.id}
-                        className={`itm-cat-btn ${activeLayoutId === layout.id ? 'active' : ''}`}
-                        onClick={() => handleLayoutClick(layout)}
-                        >
-                        <span>{layout.name ? layout.name.toUpperCase() : 'UNNAMED'}</span>
-                        </button>
-                    ))
-                    )}
-                </div>
+              <div className='itm-cat-container'>
+                {loading ? (
+                  <p style={{padding: '1rem'}}>Loading menu...</p>
+                  ) : layouts.length === 0 ? (
+                  <div style={{ padding: '1rem', color: 'red', border: '1px dashed red', borderRadius: '8px'}}>
+                      No Layouts Found. Check database connection.
+                  </div>
+                  ) : (
+                  <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext
+                      items={sortableLayouts.map((l) => l.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {sortableLayouts.map((layout) => (
+                        <SortableCategoryButton
+                          key={layout.id}
+                          className={`itm-cat-btn ${activeLayoutId === layout.id ? 'active' : ''}`}
+                          layout={layout}
+                          activeLayoutId={activeLayoutId}
+                          handleLayoutClick={handleLayoutClick}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
 
-                {/*Items Menu Grid*/}
-                <div>
-                    <h3 className='section-title'>ITEMS</h3>
+              {/*Items Menu Grid*/}
+              <div>
+                  <h3 className='section-title'>ITEMS</h3>
 
-                    {!loading && gridItems.length === 0 && (
-                    <p style={{ color: '#666', fontStyle: 'italic'}}>No items assigned to this layout.</p>
-                    )}
+                  {!loading && gridItems.length === 0 && (
+                  <p style={{ color: '#666', fontStyle: 'italic'}}>No items assigned to this layout.</p>
+                  )}
 
-                    <div className='menu-itm-grid'>
-                    {gridItems.map((pos) => (
-                        <button 
-                        key={pos.id}
-                        className='menu-itm-card'
-                        onClick={() => handleAddToCart(pos)}
-                        >
-                        <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
-                        </button>
-                    ))}
-                    </div>
-                </div>
+                  <div className='menu-itm-grid'>
+                  {gridItems.map((pos) => (
+                      <button 
+                      key={pos.id}
+                      className='menu-itm-card'
+                      onClick={() => handleAddToCart(pos)}
+                      >
+                      <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
+                      </button>
+                  ))}
+                  </div>
+              </div>
             </div>
             
             {/* RIGHT SIDE: Bill Panel */}
@@ -626,38 +725,49 @@ function MainLayout({ children }) {
         <div className='dashboard-header'>
           <div className='header-search'>
              <div 
-               style={{ marginRight: '1rem', cursor: 'pointer' }}
-               onClick={() => setIsSidebarOpen(true)} // <-- OPEN SIDEBAR BUTTON
+               style={{ marginRight: '2rem', cursor: 'pointer' }}
+               onClick={() => setIsSidebarOpen(true)}
              >
                 <RxHamburgerMenu style={{ width: '24px', height: '24px' }} />
              </div>
-             <input type="text" placeholder="Search..." className='search-input' />
+             <input type="text" className="search-input" placeholder=" " />
           </div>
 
           <div className='header-info-group'>
-              <div className='info-block'>
-                  <div className='info-title' style={{ color: 'green' }}>ONLINE</div>
-                  <div className='info-subtitle'>POS Status</div>
-              </div>
+            <div className="info-block">
+              <div className="pos-status-card">
+                <span className="signal-bars">
+                  <span className="bar b1" />
+                  <span className="bar b2" />
+                  <span className="bar b3" />
+                  <span className="bar b4" />
+                  <span className="bar b5" />
+                </span>
 
-              <div className='info-block'>
-                  <div className='info-title'>{formatTime(currentDate)}</div>
-                  <div className='info-subtitle'>{formatDate(currentDate)}</div>
+                <div className="status-text">
+                  <div className="info-subtitle">POS Status:</div>
+                  <div className="info-title online">ONLINE</div>
+                </div>
               </div>
+            </div>
 
-              <div className='user-profile'>
-                  <div className='info-block'>
-                      <div className='info-title'>{currentUser?.username || 'Admin'}</div>
-                      <div className='info-subtitle'>Clocked in at 08:00</div>
-                  </div>
-                   <div className='user-avatar'>
-                      {getTheFirstCharacter(currentUser?.username)}
-                  </div>
-              </div>
+            <div className='date-time'>
+                <div className='info-subtitle'>{formatDate(currentDate)}</div>
+                <div className='info-subtitle'>{formatTime(currentDate)}</div>
+            </div>
+
+            <div className='user-profile'>
+                <div className='info-block'>
+                    <div className='info-title'>{currentUser?.username || 'Admin'}</div>
+                    <div className='info-subtitle'>Clocked in at 08:00</div>
+                </div>
+                  <div className='user-avatar'>
+                    {getTheFirstCharacter(currentUser?.username)}
+                </div>
+            </div>
           </div>
         </div>
 
-        {/* Content Area */}
         <div className='main-content-scroll-area'>
             {children}
         </div>
@@ -666,33 +776,32 @@ function MainLayout({ children }) {
   );
 }
 
-// --- PROTECTED ROUTE ---
 function ProtectedRoute({ children }) {
   const isAuthenticated = localStorage.getItem('authToken');
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return children;
 }
 
-// --- APP COMPONENT ---
 function App() {
-  const [scale, setScale] = useState(1);
+  // const [scale, setScale] = useState(1);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const horizontalScale = windowWidth / 1920;
-      const verticalScale = windowHeight / 1080;
-      const newScale = Math.min(horizontalScale, verticalScale);
-      setScale(newScale);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize(); 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const windowWidth = window.innerWidth;
+  //     const windowHeight = window.innerHeight;
+  //     const horizontalScale = windowWidth / 1920;
+  //     const verticalScale = windowHeight / 1080;
+  //     const newScale = Math.min(horizontalScale, verticalScale);
+  //     setScale(newScale);
+  //   };
+  //   window.addEventListener('resize', handleResize);
+  //   handleResize(); 
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
 
   return (
-    <div className='app-scale-wrapper' style={{ transform: `scale(${scale})` }}>
+    // <div className='app-scale-wrapper' style={{ transform: `scale(${scale})` }}>
+    <div className='app-scale-wrapper'>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
