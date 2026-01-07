@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Customers from '../pages/Customers';
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -200,20 +199,21 @@ export const apiEndpoints = {
     layoutIndices: {
         getAll: () => api.get('/layout-indices'),
         getActive: () => api.get('/layout-indices/active'),
-        getById: () => api.get(`/layout-idnices/${id}`),
+        getById: () => api.get(`/layout-indices/${id}`),
         getByGridIndex: (gridIndex) => api.get(`layout-indices/grid/${gridIndex}`),
     },
 
     layoutPosTerminal: {
         getAll: () => api.get('/layout-pos-terminal'),
-        getByLocations: (locationId) => api.get(`/layout-pos-terminal/layout/${layoutId}/location/${locationId}`),
+        getByLocations: (locationId) => api.get(`/layout-pos-terminal/location/${locationId}`),
         getByLayoutAndLocation: (layoutId, locationId) => api.get(`/layout-pos-terminal/layout/${layoutId}/location/${locationId}`),
         getById: (id) => api.get(`/layout-pos-terminal/${id}`),
         create: (data) => api.post('/layout-pos-terminal', data),
         bulkCreate: (data) => api.post('/layout-pos-terminal/bulk', data),
+        assign: (data) => api.post('/layout-pos-terminal/assign', data),
         update: (id, data) => api.put(`/layout-pos-terminal/${id}`, data),
         delete: (id) => api.delete(`/layout-pos-terminal/${id}`),
-        deleteByLocation: (locationId) => api.delete(`/layout-pos-terminal/locations/${locationId}`),
+        deleteByLocation: (locationId) => api.delete(`/layout-pos-terminal/location/${locationId}`),
     },
 
     layoutTemplates: {
