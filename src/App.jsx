@@ -154,8 +154,7 @@ function OrderBillPanel({
   return (
     // <div className='bill-panel' style={{ position: 'relative' }}>
     <div className='bill-panel'>
-      {/* Header */}
-      <div className='bill-header'>
+        <div className='bill-header'>
         <h2 className='bill-title'>New Order Bill</h2>
         <button
           onClick={() => setIsOptionsModalOPen(true)} 
@@ -164,10 +163,8 @@ function OrderBillPanel({
         </button>
       </div>
 
-      {/* Options Modal */}
       {isOptionsModalOpen && (
        <>
-    {/* 1. Overlay to close modal when clicking outside */}
     <div 
       className="modal-overlay" 
       onClick={() => setIsOptionsModalOPen(false)} 

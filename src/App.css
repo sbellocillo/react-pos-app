@@ -4,26 +4,28 @@
 body, html {
     margin: 0;
     padding: 0;
-    /* width: 100vw;
-    height: 100vh; */
+    width: 100vw;
+    height: 100vh;
     background-color: #1e1e1e;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #333;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
 }
 
 #root {
     width: 100%;
     height: 100%;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
 }
 
 .app-scale-wrapper {
+    width: 100%;
+    height: 100%;
     /* width: 1920px;
     height: 1080px; */
     background-color: #f1f5f9;
@@ -35,7 +37,6 @@ body, html {
     flex-direction: column;
 }
 
-/* --- SCROLLBAR CUSTOMIZATION --- */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -51,7 +52,6 @@ body, html {
     background: #a8a8a8;
 }
 
-/* --- MAIN LAYOUT STRUCTURE --- */
 .main-layout-container {
     display: flex;
     flex-direction: row;
@@ -59,12 +59,11 @@ body, html {
     height: 100%;
     background: #f1f5f9;
     overflow: hidden;
-    position: relative; /* Anchor for absolute positioning */
+    position: relative;
 }
 
-/* --- COLLAPSIBLE SIDEBAR (Floating) --- */
 .sidebar {
-    position: absolute; /* Floats on top */
+    position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
@@ -73,9 +72,8 @@ body, html {
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    z-index: 1000; /* Highest priority */
+    z-index: 1000;
     
-    /* Animation: Start hidden off-screen */
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -324,9 +322,8 @@ body, html {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    /* font-weight: 500; */
+    padding: 1rem 2rem;
+    font-size: 15px;
     cursor: pointer;
     width: auto;
     flex-shrink: 0;
@@ -373,14 +370,33 @@ body, html {
 }
 
 /* Items Grid */
-.menu-itm-grid {
+/* .menu-itm-grid {
     display: grid;
     gap: 16px;
     margin-bottom: 3rem;
     width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));  
-    
+} */
+
+.menu-itm-grid {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  grid-template-columns: repeat(5, 1fr);
 }
+/* 
+@media (min-width: 768px) {
+  .menu-itm-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu-itm-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+} */
+
 
 .menu-itm-card {
     background: white;
@@ -404,8 +420,9 @@ body, html {
 
 .card-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: x-large;
-    font-weight: 700;
+    font-size: 26px;
+    
+    font-weight: 500;
     color: #333;
 }
 
@@ -422,11 +439,6 @@ body, html {
     flex: 1;
     overflow-y: auto;
     padding-right: 10px;
-}
-
-.menu-itm-grid {
-    width: 100% !important;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .bill-panel {
