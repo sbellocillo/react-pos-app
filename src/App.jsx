@@ -12,7 +12,8 @@ import {
   TbTruckDelivery,
   TbDots,  
   TbEdit,   
-  TbNote
+  TbNote,
+  TbArrowLeft
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -573,6 +574,18 @@ function MainLayout({ children }) {
     { id: 'customers', icon: <img src={graphIcon} style={iconStyle} alt="Customers" />, path: '/customers' },
   ];
 
+  // Get Page Name for Header
+  const isDashboard = location.pathname === '/';
+  const isCheckout = location.pathname === '/checkout';
+
+  const getPageTitle = (path) => {
+    switch (path) {
+      case '/checkout': return 'Checkout';
+      // Addd others as needed
+      default: return path.replace('/', '').toUpperCase();
+    }
+  };
+
   return (
     <div className='main-layout-container'>
       
@@ -647,12 +660,31 @@ function MainLayout({ children }) {
         <div className='dashboard-header'>
           <div className='header-search'>
              <div 
-               style={{ marginRight: '2rem', cursor: 'pointer' }}
-               onClick={() => setIsSidebarOpen(true)}
+               style={{ marginRight: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+               onClick={() => {
+                  if(isCheckout) {
+                    navigate('/')
+                  } else {
+                    setIsSidebarOpen(true)
+                  }
+                }
+              }
              >
+              {isCheckout ? (
+                <TbArrowLeft style={{ width: '24px', height: '24px' }} />
+              ) : (
                 <RxHamburgerMenu style={{ width: '24px', height: '24px' }} />
+              )}
              </div>
-             <input type="text" className="search-input" placeholder=" " />
+
+             {isDashboard ? (
+              <input type="text" className="search-input" placeholder=" " />
+             ) : (
+              <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600', color:'#300' }}>
+                {getPageTitle(location.pathname)}
+              </h2>
+             )}
+             
           </div>
 
           <div className='header-info-group'>
