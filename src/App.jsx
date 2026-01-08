@@ -44,6 +44,9 @@ import OrderMenu from './pages/OrderMenu';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
+import Checkout from './pages/Checkout';
+
+import { useCheckout } from './pages/Checkout';
 
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
@@ -108,10 +111,11 @@ function OrderBillPanel({
   onUpdateQuantity,
   orderType,
   setOrderType,
-  onCheckout,
   totals,
-  isProcessing
+  isProcessing,
+  onClearCart
 }) {
+  const navigate = useNavigate();
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
@@ -125,7 +129,7 @@ function OrderBillPanel({
 
     switch (action) {
       case 'newOrder':
-        onClearCart();
+        if (onClearCart) onClearCart();
         setOrderNote('');
         setIsNoteFieldVisible(false);
         break;
@@ -136,7 +140,7 @@ function OrderBillPanel({
         alert('Split Bill functionality not yet implemented.');
         break;
       case 'cancelOrder':
-        onClearCart();
+        if (onClearCart) onClearCart();
         setOrderNote('');
         setIsNoteFieldVisible(false);
         break;
@@ -304,7 +308,7 @@ function OrderBillPanel({
 
         <button
           className='pay-button'
-          onClick={onCheckout}
+          onClick={() => navigate('/checkout', { state: { cartItems, totals, orderType } })}
           disabled={isProcessing || cartItems.length === 0}
           style={{ opacity: isProcessing ? 0.7 : 1}}
         >
@@ -324,14 +328,23 @@ function Dashboard() {
 
   const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
 
+  const {
+    cartItems,
+    orderType,
+    setOrderType,
+    isProcessing,
+    addToCart,
+    removeItem,
+    updateQuantity,
+    calculateTotals,
+    processCheckout,
+    clearCart
+  } = useCheckout();
 
   const [layouts, setLayouts] = useState([]);
   const [activeLayoutId, setActiveLayoutId] = useState(null);
   const [gridItems, setGridItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cartItems, setCartItems] = useState([]);
-  const [orderType, setOrderType] = useState(1);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [sortableLayouts, setSortableLayouts] = useState([]);
 
   const handleDragEnd = (event) => {
@@ -430,94 +443,6 @@ function Dashboard() {
     }
   };
   
-  // Add Item to Cart
-  const handleAddToCart = (item) => {
-    setCartItems(prevCart => {
-      const existingItem = prevCart.find(cartItem => cartItem.item_id === item.item_id);
-      if (existingItem) {
-        return prevCart.map(cartItem =>
-          cartItem.item_id === item.item_id
-           ? {...cartItem, quantity: cartItem.quantity + 1}
-           : cartItem
-        );
-      } else {
-        return [...prevCart, {
-          id: item.id,
-          item_id: item.item_id,
-          item_name: item.item_name,
-          price: item.price || 0,
-          quantity: 1
-        }];
-      }
-    });
-  };
-
-  // Remove Item
-  const handleRemoveItem = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
-  };
-
-  // Update Quantity
-  const handleUpdateQuantity = (id, newQty) => {
-    if (newQty < 1) return;
-    setCartItems(prev => prev.map(item =>
-      item.id === id ? { ...item, quantity: newQty } : item
-    ));
-  };
-
-  // Calculate Totals
-  const calculateTotals = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const taxRate = 0.12;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-    return { subtotal, tax, total };
-  };
-
-  // Checkout
-  const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
-    setIsProcessing(true);
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const totals = calculateTotals();
-
-    const orderPayload = {
-      customer_id: 1,
-      status_id: 1,
-      order_type_id: orderType,
-      tax_percentage: 0.12,
-      tax_amount: totals.tax,
-      subtotal: totals.subtotal,
-      total: totals.total,
-      role_id: currentUser.role_id || 1,
-      location_id: currentUser.location_id || 15,
-      payment_method_id: 1,
-      card_network_id: null,
-      created_by: currentUser.id || 1,
-      items: cartItems.map(item => ({
-        item_id: item.item_id,
-        quantity: item.quantity,
-        rate: item.price,
-        tax_percentage: 0.12,
-        tax_amount: (item.price * item.quantity) * 0.12,
-        amount: (item.price * item.quantity)
-      }))
-    };
-
-    try {
-      const response = await apiEndpoints.orders.create(orderPayload);
-      if (response.status === 201 || response.status === 200) {
-        alert(`Order Created ID: ${response.data.orderid || 'New'}`);
-        setCartItems([]);
-      }
-    } catch (error) {
-      console.error("Checkout Error:", error);
-      alert("Failed to create order.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   return (
     <div className='app-container'>
         <div className='dashboard-container'>
@@ -565,7 +490,7 @@ function Dashboard() {
                       <button 
                       key={pos.id}
                       className='menu-itm-card'
-                      onClick={() => handleAddToCart(pos)}
+                      onClick={() => addToCart(pos)}
                       >
                       <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
                       </button>
@@ -577,13 +502,13 @@ function Dashboard() {
             {/* RIGHT SIDE: Bill Panel */}
             <OrderBillPanel
               cartItems={cartItems}
-              onRemoveItem={handleRemoveItem}
-              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={removeItem}
+              onUpdateQuantity={updateQuantity}
               orderType={orderType}
               setOrderType={setOrderType}
-              onCheckout={handleCheckout}
+              onCheckout={processCheckout}
               totals={calculateTotals()}
-              isProcessing={isProcessing} 
+              onClearCart={clearCart}
             />
             
         </div>
@@ -831,6 +756,7 @@ function App() {
           <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>
     </div>
