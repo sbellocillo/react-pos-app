@@ -18,16 +18,13 @@ body, html {
 #root {
     width: 100%;
     height: 100%;
-    /* display: flex; */
     align-items: center;
     justify-content: center;
 }
 
 .app-scale-wrapper {
     width: 100%;
-    height: 100%;
-    /* width: 1920px;
-    height: 1080px; */
+    height: 100vh;
     background-color: #f1f5f9;
     position: relative;
     overflow: hidden;
@@ -145,7 +142,7 @@ body, html {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
-    z-index: 900; /* Below sidebar, above content */
+    z-index: 900; 
     backdrop-filter: blur(2px);
     animation: fadeIn 0.3s ease;
 }
@@ -157,7 +154,7 @@ body, html {
 
 /* --- RIGHT SIDE WRAPPER (Full Width) --- */
 .right-side-wrapper {
-    width: 100%; /* Full width now */
+    width: 100%; 
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -294,7 +291,6 @@ body, html {
 .main-content-scroll-area {
     flex: 1;
     overflow-y: hidden;
-    padding: 0 24px;
     background: #f5f5f5;
     display: flex;
     flex-direction: column;
@@ -339,11 +335,6 @@ body, html {
   gap: 8px;
 }
 
-/* .itm-cat-btn {
-  flex: 1;
-  user-select: none;
-} */
-
 .drag-handle {
   cursor: grab;
   color: #9ca3af;
@@ -370,32 +361,12 @@ body, html {
 }
 
 /* Items Grid */
-/* .menu-itm-grid {
-    display: grid;
-    gap: 16px;
-    margin-bottom: 3rem;
-    width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));  
-} */
-
 .menu-itm-grid {
   display: grid;
   gap: 16px;
   width: 100%;
   grid-template-columns: repeat(5, 1fr);
 }
-/* 
-@media (min-width: 768px) {
-  .menu-itm-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .menu-itm-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-} */
 
 
 .menu-itm-card {
@@ -418,6 +389,16 @@ body, html {
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
 }
 
+/* --- EMPTY CARD FOR GRID ALIGNMENT --- */
+.menu-itm-card-empty {
+    background: transparent;
+    height: 140px;
+    border-radius: 8px;
+    /* Optional: visible dashed border for debugging, transparent otherwise */
+    border: 1px dashed transparent; 
+    /* border: 1px dashed #e5e7eb; */
+}
+
 .card-label {
     font-family: 'Montserrat', sans-serif;
     font-size: 26px;
@@ -432,7 +413,7 @@ body, html {
     flex-direction: row;
     height: 100%;
     gap: 20px;
-    padding-bottom: 20px;
+    padding: 0 24px;
 }
 
 .menu-section {
@@ -442,14 +423,14 @@ body, html {
 }
 
 .bill-panel {
-    width: 400px;
+    width: 588.47px;
+    height: 100%; /* Ensure panel fills height */
     background: white;
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    height: auto;
     overflow: hidden;
     font-family: 'Montserrat', sans-serif;
     margin-top: 1rem;
@@ -476,53 +457,49 @@ body, html {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2); /* Slight dimming of background */
+  background-color: rgba(0, 0, 0, 0.2); 
   z-index: 999;
 }
 
-/* --- The Main Modal Box --- */
+/* --- The Main Modal Box (Options) --- */
 .options-modal {
   position: absolute;
-  top: 50px;           /* Pushes it just below the ... button */
-  right: 20px;         /* Aligns with the right edge */
+  top: 50px;           
+  right: 20px;         
   width: 220px;
   background-color: #ffffff;
-  border-radius: 12px; /* Rounded corners like iOS/Android menus */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Soft drop shadow */
+  border-radius: 12px; 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); 
   border: 1px solid #e5e7eb;
   z-index: 1000;
-  overflow: hidden;    /* Ensures content doesn't spill out of rounded corners */
+  overflow: hidden;    
   animation: scaleIn 0.1s ease-out;
 }
 
-/* --- The "OPTIONS" Header --- */
 .options-header {
   margin: 0;
-  padding: 16px 20px 8px 20px; /* Top padding for breathing room */
+  padding: 16px 20px 8px 20px; 
   font-size: 13px;
-  font-weight: 800;    /* Extra bold */
-  color: #000;         /* Pitch black text */
+  font-weight: 800;    
+  color: #000;         
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* --- The List --- */
 .options-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* --- List Items (The lines) --- */
 .options-list li {
-  border-bottom: 1px solid #f3f4f6; /* Light gray divider */
+  border-bottom: 1px solid #f3f4f6; 
 }
 
 .options-list li:last-child {
-  border-bottom: none; /* No divider for the last item */
+  border-bottom: none; 
 }
 
-/* --- The Buttons --- */
 .options-list button {
   width: 100%;
   text-align: left;
@@ -531,19 +508,119 @@ body, html {
   border: none;
   font-size: 15px;
   font-weight: 500;
-  color: #1f2937; /* Dark gray text */
+  color: #1f2937; 
   cursor: pointer;
   transition: background-color 0.2s;
   display: flex;
   align-items: center;
 }
 
-/* Hover Effect */
 .options-list button:hover {
-  background-color: #f9fafb; /* Very light gray on hover */
+  background-color: #f9fafb; 
 }
 
-/* --- Animation (Optional) --- */
+/* --- TABLE MODAL STYLES --- */
+.table-modal-panel {
+    width: 900px;
+    height: 550px;
+    background: white;
+    
+    position: fixed;        
+    top: 50%;               
+    left: 50%;              
+    transform: translate(-50%, -50%); 
+    
+    z-index: 1001;          
+    border-radius: 4px;    
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
+    display: flex;          
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.table-modal-header {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-close-btn {
+    width: 80px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: background 0.2s;
+}
+
+.modal-close-btn:hover {
+    background: #f3f4f6;
+    color: #000;
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.modal-save-btn{
+    height: 100%;
+    padding: 0 40px;
+    background: #B74C4C;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+}
+
+.modal-save-btn:hover {
+    background: #963c3c;
+}
+
+/* --- Body ---*/
+.table-modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-subtitle {
+    font-size: 1.2rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.table-number-display {
+    font-size: 180px;
+    font-weight: 400;
+    line-height: 1;
+    color: #111;
+    margin: 20px 0;
+}
+
+.modal-time-display{
+    font-size: 1.2rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;

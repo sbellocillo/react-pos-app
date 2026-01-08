@@ -13,7 +13,8 @@ import {
   TbDots,  
   TbEdit,   
   TbNote,
-  TbArrowLeft
+  TbArrowLeft,
+  TbX,
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -47,6 +48,7 @@ import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Checkout from './pages/Checkout';
 
+// Make sure Checkout.jsx exports this hook correctly
 import { useCheckout } from './pages/Checkout';
 
 import { DndContext, closestCenter } from "@dnd-kit/core";
@@ -57,7 +59,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { TbGripVertical } from "react-icons/tb";
-// import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 
@@ -121,6 +122,7 @@ function OrderBillPanel({
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const [isOptionsModalOpen, setIsOptionsModalOPen] = useState(false);
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
   const [orderNote, setOrderNote] = useState('');
   const [isNoteFieldVisible, setIsNoteFieldVisible] = useState(false);
 
@@ -157,7 +159,7 @@ function OrderBillPanel({
   };
 
   return (
-    // <div className='bill-panel' style={{ position: 'relative' }}>
+    <>
     <div className='bill-panel'>
         <div className='bill-header'>
         <h2 className='bill-title'>New Order Bill</h2>
@@ -170,39 +172,23 @@ function OrderBillPanel({
 
       {isOptionsModalOpen && (
        <>
-    <div 
-      className="modal-overlay" 
-      onClick={() => setIsOptionsModalOPen(false)} 
-    />
-    
-    {/* 2. The Modal Box */}
-    <div className="options-modal">
-      
-      {/* 3. The "OPTIONS" Header (Matches image) */}
-      <h3 className="options-header">OPTIONS</h3>
-      
-      <ul className="options-list">
-        <li>
-          <button onClick={() => handleOPtionClick('newOrder')}>New Order</button>
-        </li>
-        <li>
-          <button onClick={() => handleOPtionClick('voidOrder')}>Void Order</button>
-        </li>
-        <li>
-          <button onClick={() => handleOPtionClick('splitBill')}>Split Bill</button>
-        </li>
-        <li>
-          <button onClick={() => handleOPtionClick('cancelOrder')}>Cancel Order</button>
-        </li>
-        <li>
-          <button onClick={() => handleOPtionClick('reportIssue')}>Report Issue</button>
-        </li>
-        <li>
-          <button onClick={() => handleOPtionClick('addOrderNote')}>Add Order Note</button>
-        </li>
-      </ul>
-    </div>
-  </>
+          <div 
+            className="modal-overlay" 
+            onClick={() => setIsOptionsModalOPen(false)} 
+          />
+          
+          <div className="options-modal">
+            <h3 className="options-header">OPTIONS</h3>
+            <ul className="options-list">
+              <li><button onClick={() => handleOPtionClick('newOrder')}>New Order</button></li>
+              <li><button onClick={() => handleOPtionClick('voidOrder')}>Void Order</button></li>
+              <li><button onClick={() => handleOPtionClick('splitBill')}>Split Bill</button></li>
+              <li><button onClick={() => handleOPtionClick('cancelOrder')}>Cancel Order</button></li>
+              <li><button onClick={() => handleOPtionClick('reportIssue')}>Report Issue</button></li>
+              <li><button onClick={() => handleOPtionClick('addOrderNote')}>Add Order Note</button></li>
+            </ul>
+          </div>
+        </>
       )}
 
       {/* Order Type Toggles */}
@@ -309,7 +295,7 @@ function OrderBillPanel({
 
         <button
           className='pay-button'
-          onClick={() => navigate('/checkout', { state: { cartItems, totals, orderType } })}
+          onClick={() => setIsTableModalOpen(true)}
           disabled={isProcessing || cartItems.length === 0}
           style={{ opacity: isProcessing ? 0.7 : 1}}
         >
@@ -317,16 +303,57 @@ function OrderBillPanel({
         </button>
       </div>
     </div>
+
+    {isTableModalOpen && (
+          <>
+            <div className='modal-overlay' onClick={() => setIsTableModalOpen(false)} />
+
+            <div className='table-modal-panel'>
+
+              {/* --- Header --- */}
+              <div className='table-modal-header'>
+                <button
+                  className='modal-close-btn' 
+                  onClick={() => setIsTableModalOpen(false)}>
+                  <TbX size={24} />
+                </button>
+
+                <h3 className='modal-title'>ASSIGN TABLE NUMBER</h3>
+
+                <button 
+                  className='modal-save-btn'
+                  onClick={() => {
+                    setIsTableModalOpen(false);
+                    navigate('/checkout', { state: { cartItems, totals, orderType } });
+                  }}
+                >
+                  SAVE
+                </button>
+              </div>
+
+              {/* --- Body ---*/}
+              <div className='table-modal-body'>
+                <span className='modal-subtitle'>Walk In</span>
+
+                {/* Placeholder */}
+                <div className='table-number-display'>
+                  XX
+                </div>
+
+                <span className='modal-time-display'>HH:MM</span>
+              </div>
+            </div>
+          </>
+        )}
+    </>
   );
 }
 
 // --- DASHBOARD COMPONENT ---
 function Dashboard() {
   const navigate = useNavigate();
-
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const locationId = currentUser.location_id || 15;
-
   const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
 
   const {
@@ -350,18 +377,13 @@ function Dashboard() {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
     if (!over || active.id === over.id) return;
 
     setSortableLayouts((prev) => {
       const oldIndex = prev.findIndex((item) => item.id === active.id);
       const newIndex = prev.findIndex((item) => item.id === over.id);
-
       const newArr = arrayMove(prev, oldIndex, newIndex);
-
-      // ✅ Save layout order to localStorage
       localStorage.setItem(layoutOrderKey, JSON.stringify(newArr.map((l) => l.id)));
-
       return newArr;
     });
   };
@@ -370,45 +392,31 @@ function Dashboard() {
   // Fetch Layouts
   useEffect (() => {
     const fetchLayouts = async () => {
-
       const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
       const locationId = currentUser.location_id || 15;
 
       try {
         const response = await apiEndpoints.layouts.getByLocation(locationId);
-        console.log("Layouts API Response:", response.data);
-
         if (response.data && response.data.success) {
           const fetchedLayouts = response.data.data;
           setLayouts(fetchedLayouts);
 
-          // ✅ Load saved order from localStorage
           const savedOrder = JSON.parse(localStorage.getItem(layoutOrderKey) || "[]");
 
           if (savedOrder.length > 0) {
-            // reorder fetchedLayouts to match savedOrder
             const ordered = [
               ...fetchedLayouts
                 .filter((l) => savedOrder.includes(l.id))
                 .sort((a, b) => savedOrder.indexOf(a.id) - savedOrder.indexOf(b.id)),
-              // include any new layouts not in savedOrder
               ...fetchedLayouts.filter((l) => !savedOrder.includes(l.id)),
             ];
-
             setSortableLayouts(ordered);
-
-            // optional: auto select first layout
             if (ordered.length > 0) handleLayoutClick(ordered[0]);
           } else {
             setSortableLayouts(fetchedLayouts);
-
-            // optional: auto select first layout
             if (fetchedLayouts.length > 0) handleLayoutClick(fetchedLayouts[0]);
           }
-
-
-          // Select first layout automatically
-          if ( fetchedLayouts.length > 0) {
+          if (fetchedLayouts.length > 0) {
             handleLayoutClick(fetchedLayouts[0]);
           }
         }
@@ -418,21 +426,17 @@ function Dashboard() {
         setLoading(false);
       }
     };
-
     fetchLayouts();
   }, []);
 
   // Fetch Grid items
   const handleLayoutClick = async (layout) => {
     setActiveLayoutId(layout.id);
-
-    // Get location_id from local storage (default to 15)
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const locationId = currentUser.location_id || 15;
 
     try {
       const response = await apiEndpoints.layoutPosTerminal.getByLayoutAndLocation(layout.id, locationId);
-
       if (response.data && response.data.success) {
         setGridItems(response.data.data);
       } else {
@@ -478,7 +482,7 @@ function Dashboard() {
                 )}
               </div>
 
-              {/*Items Menu Grid*/}
+              {/* Items Menu Grid - FIXED LOGIC FOR 25 SLOTS */}
               <div>
                   <h3 className='section-title'>ITEMS</h3>
 
@@ -487,15 +491,39 @@ function Dashboard() {
                   )}
 
                   <div className='menu-itm-grid'>
-                  {gridItems.map((pos) => (
-                      <button 
-                      key={pos.id}
-                      className='menu-itm-card'
-                      onClick={() => addToCart(pos)}
-                      >
-                      <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
-                      </button>
-                  ))}
+                  {(() => {
+                      // 1. Create an empty array of 25 slots (indices 0 to 24)
+                      const fullGrid = Array(25).fill(null);
+
+                      // 2. Populate slots based on 'layout_indices_id'
+                      gridItems.forEach(item => {
+                        // Assuming IDs 1-25. Subtract 1 to get index 0-24
+                        if (item.layout_indices_id >= 1 && item.layout_indices_id <= 25) {
+                          fullGrid[item.layout_indices_id - 1] = item;
+                        }
+                      });
+
+                      // 3. Render fixed 25 slots
+                      return fullGrid.map((pos, index) => {
+                        if (pos && pos.item_id) {
+                          return (
+                            <button 
+                              key={pos.id || `item-${index}`}
+                              className='menu-itm-card'
+                              onClick={() => addToCart(pos)}
+                            >
+                              <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
+                            </button>
+                          );
+                        } else {
+                          // Render empty slot to maintain grid structure
+                          return (
+                            <div key={`empty-${index}`} className='menu-itm-card-empty'>
+                            </div>
+                          );
+                        }
+                      });
+                  })()}
                   </div>
               </div>
             </div>
@@ -548,7 +576,6 @@ function MainLayout({ children }) {
     });
   };
   
-  // 1. STATE: Sidebar Visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -574,14 +601,12 @@ function MainLayout({ children }) {
     { id: 'customers', icon: <img src={graphIcon} style={iconStyle} alt="Customers" />, path: '/customers' },
   ];
 
-  // Get Page Name for Header
   const isDashboard = location.pathname === '/';
   const isCheckout = location.pathname === '/checkout';
 
   const getPageTitle = (path) => {
     switch (path) {
       case '/checkout': return 'Checkout';
-      // Addd others as needed
       default: return path.replace('/', '').toUpperCase();
     }
   };
@@ -589,12 +614,10 @@ function MainLayout({ children }) {
   return (
     <div className='main-layout-container'>
       
-      {/* 2. OVERLAY: Visible only when sidebar is open */}
       {isSidebarOpen && (
         <div className='sidebar-overlay' onClick={() => setIsSidebarOpen(false)} />
       )}
 
-      {/* 3. SIDEBAR: 'open' class slides it in */}
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className='sidebar-logo'>
           <button 
@@ -613,7 +636,7 @@ function MainLayout({ children }) {
                 key={item.id}
                 onClick={() => {
                     navigate(item.path);
-                    setIsSidebarOpen(false); // Close on nav
+                    setIsSidebarOpen(false); 
                 }}
                 className={`nav-item ${isActive ? 'active' : ''}`}
               >
@@ -624,7 +647,6 @@ function MainLayout({ children }) {
         </nav>
 
         <div className='sidebar-bottom-actions'>
-          {/*Settings Button*/}
            <button onClick={() => {
                   navigate('/settings');
                   setIsSidebarOpen(false);
@@ -634,7 +656,6 @@ function MainLayout({ children }) {
             >
              <img src={settingsIcon} style={iconStyle} alt="Settings" />
            </button>
-          {/*Help Button*/}
            <button onClick={() => {
                 navigate('/help');
                 setIsSidebarOpen(false);
@@ -645,7 +666,6 @@ function MainLayout({ children }) {
              <img src={helpIcon} style={iconStyle} alt="Help" />
            </button>
         </div>
-          {/*Signout Button*/}
         <div className='sidebar-footer'>
           <button onClick={handleLogout} className='nav-item'>
             <img src={signOutIcon} style={iconStyle} alt="Sign Out" />
@@ -653,7 +673,6 @@ function MainLayout({ children }) {
         </div>
       </div>
 
-      {/* 4. CONTENT WRAPPER */}
       <div className='right-side-wrapper'>
         
         {/* Header */}
@@ -684,7 +703,6 @@ function MainLayout({ children }) {
                 {getPageTitle(location.pathname)}
               </h2>
              )}
-             
           </div>
 
           <div className='header-info-group'>
@@ -737,24 +755,7 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
-  // const [scale, setScale] = useState(1);
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     const windowWidth = window.innerWidth;
-  //     const windowHeight = window.innerHeight;
-  //     const horizontalScale = windowWidth / 1920;
-  //     const verticalScale = windowHeight / 1080;
-  //     const newScale = Math.min(horizontalScale, verticalScale);
-  //     setScale(newScale);
-  //   };
-  //   window.addEventListener('resize', handleResize);
-  //   handleResize(); 
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
-
   return (
-    // <div className='app-scale-wrapper' style={{ transform: `scale(${scale})` }}>
     <div className='app-scale-wrapper'>
       <Router>
         <Routes>
