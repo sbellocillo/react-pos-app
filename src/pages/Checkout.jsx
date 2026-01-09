@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiEndpoints } from '../services/api'; 
-import './styles/checkout.css'
+import './styles/checkout.css';
 
-import { TbUserPlus, TbCirclePlus } from 'react-icons/tb';
+import { TbUserPlus, TbCirclePlus, TbCash, TbQrcode, TbCreditCard } from 'react-icons/tb';
+import { HiDotsHorizontal } from "react-icons/hi";
 
 export const useCheckout = () => {
   // --- STATE ---
-  // - Extracted state initialization for cart, order type, and processing status
   const [cartItems, setCartItems] = useState([]);
   const [orderType, setOrderType] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
 
   // --- LOGIC: Add Item to Cart ---
-  // - Extracted handleAddToCart logic
   const addToCart = (item) => {
     setCartItems(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.item_id === item.item_id);
@@ -36,13 +35,11 @@ export const useCheckout = () => {
   };
 
   // --- LOGIC: Remove Item ---
-  // - Extracted handleRemoveItem logic
   const removeItem = (id) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
   // --- LOGIC: Update Quantity ---
-  // - Extracted handleUpdateQuantity logic
   const updateQuantity = (id, newQty) => {
     if (newQty < 1) return;
     setCartItems(prev => prev.map(item =>
@@ -51,23 +48,55 @@ export const useCheckout = () => {
   };
 
   // --- LOGIC: Clear Cart ---
-  // - Referenced in handleOPtionClick for 'newOrder' and 'cancelOrder'
   const clearCart = () => {
     setCartItems([]);
   };
 
   // --- LOGIC: Calculate Totals ---
-  // - Extracted calculateTotals logic
   const calculateTotals = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const taxRate = 0.12;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-    return { subtotal, tax, total };
+
+    // 1. Create a new array with the tax/total calculated for EACH item
+    const itemsWithTax = cartItems.map(item => {
+      const lineSubtotal = item.price * item.quantity;
+      const lineTax = lineSubtotal * taxRate;
+      const lineTotal = lineSubtotal + lineTax;
+
+      return {
+        ...item,       
+        lineSubtotal,  
+        lineTax,       
+        lineTotal      
+      };
+    });
+
+    // Console logs for debugging
+    if (itemsWithTax.length > 0) {
+      console.group("🧾 Itemized Tax Breakdown");
+      itemsWithTax.forEach(item => {
+        console.log(`📦 Item: ${item.item_name} (Qty: ${item.quantity})`);
+        console.log(`   Subtotal: ₱${item.lineSubtotal.toFixed(2)}`);
+        console.log(`   Tax:      ₱${item.lineTax.toFixed(2)}`);
+        console.log(`   Total:    ₱${item.lineTotal.toFixed(2)}`);
+        console.log("   ----------------");
+      });
+      console.groupEnd();
+    }
+
+    // 2. Sum up the results
+    const subtotal = itemsWithTax.reduce((acc, item) => acc + item.lineSubtotal, 0);
+    const tax = itemsWithTax.reduce((acc, item) => acc + item.lineTax, 0);
+    const total = itemsWithTax.reduce((acc, item) => acc + item.lineTotal, 0);
+
+    return { 
+      subtotal, 
+      tax, 
+      total, 
+      itemsWithTax 
+    };
   };
 
   // --- LOGIC: Process Checkout ---
-  // - Extracted handleCheckout logic including API call and payload construction
   const processCheckout = async () => {
     if (cartItems.length === 0) return;
     
@@ -103,18 +132,17 @@ export const useCheckout = () => {
       if (response.status === 201 || response.status === 200) {
         alert(`Order Created ID: ${response.data.orderid || 'New'}`);
         setCartItems([]);
-        return true; // Indicate success
+        return true; 
       }
     } catch (error) {
       console.error("Checkout Error:", error);
       alert("Failed to create order.");
-      return false; // Indicate failure
+      return false; 
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Return state and handlers needed by the UI
   return {
     cartItems,
     orderType,
@@ -129,8 +157,7 @@ export const useCheckout = () => {
   };
 };
 
-// Default export if you still want to treat this file as a component file, 
-// though strictly speaking it is now a hook provider.
+// --- COMPONENT ---
 const Checkout = () => {
     
     const location = useLocation();
@@ -140,59 +167,122 @@ const Checkout = () => {
     };
 
     const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
+
     return(
-        <div className='checkout-container'>
-     <div className='left-panel'>
+      <div className='checkout-container'>
         
-        {/* --- SECTION 1: HEADER BUTTON --- */}
-        <button className='add-user-btn'>
-            <div className='btn-content-left'>
-                <TbUserPlus size={26} />
-                <span className='btn-text'>Add Customer</span>
+        {/* --- LEFT PANEL --- */}
+        <div className='left-panel'>
+            
+            {/* Header Button */}
+            <button className='add-user-btn'>
+                <div className='btn-content-left'>
+                    <TbUserPlus size={26} />
+                    <span className='btn-text'>Add Customer</span>
+                </div>
+                <TbCirclePlus size={26} />
+            </button>
+
+            {/* Scrollable List */}
+            <div className='checkout-items-list'>
+              {cartItems.length > 0 ? (
+                cartItems.map((item, index) => (
+                  <div className='checkout-item-row' key={index}>
+                    <div className='item-qty'>{item.quantity}</div> 
+                    <div className='item-name'>{item.item_name}</div>
+                    <div className='item-price'>{formatCurrency(item.price * item.quantity)}</div>
+                  </div>
+                ))
+              ) : (
+                <div className='empty-message'>No items in cart</div>
+              )}
             </div>
-            <TbCirclePlus size={26} />
-        </button>
 
-        {/* --- SECTION 2: SCROLLABLE LIST --- */}
-        <div className='checkout-items-list'>
-           {cartItems.length > 0 ? (
-             cartItems.map((item, index) => (
-               <div className='checkout-item-row' key={index}>
-                 {/* Fixed width for quantity to align perfectly */}
-                 <div className='item-qty'>{item.quantity}</div> 
-                 <div className='item-name'>{item.item_name}</div>
-                 <div className='item-price'>{formatCurrency(item.price * item.quantity)}</div>
-               </div>
-             ))
-           ) : (
-             <div className='empty-message'>No items in cart</div>
-           )}
+            {/* Footer Summary */}
+            <div className='checkout-footer'>
+              <div className='summary-row'>
+                <span>Sub-Total</span>
+                <span className='summary-value'>{formatCurrency(totals.subtotal)}</span>
+              </div>
+              <div className='summary-row'>
+                <span>Discount</span>
+                <span className='summary-value'>{formatCurrency(0)}</span>
+              </div>
+              <div className='summary-row'>
+                <span>Tax</span>
+                <span className='summary-value'>{formatCurrency(totals.tax)}</span>
+              </div>
+            </div>
         </div>
 
-        {/* --- SECTION 3: FOOTER SUMMARY --- */}
-        <div className='checkout-footer'>
-           <div className='summary-row'>
-             <span>Sub-Total</span>
-             <span className='summary-value'>{formatCurrency(totals.subtotal)}</span>
-           </div>
-           <div className='summary-row'>
-             <span>Discount</span>
-             <span className='summary-value'>{formatCurrency(0)}</span>
-           </div>
-           <div className='summary-row'>
-             <span>Tax</span>
-             <span className='summary-value'>{formatCurrency(totals.tax)}</span>
-           </div>
-        </div>
+        {/* --- RIGHT PANEL --- */}
+        <div className='right-panel'>
+            <div className='total-price-container'>
+                <span className='total-price'>{formatCurrency(totals.total)}</span>
+            </div>
 
-     </div>
+            {/* Payment Form Wrapper */}
+            <div className='payment-form-container'>
+                
+                {/* SECTION A: Cash Input Row */}
+                <div className='cash-input-group'>
+                    <div className='cash-input-wrapper'>
+                        <TbCash className='input-icon' size={32} />
+                        <span className='input-label'>Cash</span>
+                        <input 
+                            type='text' 
+                            className='custom-input' 
+                            placeholder='XXXX.XX' 
+                        />
+                    </div>
+                    <button className='exact-btn'>Exact</button>
+                </div>
 
-     <div className='right-panel'>
-        <div className='total-price-container'>
-            <span className='total-price'>{formatCurrency(totals.total)}</span>
+                {/* SECTION B: Quick Amount Inputs */}
+                <div className='quick-amounts-row'>
+                    <input 
+                        type="text" 
+                        className='quick-amount-input' 
+                        placeholder='XXXX.XX' 
+                    />
+                    <input 
+                        type="text" 
+                        className='quick-amount-input' 
+                        placeholder='XXXX.XX' 
+                    />
+                    <input 
+                        type="text" 
+                        className='quick-amount-input' 
+                        placeholder='XXXX.XX' 
+                    />
+                </div>
+
+                {/* SECTION C: Payment Methods Stack */}
+                <div className='payment-methods-stack'>
+                    <button className='payment-method-btn'>
+                        <TbQrcode size={28} className='method-icon'/>
+                        <span>QRPh</span>
+                    </button>
+                    
+                    <button className='payment-method-btn'>
+                        <TbCreditCard size={48} className='method-icon'/>
+                        <span>Credit Card</span>
+                    </button>
+                    
+                    <button className='payment-method-btn'>
+                        <TbCreditCard size={48} className='method-icon'/>
+                        <span>Debit Card</span>
+                    </button>
+
+                    <button className='payment-method-btn'>
+                        <HiDotsHorizontal size={48} className='method-icon'/>
+                        <span>Other</span>
+                    </button>
+                </div>
+
+            </div>
         </div>
-     </div>
-    </div>
+      </div>
     ); 
 };
 

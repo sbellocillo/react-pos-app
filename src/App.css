@@ -427,7 +427,7 @@ body, html {
     height: 100%; /* Ensure panel fills height */
     background: white;
     border-radius: 8px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D9D9D9;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
@@ -441,13 +441,15 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #D9D9D9;
+    padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
 .bill-title {
-    font-size: 1.2rem;
+    font-size: 20px;
     font-weight: 700;
-    color: #111;
+    color: #000;
     margin: 0;
 }
 
@@ -464,13 +466,14 @@ body, html {
 /* --- The Main Modal Box (Options) --- */
 .options-modal {
   position: absolute;
-  top: 50px;           
-  right: 20px;         
-  width: 220px;
+  top: 150px;           
+  right: 45px;         
+  width: 444px;
+  height: 392px;
   background-color: #ffffff;
   border-radius: 12px; 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); 
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
   z-index: 1000;
   overflow: hidden;    
   animation: scaleIn 0.1s ease-out;
@@ -478,8 +481,8 @@ body, html {
 
 .options-header {
   margin: 0;
-  padding: 16px 20px 8px 20px; 
-  font-size: 13px;
+  padding: 30px 20px 25px 20px; 
+  font-size: 24px;
   font-weight: 800;    
   color: #000;         
   text-transform: uppercase;
@@ -493,7 +496,7 @@ body, html {
 }
 
 .options-list li {
-  border-bottom: 1px solid #f3f4f6; 
+  border-bottom: 1px solid #D9D9D9; 
 }
 
 .options-list li:last-child {
@@ -506,9 +509,9 @@ body, html {
   padding: 12px 20px;
   background: transparent;
   border: none;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 500;
-  color: #1f2937; 
+  color: #000; 
   cursor: pointer;
   transition: background-color 0.2s;
   display: flex;
@@ -545,7 +548,7 @@ body, html {
     align-items: center;
     justify-content: space-between;
     padding: 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #D9D9D9;
 }
 
 .modal-close-btn {
@@ -633,19 +636,33 @@ body, html {
 }
 
 .order-type-group {
+    height: 53px;
+    width: 498px;
     display: flex;
-    gap: 0.5rem;
+    /* No gap between buttons */
+    gap: 0; 
+
+    align-self: center;
+
     margin-bottom: 1.5rem;
+    /* Create a single border around the whole group */
+    border: 1px solid #D9D9D9;
+    /* Round the corners of the group */
+    border-radius: 8px;
+    /* Crop buttons that overflow the rounded corners */
+    overflow: hidden;
 }
 
 .order-type-btn {
     flex: 1;
     padding: 0.6rem;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid #D9D9D9;
+    
     background: white;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.85rem;
+    font-size: 20px;
     font-weight: 600;
     color: #6b7280;
     cursor: pointer;
@@ -656,10 +673,14 @@ body, html {
     transition: all 0.2s;
 }
 
+.order-type-btn:last-child {
+    border-right: none;
+}
+
 .order-type-btn.active {
     background: #B74C4C;
     color: white;
-    border-color: #B74C4C;
+    border-color: #B74C4C; 
 }
 
 .bill-info-grid {
@@ -667,22 +688,30 @@ body, html {
     grid-template-columns: 1fr 1fr;
     row-gap: 4px;
     font-size: 0.75rem;
-    color: #6b7280;
+    padding: 0 35px 0 35px;
     margin-bottom: 1.5rem;
 }
 
+.bill-info-label {
+    font-size: 16px;
+    text-align: left;
+    color: #000;
+}
+
 .bill-info-value {
+    font-size: 16px;
     text-align: right;
-    color: #1f2937;
+    color: #000;
     font-weight: 600;
 }
 
 .bill-items-header {
-    font-size: 0.9rem;
+    font-size: 16px;
     font-weight: 700;
-    color: #374151;
-    border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 0.5rem;
+    color: #000;
+    border-top: 1px solid #D9D9D9;
+    padding-left: 35px;
+    padding-top: 0.5rem;
     margin-bottom: 1rem;
 }
 
@@ -695,6 +724,7 @@ body, html {
     flex-direction: column;
     gap: 0.8rem;
     padding-right: 5px;
+    align-items: center;
 }
 
 .bill-items-list::-webkit-scrollbar {
@@ -702,12 +732,14 @@ body, html {
 }
 
 .bill-item-row {
+    width: 474px;
+    height: 66px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     border-radius: 8px;
-    background: #f9fafb;
+    background: #F5F5F5;
     transition: background 0.2s;
 }
 
@@ -716,38 +748,38 @@ body, html {
 }
 
 .bill-item-qty {
-    width: 24px;
-    height: 24px;
-    border-radius: 8px;
-    border: 1px solid #9ca3af;
+    width: 35px;
+    height: 35px;
+    border-radius: 9999px;
+    border: 1px solid #D9D9D9;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 16px;
     font-weight: 700;
-    color: #374151;
+    color: #000;
     flex-shrink: 0;
 }
 
 .bill-item-name {
     flex: 1;
     margin: 0 10px;
-    font-size: 0.85rem;
+    font-size: 16px;
     font-weight: 600;
-    color: #1f2937;
+    color: #000;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .bill-item-price {
-    font-size: 0.85rem;
+    font-size: 16px;
     font-weight: 700;
-    color: #374151;
+    color: #000;
 }
 
 .bill-summary {
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #D9D9D9;
     padding-top: 1rem;
     margin-bottom: 1.5rem;
     display: flex;

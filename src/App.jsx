@@ -210,10 +210,10 @@ function OrderBillPanel({
 
       {/* Info Grid */}
       <div className='bill-info-grid'>
-        <span>Order Number</span> <span className='bill-info-value'>#NEW</span>
-        <span>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
-        <span>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
-        <span>Cashier</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
+        <span className='bill-info-label'>Order Number</span> <span className='bill-info-value'>#NEW</span>
+        <span className='bill-info-label'>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
+        <span className='bill-info-label'>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
+        <span className='bill-info-label'>Cashier</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
       </div>
 
       {/* Ordered Items List */}
