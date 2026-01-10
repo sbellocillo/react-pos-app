@@ -15,6 +15,7 @@ import {
   TbNote,
   TbArrowLeft,
   TbX,
+  TbGripVertical
 } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -58,7 +59,6 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { TbGripVertical } from "react-icons/tb";
 import { CSS } from "@dnd-kit/utilities";
 
 
@@ -121,41 +121,52 @@ function OrderBillPanel({
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
-  const [isOptionsModalOpen, setIsOptionsModalOPen] = useState(false);
+  // activeModalView: null | 'menu' | 'note'
+  const [activeModalView, setActiveModalView] = useState(null);
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
   const [orderNote, setOrderNote] = useState('');
-  const [isNoteFieldVisible, setIsNoteFieldVisible] = useState(false);
 
-  const handleOPtionClick = (action) => {
+  const handleOptionClick = (action) => {
     console.log(`Action triggered: ${action}`);
-    setIsOptionsModalOPen(false);
 
     switch (action) {
       case 'newOrder':
         if (onClearCart) onClearCart();
         setOrderNote('');
-        setIsNoteFieldVisible(false);
+        setActiveModalView(null);
         break;
       case 'voidOrder':
         alert('Void order functionality not yet implemented.');
+        setActiveModalView(null);
         break;
       case 'splitBill':
         alert('Split Bill functionality not yet implemented.');
+        setActiveModalView(null);
         break;
       case 'cancelOrder':
         if (onClearCart) onClearCart();
         setOrderNote('');
-        setIsNoteFieldVisible(false);
+        setActiveModalView(null);
         break;
       case 'reportIssue':
         alert('Report Issue functionality not yet implemented.');
+        setActiveModalView(null);
         break;
       case 'addOrderNote':
-        setIsNoteFieldVisible(true);
+        // Switch the view to the Note input state
+        setActiveModalView('note');
         break;
       default:
+        setActiveModalView(null);
         break;
     }
+  };
+
+  const saveOrderNote = () => {
+    // Logic to save the note to context or backend would go here
+    console.log("Note saved:", orderNote);
+    setActiveModalView(null); // Close modal
   };
 
   return (
@@ -164,29 +175,115 @@ function OrderBillPanel({
         <div className='bill-header'>
         <h2 className='bill-title'>New Order Bill</h2>
         <button
-          onClick={() => setIsOptionsModalOPen(true)} 
-          style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <TbDots size={24} color="#9ca3af" />
+          onClick={() => setActiveModalView('menu')} 
+          style={{ background: 'none', border: 'none', cursor: 'pointer', paddingRight: '40px' }}>
+          <TbDots size={40} color="#000" />
         </button>
       </div>
 
-      {isOptionsModalOpen && (
+      {/* --- OPTIONS MODAL (Handles both Menu and Note states) --- */}
+      {activeModalView && (
        <>
           <div 
             className="modal-overlay" 
-            onClick={() => setIsOptionsModalOPen(false)} 
+            onClick={() => setActiveModalView(null)} 
           />
           
-          <div className="options-modal">
-            <h3 className="options-header">OPTIONS</h3>
-            <ul className="options-list">
-              <li><button onClick={() => handleOPtionClick('newOrder')}>New Order</button></li>
-              <li><button onClick={() => handleOPtionClick('voidOrder')}>Void Order</button></li>
-              <li><button onClick={() => handleOPtionClick('splitBill')}>Split Bill</button></li>
-              <li><button onClick={() => handleOPtionClick('cancelOrder')}>Cancel Order</button></li>
-              <li><button onClick={() => handleOPtionClick('reportIssue')}>Report Issue</button></li>
-              <li><button onClick={() => handleOPtionClick('addOrderNote')}>Add Order Note</button></li>
-            </ul>
+          <div 
+            className="options-modal"
+            // DYNAMIC STYLE: Override dimensions if in 'note' state
+            style={activeModalView === 'note' ? { width: '445px', height: '535px' } : {}}
+          >
+            
+            {/* STATE 1: MAIN MENU LIST */}
+            {activeModalView === 'menu' && (
+              <>
+                <h3 className="options-header">OPTIONS</h3>
+                <ul className="options-list">
+                  <li><button onClick={() => handleOptionClick('newOrder')}>New Order</button></li>
+                  <li><button onClick={() => handleOptionClick('voidOrder')}>Void Order</button></li>
+                  <li><button onClick={() => handleOptionClick('splitBill')}>Split Bill</button></li>
+                  <li><button onClick={() => handleOptionClick('cancelOrder')}>Cancel Order</button></li>
+                  <li><button onClick={() => handleOptionClick('reportIssue')}>Report Issue</button></li>
+                  <li><button onClick={() => handleOptionClick('addOrderNote')}>Add Order Note</button></li>
+                </ul>
+              </>
+            )}
+
+            {/* STATE 2: ADD NOTE INPUT */}
+            {activeModalView === 'note' && (
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                
+                {/* Header */}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  padding: '20px',
+                  borderBottom: '1px solid #eee'
+                }}>
+                   <button 
+                    onClick={() => setActiveModalView(null)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+                   >
+                     <TbX size={24} color="#666" />
+                   </button>
+                   <h3 style={{ 
+                     flex: 1, 
+                     textAlign: 'center', 
+                     margin: 0, 
+                     fontSize: '18px', 
+                     fontWeight: '700',
+                     color: '#333'
+                   }}>
+                     Add Order Note
+                   </h3>
+                   {/* Empty div to balance the X icon for perfect centering */}
+                   <div style={{ width: '24px' }}></div>
+                </div>
+
+                {/* Body - Text Area */}
+                <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <textarea
+                    value={orderNote}
+                    onChange={(e) => setOrderNote(e.target.value)}
+                    placeholder="Add note here"
+                    style={{
+                      width: '100%',
+                      height: '100%', // Fills the available flex space
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e5e7eb',
+                      resize: 'none',
+                      fontSize: '16px',
+                      fontFamily: 'inherit',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                {/* Footer Button - FULL WIDTH/HEIGHT */}
+                <button
+                  onClick={saveOrderNote}
+                  style={{
+                    width: '100%',
+                    height: '65px', // Fixed height for the footer bar
+                    background: '#B74C4C', // Matches your red theme
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0', // No internal radius, relies on container clipping
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    letterSpacing: '1px',
+                    marginTop: 'auto' // Ensures it sits at bottom
+                  }}
+                >
+                  SAVE
+                </button>
+
+              </div>
+            )}
+
           </div>
         </>
       )}
@@ -213,7 +310,7 @@ function OrderBillPanel({
         <span className='bill-info-label'>Order Number</span> <span className='bill-info-value'>#NEW</span>
         <span className='bill-info-label'>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
         <span className='bill-info-label'>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
-        <span className='bill-info-label'>Cashier</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
+        <span className='bill-info-label'>Cashier Name</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
       </div>
 
       {/* Ordered Items List */}
@@ -253,29 +350,6 @@ function OrderBillPanel({
         )}
       </div>
 
-      {/* Order Note Field */}
-      {isNoteFieldVisible && (
-        <div style={{ padding: '10px 20px' }}>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <TbNote size={16} style={{ marginRight: '5px'}} />
-            <span style={{ fontWeight: 'bold' }}>Order Note:</span>
-          </div>
-          <textarea
-            value={orderNote}
-            onChange={(e) => setOrderNote(e.target.value)}
-            placeholder='Add a note for this order...'
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              resize: 'vertical',
-              minHeight: '60px'
-            }}
-          />
-        </div>
-      )}
-
       {/* Footer Summary*/}
       <div style={{ marginTop: 'auto' }}>
         <div className='bill-summary'>
@@ -284,11 +358,16 @@ function OrderBillPanel({
             <span>{formatCurrency(totals.subtotal)}</span>
           </div>
           <div className='summary-row'>
-            <span>Discount</span>
+            <span
+              onClick={() => setIsDiscountModalOpen(true)}
+              style={{cursor:'pointer'}}
+            >
+              Discount
+            </span>
             <span>₱ 0.00</span>
           </div>
           <div className='summary-row'>
-            <span>Tax (12%)</span>
+            <span>Tax</span>
             <span>{formatCurrency(totals.tax)}</span>
           </div>
         </div>
@@ -341,6 +420,86 @@ function OrderBillPanel({
                 </div>
 
                 <span className='modal-time-display'>HH:MM</span>
+              </div>
+            </div>
+          </>
+        )}
+
+      {isDiscountModalOpen && (
+          <>
+            <div className='modal-overlay' onClick={() => setIsDiscountModalOpen(false)} />
+
+            <div className='discount-modal-panel'>
+
+              {/* --- Header --- */}
+              <div className='discount-modal-header'>
+                <button
+                  className='discount-close-btn' 
+                  onClick={() => setIsDiscountModalOpen(false)}>
+                  <TbX size={24} />
+                </button>
+                <h3 className='discount-modal-title'>Full Bill Discount</h3>
+                {/* Spacer to balance the X button for centering if needed, or leave empty */}
+                <div style={{width: '80px'}}></div>
+              </div>
+
+              {/* --- Body ---*/}
+              <div className='discount-modal-body'>
+                
+                {/* 1. Large Display & Type Toggle */}
+                <div className='discount-display-section'>
+                    <span className='discount-large-value'>0%</span>
+                    
+                    <div className='discount-type-toggle'>
+                        <button className='type-btn'>PHP</button>
+                        <button className='type-btn active'>%</button>
+                    </div>
+                </div>
+
+                {/* 2. Presets Grid */}
+                <div className='discount-preset-grid'>
+                    <button className='preset-btn'>20%</button>
+                    <button className='preset-btn'>25%</button>
+                    <button className='preset-btn'>50%</button>
+                    <button className='preset-btn'>100%</button>
+                </div>
+
+                {/* 3. Senior Citizen Toggle */}
+                <div className='discount-toggle-row'>
+                    <span className='toggle-label'>Senior Citizen</span>
+                    <label className="ios-switch">
+                        <input type="checkbox" />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+
+                {/* 4. PWD Toggle */}
+                <div className='discount-toggle-row'>
+                    <span className='toggle-label'>PWD</span>
+                    <label className="ios-switch">
+                        <input type="checkbox" />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+
+                {/* 5. Order Note */}
+                <div className='discount-note-section'>
+                    <label className='note-label'>Order Note</label>
+                    <input 
+                        type="text" 
+                        className='note-input' 
+                        placeholder='Add Note' 
+                    />
+                </div>
+
+                {/* 6. Confirm Button */}
+                <button 
+                    className='discount-confirm-btn'
+                    onClick={() => setIsDiscountModalOpen(false)}
+                >
+                    CONFIRM
+                </button>
+
               </div>
             </div>
           </>
@@ -484,7 +643,7 @@ function Dashboard() {
 
               {/* Items Menu Grid - FIXED LOGIC FOR 25 SLOTS */}
               <div>
-                  <h3 className='section-title'>ITEMS</h3>
+                  <h3 className='section-title'>MENU</h3>
 
                   {!loading && gridItems.length === 0 && (
                   <p style={{ color: '#666', fontStyle: 'italic'}}>No items assigned to this layout.</p>
@@ -512,7 +671,7 @@ function Dashboard() {
                               className='menu-itm-card'
                               onClick={() => addToCart(pos)}
                             >
-                              <span className='card-label'>{pos.item_name || "Unknown Item"}</span>
+                              <span className='card-label'>{(pos.item_name || "Unknown Item").toUpperCase()}</span>
                             </button>
                           );
                         } else {

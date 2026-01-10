@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+/* --- UPDATED FONT IMPORT --- */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&display=swap');
 
 /* --- KIOSK MODE SCALING & RESET --- */
 body, html {
@@ -12,7 +13,7 @@ body, html {
     align-items: center;
     justify-content: center;
     color: #333;
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Instrument Sans', sans-serif; /* Global Font Set */
 }
 
 #root {
@@ -166,7 +167,7 @@ body, html {
 /* --- HEADER STYLES --- */
 .dashboard-header {
     background: white;
-    height: 80px;
+    height: 93px;
     width: 100%;
     padding: 0 2rem;
     display: flex;
@@ -303,6 +304,7 @@ body, html {
     color: #1e293b;
     font-weight: 400;
     font-size: 20px;
+    letter-spacing: 1px;
 }
 
 /* Categories Row */
@@ -315,13 +317,16 @@ body, html {
 }
 
 .itm-cat-btn {
+    height: 61px;
+    width: 295.62px;
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 1rem 2rem;
-    font-size: 15px;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
     cursor: pointer;
-    width: auto;
     flex-shrink: 0;
     transition: all 0.2s;
     color: #333;
@@ -351,7 +356,6 @@ body, html {
 .itm-cat-btn.active {
     background: #B74C4C;
     color: white;
-    font-weight: 600;
     border-color: #B74C4C;
 }
 
@@ -394,17 +398,15 @@ body, html {
     background: transparent;
     height: 140px;
     border-radius: 8px;
-    /* Optional: visible dashed border for debugging, transparent otherwise */
     border: 1px dashed transparent; 
-    /* border: 1px dashed #e5e7eb; */
 }
 
 .card-label {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     font-size: 26px;
-    
+    letter-spacing: 1px;
     font-weight: 500;
-    color: #333;
+    color: #000;
 }
 
 /* --- DASHBOARD SPLIT LAYOUT --- */
@@ -424,7 +426,7 @@ body, html {
 
 .bill-panel {
     width: 588.47px;
-    height: 100%; /* Ensure panel fills height */
+    height: 100%;
     background: white;
     border-radius: 8px;
     border: 1px solid #D9D9D9;
@@ -432,25 +434,39 @@ body, html {
     flex-direction: column;
     padding: 1.5rem;
     overflow: hidden;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     margin-top: 1rem;
 }
 
-/* --- BILL COMPONENET STYLES --- */
+/* --- BILL COMPONENT STYLES --- */
 .bill-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #D9D9D9;
+    border-bottom: none;
     padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+/* New 511.69px bottom border */
+.bill-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 511.69px;
+    height: 1px;
+    background: #D9D9D9;
 }
 
 .bill-title {
     font-size: 20px;
     font-weight: 700;
     color: #000;
-    margin: 0;
+    margin: 5px 0 20px 40px;
+    letter-spacing: 0.5px; /* Added spacing */
 }
 
 .modal-overlay {
@@ -539,7 +555,7 @@ body, html {
     display: flex;          
     flex-direction: column;
     overflow: hidden;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
 }
 
 .table-modal-header {
@@ -551,7 +567,232 @@ body, html {
     border-bottom: 1px solid #D9D9D9;
 }
 
-.modal-close-btn {
+/* --- DISCOUNT MODAL STYLES --- */
+.discount-modal-panel {
+    width: 444px;
+    height: 828px;
+    background: white;
+    
+    position: fixed;        
+    top: 50%;               
+    left: 50%;              
+    transform: translate(-50%, -50%); 
+    
+    z-index: 1001;          
+    border-radius: 4px;    
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
+    display: flex;          
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+.discount-modal-header {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    border-bottom: 1px solid #D9D9D9;
+
+    justify-content:  flex-start;
+    gap: 15px;
+}
+
+.discount-modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    text-align: left; /* FIXED: Removed align-items: left */
+}
+
+.discount-modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 35px 35px 35px;
+    overflow-y: auto;
+}
+
+/* FIXED TYPO: diplay -> display */
+.discount-display-section { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.discount-large-value {
+    font-size: 96px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1;
+}
+
+.discount-type-toggle {
+    display: flex;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 60px;
+    width: 160px;
+}
+
+.type-btn{
+    flex: 1;
+    border: none;
+    background: white;
+    font-size: 24px;
+    font-weight: 500;
+    color: #9ca3af;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    transition: all 0.2s;
+}
+
+.type-btn.active {
+    background: #B74C4C;
+    color: white;
+}
+
+.discount-preset-grid {
+    display: grid;
+    grid-template-columns: repeat(4 ,1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.preset-btn {
+    height: 80px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #B74C4C; 
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    transition: all 0.2s;
+}
+
+.preset-btn:hover {
+    border-color: #B74C4C;
+    background: #fff5f5;
+}
+
+.discount-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 0;
+    border-top: 1px solid #f3f4f6; /* FIXED: Added Semicolon */
+}
+
+.toggle-label {
+    font-size: 26px;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+.toggle-label.active {
+    color: #000;
+}
+
+.ios-switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 44px;
+}
+
+.ios-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e5e5;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 36px;
+    width: 36px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider{
+    background-color: #B74C4C;
+}
+
+input:checked + .slider:before {
+    transform: translateX(36px);
+}
+
+.discount-note-section {
+    margin-top: 10px;
+    padding-top: 25px;
+    border-top: 1px solid #f3f4f6;
+    flex: 1;
+}
+
+.note-label {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.note-input {
+    width: 100%;
+    border: none;
+    font-size: 18px;
+    font-family: 'Instrument Sans', sans-serif;
+    color: #333;
+    outline: none;
+    background: transparent;
+}
+
+.note-input::placeholder {
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.discount-confirm-btn {
+    width: 250px;
+    height: 65px;
+    background: #B74C4C;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 28px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 0 auto;
+    margin-top: auto;
+    display: block;
+    letter-spacing: 1px;
+}
+
+/* FIXED: Removed duplicate .discount-close-btn block */
+.discount-close-btn {
     width: 80px;
     height: 100%;
     background: transparent;
@@ -562,6 +803,11 @@ body, html {
     justify-content: center;
     color: #666;
     transition: background 0.2s;
+}
+
+.discount-close-btn:hover { 
+    background: #f3f4f6;
+    color: #000;
 }
 
 .modal-close-btn:hover {
@@ -639,17 +885,11 @@ body, html {
     height: 53px;
     width: 498px;
     display: flex;
-    /* No gap between buttons */
     gap: 0; 
-
     align-self: center;
-
     margin-bottom: 1.5rem;
-    /* Create a single border around the whole group */
     border: 1px solid #D9D9D9;
-    /* Round the corners of the group */
     border-radius: 8px;
-    /* Crop buttons that overflow the rounded corners */
     overflow: hidden;
 }
 
@@ -659,18 +899,18 @@ body, html {
     border: none;
     border-radius: 0;
     border-right: 1px solid #D9D9D9;
-    
     background: white;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: #6b7280;
+    color: #000;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     transition: all 0.2s;
+    letter-spacing: 2px; /* Added spacing */
 }
 
 .order-type-btn:last-child {
@@ -686,44 +926,68 @@ body, html {
 .bill-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    row-gap: 4px;
     font-size: 0.75rem;
-    padding: 0 35px 0 35px;
-    margin-bottom: 1.5rem;
+    padding: 0 45px 0 45px;
+    margin-bottom: 20px;
 }
 
 .bill-info-label {
+    display: flex;
+    height: 19px;
     font-size: 16px;
     text-align: left;
+    align-items: center;
     color: #000;
+    letter-spacing: 1px; /* Subtle label spacing */
 }
 
 .bill-info-value {
+    display: flex;
+    height: 19px;
     font-size: 16px;
-    text-align: right;
+    justify-content: flex-end;
+    align-items: center; /* Ensures vertical center */
     color: #000;
-    font-weight: 600;
+    font-weight: 400;
+    letter-spacing: 1px; /* Value spacing */
 }
 
 .bill-items-header {
     font-size: 16px;
     font-weight: 700;
     color: #000;
-    border-top: 1px solid #D9D9D9;
-    padding-left: 35px;
-    padding-top: 0.5rem;
+    border-top: none;
+    padding-left: 45px;
+    padding-top: 1rem;
     margin-bottom: 1rem;
+    position: relative; 
+    letter-spacing: 1px; /* Header spacing */
+}
+
+/* New 511.69px top border */
+.bill-items-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 511.69px;
+    height: 1px;
+    background: #D9D9D9;
 }
 
 .bill-items-list {
+    width: 474px;
+    height: 369px;
     flex: 1;
     overflow-y: auto;
-    min-height: 0;
-    margin-bottom: 1.5rem;
+    overflow-x: hidden;
+    margin-bottom: .5rem;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
     padding-right: 5px;
+    align-self: center;
     align-items: center;
 }
 
@@ -737,7 +1001,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem;
+    padding: 15px;
     border-radius: 8px;
     background: #F5F5F5;
     transition: background 0.2s;
@@ -748,10 +1012,10 @@ body, html {
 }
 
 .bill-item-qty {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border-radius: 9999px;
-    border: 1px solid #D9D9D9;
+    border: 2px solid #000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -770,49 +1034,81 @@ body, html {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 1px; /* Added spacing */
 }
 
 .bill-item-price {
     font-size: 16px;
     font-weight: 700;
     color: #000;
+    letter-spacing: 0.5px; /* Added spacing */
+    font-variant-numeric: tabular-nums;
 }
 
 .bill-summary {
-    border-top: 1px solid #D9D9D9;
-    padding-top: 1rem;
+    border: none;
+    padding: 10px 40px 10px 40px;
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    position: relative;
+}
+
+/* New 511.69px top border for summary */
+.bill-summary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 511.69px;
+    height: 1px;
+    background: #D9D9D9;
+}
+
+/* New 511.69px bottom border for summary */
+.bill-summary::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 511.69px;
+    height: 1px;
+    background: #D9D9D9;
 }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #4b5563;
+    margin: 0 !important;
 }
 
-.summary-row.total {
-    color: #111;
-    font-weight: 700;
+.summary-row span {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: 1.5px; /* Wider spacing for totals */
 }
 
 .pay-button {
-    width: 100%;
+    width: 488.83px;
+    height: 68.42px;
     background: #B74C4C;
     color: white;
     padding: 1rem;
     border-radius: 8px;
     border: none;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 32px;
+    font-weight: 600;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(183, 76, 76, 0.3);
     transition: transform 0.1s;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
+    display: block;
+    margin: 0 auto;
+    letter-spacing: 1px; /* Button text spacing */
 }
 
 .pay-button:active {
