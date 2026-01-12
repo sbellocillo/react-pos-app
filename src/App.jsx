@@ -48,6 +48,7 @@ import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Checkout from './pages/Checkout';
+import Queue from './pages/Queue';
 
 // Make sure Checkout.jsx exports this hook correctly
 import { useCheckout } from './pages/Checkout';
@@ -403,7 +404,7 @@ function OrderBillPanel({
                   className='modal-save-btn'
                   onClick={() => {
                     setIsTableModalOpen(false);
-                    navigate('/checkout', { state: { cartItems, totals, orderType } });
+                    navigate('/checkout', { state: { cartItems, totals, orderType, orderNote } });
                   }}
                 >
                   SAVE
@@ -434,7 +435,7 @@ function OrderBillPanel({
               {/* --- Header --- */}
               <div className='discount-modal-header'>
                 <button
-                  className='discount-close-btn' 
+                  className='modal-close-btn' 
                   onClick={() => setIsDiscountModalOpen(false)}>
                   <TbX size={24} />
                 </button>
@@ -755,7 +756,7 @@ function MainLayout({ children }) {
   const sideMenuItems = [
     { id: 'dashboard', icon: <img src={squaredMenuIcon} style={iconStyle} alt="Dashboard" />, path: '/' },
     { id: 'items', icon: <img src={billIcon} style={iconStyle} alt="Items" />, path: '/items' },
-    { id: 'itemTypes', icon: <img src={queueIcon} style={iconStyle} alt="Types" />, path: '/itemtypes' },
+    { id: 'queue', icon: <img src={queueIcon} style={iconStyle} alt="Types" />, path: '/queue' },
     { id: 'locations', icon: <img src={historyIcon} style={iconStyle} alt="Locations" />, path: '/locations' },
     { id: 'customers', icon: <img src={graphIcon} style={iconStyle} alt="Customers" />, path: '/customers' },
   ];
@@ -949,6 +950,7 @@ function App() {
           <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
+          <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>
     </div>

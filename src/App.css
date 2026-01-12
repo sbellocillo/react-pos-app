@@ -188,7 +188,7 @@ body, html {
     margin-right: 1rem;
     background: #f9fafb;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 7px;
     width: 600px;
     height: 45px;
     outline: none;
@@ -321,7 +321,7 @@ body, html {
     width: 295.62px;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 7px;
     padding: 1rem 2rem;
     font-size: 20px;
     font-weight: 600;
@@ -377,7 +377,7 @@ body, html {
     background: white;
     border: 1px solid #e5e7eb;
     height: 140px;
-    border-radius: 8px;
+    border-radius: 7px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -397,7 +397,7 @@ body, html {
 .menu-itm-card-empty {
     background: transparent;
     height: 140px;
-    border-radius: 8px;
+    border-radius: 7px;
     border: 1px dashed transparent; 
 }
 
@@ -428,7 +428,7 @@ body, html {
     width: 588.47px;
     height: 100%;
     background: white;
-    border-radius: 8px;
+    border-radius: 7px;
     border: 1px solid #D9D9D9;
     display: flex;
     flex-direction: column;
@@ -667,7 +667,7 @@ body, html {
     height: 80px;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 7px;
     font-size: 28px;
     font-weight: 700;
     color: #B74C4C; 
@@ -697,52 +697,6 @@ body, html {
 
 .toggle-label.active {
     color: #000;
-}
-
-.ios-switch {
-    position: relative;
-    display: inline-block;
-    width: 80px;
-    height: 44px;
-}
-
-.ios-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #e5e5e5;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 36px;
-    width: 36px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-input:checked + .slider{
-    background-color: #B74C4C;
-}
-
-input:checked + .slider:before {
-    transform: translateX(36px);
 }
 
 .discount-note-section {
@@ -781,7 +735,7 @@ input:checked + .slider:before {
     background: #B74C4C;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     font-size: 28px;
     font-weight: 700;
     cursor: pointer;
@@ -792,7 +746,7 @@ input:checked + .slider:before {
 }
 
 /* FIXED: Removed duplicate .discount-close-btn block */
-.discount-close-btn {
+.modal-close-btn {
     width: 80px;
     height: 100%;
     background: transparent;
@@ -805,7 +759,7 @@ input:checked + .slider:before {
     transition: background 0.2s;
 }
 
-.discount-close-btn:hover { 
+.modal-close-btn:hover { 
     background: #f3f4f6;
     color: #000;
 }
@@ -889,7 +843,7 @@ input:checked + .slider:before {
     align-self: center;
     margin-bottom: 1.5rem;
     border: 1px solid #D9D9D9;
-    border-radius: 8px;
+    border-radius: 7px;
     overflow: hidden;
 }
 
@@ -1002,7 +956,7 @@ input:checked + .slider:before {
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 7px;
     background: #F5F5F5;
     transition: background 0.2s;
 }
@@ -1098,7 +1052,7 @@ input:checked + .slider:before {
     background: #B74C4C;
     color: white;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 7px;
     border: none;
     font-size: 32px;
     font-weight: 600;
@@ -1113,4 +1067,61 @@ input:checked + .slider:before {
 
 .pay-button:active {
     transform: scale(0.98);
+}
+
+/* --- UPDATED SLIDER STYLES (TIGHT FIT & FORCED) --- */
+/* MOVED TO BOTTOM TO OVERRIDE ANY PREVIOUS STYLES */
+
+.ios-switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;  /* Standard Width */
+    height: 44px; /* Standard Height */
+    flex-shrink: 0;
+}
+
+.ios-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e5e5;
+    transition: .4s;
+    border-radius: 44px; /* Matches container height */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    
+    /* UPDATED: Larger Circle (40px) inside 44px track */
+    height: 40px !important; 
+    width: 40px !important;
+    
+    /* UPDATED: Small gap (2px) */
+    left: 2px !important;
+    bottom: 2px !important;
+    
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+input:checked + .slider{
+    background-color: #B74C4C;
+}
+
+input:checked + .slider:before {
+    /* 80px (Container) - 40px (Circle) - 2px (Left) - 2px (Right) = 36px Travel */
+    transform: translateX(36px) !important;
 }

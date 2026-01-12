@@ -99,6 +99,8 @@ export const apiEndpoints = {
     // Orders
     orders: {
         getAll: () => api.get('/orders'),
+        getQueue: () => api.get('/orders/queue'),
+        updateStatus: (id, statusId) => api.patch(`/orders/${id}/status`, { status_id: statusId }),
         getById: (id) => api.get(`/orders/${id}`),
         create: (data) => api.post('/orders', data),
         update: (id, data) => api.put(`/orders/${id}`, data),

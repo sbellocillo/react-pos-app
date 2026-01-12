@@ -97,27 +97,36 @@ export const useCheckout = () => {
   };
 
   // --- LOGIC: Process Checkout ---
-  const processCheckout = async () => {
-    if (cartItems.length === 0) return;
+  const processCheckout = async (itemsOverride, totalsOverride, note) => {
+    const itemsToProcess = itemsOverride || cartItems;
+
+    if (itemsToProcess.length === 0) {
+      alert("Cart is empty!");
+      return;
+    };
     
     setIsProcessing(true);
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const totals = calculateTotals();
+    const currentTotals = totalsOverride || calculateTotals();
 
     const orderPayload = {
+      user_id: currentUser.id || 300,
       customer_id: 1,
       status_id: 1,
       order_type_id: orderType,
       tax_percentage: 0.12,
-      tax_amount: totals.tax,
-      subtotal: totals.subtotal,
-      total: totals.total,
+      tax_amount: currentTotals.tax,
+      subtotal: currentTotals.subtotal,
+      total: currentTotals.total,
       role_id: currentUser.role_id || 1,
       location_id: currentUser.location_id || 15,
+      shipping_address: currentUser.location_name || null,
+      billing_address: currentUser.location_name || null,
       payment_method_id: 1,
       card_network_id: null,
       created_by: currentUser.id || 1,
-      items: cartItems.map(item => ({
+      memo: note || null,
+      items: itemsToProcess.map(item => ({
         item_id: item.item_id,
         quantity: item.quantity,
         rate: item.price,
@@ -159,11 +168,13 @@ export const useCheckout = () => {
 
 // --- COMPONENT ---
 const Checkout = () => {
+    const { processCheckout } = useCheckout();
     
     const location = useLocation();
-    const { cartItems, totals } = location.state || {
+    const { cartItems, totals, orderNote } = location.state || {
         cartItems: [],
-        totals: {subtotal: 0, tax: 0, total: 0}
+        totals: {subtotal: 0, tax: 0, total: 0},
+        orderNote: ""
     };
 
     const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
@@ -235,7 +246,12 @@ const Checkout = () => {
                             placeholder='XXXX.XX' 
                         />
                     </div>
-                    <button className='exact-btn'>Exact</button>
+                    <button 
+                      className='exact-btn'
+                      onClick={() => {processCheckout(cartItems, totals, orderNote)}}
+                    >
+                        Exact
+                    </button>
                 </div>
 
                 {/* SECTION B: Quick Amount Inputs */}
