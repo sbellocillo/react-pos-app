@@ -1075,8 +1075,8 @@ body, html {
 .ios-switch {
     position: relative;
     display: inline-block;
-    width: 80px;  /* Standard Width */
-    height: 44px; /* Standard Height */
+    width: 54px;  /* Standard Width */
+    height: 32px; /* Standard Height */
     flex-shrink: 0;
 }
 
@@ -1095,20 +1095,22 @@ body, html {
     bottom: 0;
     background-color: #e5e5e5;
     transition: .4s;
-    border-radius: 44px; /* Matches container height */
+    border-radius: 54px; /* Matches container height */
 }
 
 .slider:before {
     position: absolute;
     content: "";
     
-    /* UPDATED: Larger Circle (40px) inside 44px track */
-    height: 40px !important; 
-    width: 40px !important;
+    /* Circle */
+    height: 28px !important; 
+    width: 28px !important;
     
     /* UPDATED: Small gap (2px) */
+    top: 2px !important;
     left: 2px !important;
-    bottom: 2px !important;
+    bottom: auto !important;
+
     
     background-color: white;
     transition: .4s;
@@ -1123,5 +1125,5 @@ input:checked + .slider{
 
 input:checked + .slider:before {
     /* 80px (Container) - 40px (Circle) - 2px (Left) - 2px (Right) = 36px Travel */
-    transform: translateX(36px) !important;
+    transform: translateX(22px) !important;
 }
