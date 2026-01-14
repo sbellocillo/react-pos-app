@@ -26,6 +26,7 @@ import OrderMenu from './pages/OrderMenu';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Queue from './pages/Queue';
+import LayoutAssignment from './pages/LayoutAssignment';
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = localStorage.getItem('authToken');
@@ -61,6 +62,7 @@ function App() {
           <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
           <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
+          <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>
     </div>
