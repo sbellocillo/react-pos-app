@@ -275,3 +275,10 @@
     margin-right: 20px;
     color: #555;
 }
+
+/* Chrome, Safari, Edge, Opera */
+.custom-input::-webkit-outer-spin-button,
+.custom-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

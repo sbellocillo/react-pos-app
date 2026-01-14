@@ -12,6 +12,15 @@ export const useCheckout = () => {
   const [orderType, setOrderType] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // --- Discount ---
+  const [discountType, setDiscountType] = useState('PERCENTAGE');
+  const [discountValue, setDiscountValue] = useState(0);
+
+  // Special Flags
+  const [isSenior, setIsSenior] = useState(false);
+  const [isPWD, setIsPWD] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
+
   // --- LOGIC: Add Item to Cart ---
   const addToCart = (item) => {
     setCartItems(prevCart => {
@@ -50,54 +59,78 @@ export const useCheckout = () => {
   // --- LOGIC: Clear Cart ---
   const clearCart = () => {
     setCartItems([]);
+    setDiscountValue(0);
+    setIsSenior(false);
+    setIsPWD(false);
+    setOrderNote('');
   };
 
   // --- LOGIC: Calculate Totals ---
   const calculateTotals = () => {
-    const taxRate = 0.12;
+    const TAX_RATE = 0.12;
+    const isSpecialDiscount = isSenior || isPWD;
 
     // 1. Create a new array with the tax/total calculated for EACH item
     const itemsWithTax = cartItems.map(item => {
-      const lineSubtotal = item.price * item.quantity;
-      const lineTax = lineSubtotal * taxRate;
-      const lineTotal = lineSubtotal + lineTax;
+      const grossAmount = item.price * item.quantity;
+      let lineSubtotal, lineTax, lineDiscount, lineTotal;
+
+      // VAT Exempt / Discount Logic
+      if (isSpecialDiscount) {
+        // SC/PWD: VAT Exemption (Price / 1.12)
+        const vatExemptAmount = grossAmount / (1 + TAX_RATE);
+        // 20% Discount on the VAT Exempt Amount
+        const specialDiscountAmount = vatExemptAmount * 0.20;
+
+        lineSubtotal = vatExemptAmount; 
+        lineTax = 0;
+        lineDiscount = specialDiscountAmount;
+        lineTotal = vatExemptAmount - specialDiscountAmount;
+      } else {
+        // Regular: Logic updated to assume VAT INCLUSIVE pricing (Standard PH POS)
+        // If price is 112, Tax is 12, Net is 100.
+        
+        // Calculate Discount
+        if (discountType === 'PERCENTAGE') {
+          lineDiscount = grossAmount * (discountValue / 100);
+        } else {
+          // Prorate fixed amount
+          const totalItems = cartItems.reduce((acc, i) => acc + i.quantity, 0); 
+          lineDiscount = (discountValue / totalItems) * item.quantity;
+        }
+
+        const netAfterDiscount = grossAmount - lineDiscount;
+        
+        // Extract Tax from the discounted amount
+        // Formula: Amount - (Amount / 1.12)
+        const vatableAmount = netAfterDiscount / (1 + TAX_RATE);
+        lineTax = netAfterDiscount - vatableAmount;
+        
+        lineSubtotal = vatableAmount; // Net of Tax
+        lineTotal = netAfterDiscount; // Gross Total to pay
+      }
 
       return {
         ...item,       
         lineSubtotal,  
-        lineTax,       
+        lineTax,
+        lineDiscount,       
         lineTotal      
       };
     });
 
-    // Console logs for debugging
-    if (itemsWithTax.length > 0) {
-      console.group("🧾 Itemized Tax Breakdown");
-      itemsWithTax.forEach(item => {
-        console.log(`📦 Item: ${item.item_name} (Qty: ${item.quantity})`);
-        console.log(`   Subtotal: ₱${item.lineSubtotal.toFixed(2)}`);
-        console.log(`   Tax:      ₱${item.lineTax.toFixed(2)}`);
-        console.log(`   Total:    ₱${item.lineTotal.toFixed(2)}`);
-        console.log("   ----------------");
-      });
-      console.groupEnd();
-    }
-
-    // 2. Sum up the results
     const subtotal = itemsWithTax.reduce((acc, item) => acc + item.lineSubtotal, 0);
     const tax = itemsWithTax.reduce((acc, item) => acc + item.lineTax, 0);
+    const totalDiscount = itemsWithTax.reduce((acc, item) => acc + item.lineDiscount, 0)
     const total = itemsWithTax.reduce((acc, item) => acc + item.lineTotal, 0);
 
-    return { 
-      subtotal, 
-      tax, 
-      total, 
-      itemsWithTax 
-    };
+    return { subtotal, tax, discount: totalDiscount, total, itemsWithTax };
   };
 
   // --- LOGIC: Process Checkout ---
-  const processCheckout = async (itemsOverride, totalsOverride, note) => {
+  // UPDATED: Accepts an 'options' object to override flags (isSenior/PWD) 
+  // because navigation state doesn't persist to hook state automatically.
+  const processCheckout = async (itemsOverride, totalsOverride, note, options = {}) => {
     const itemsToProcess = itemsOverride || cartItems;
 
     if (itemsToProcess.length === 0) {
@@ -105,6 +138,10 @@ export const useCheckout = () => {
       return;
     };
     
+    // Determine flags: Use options if passed, otherwise use hook state
+    const useSenior = options.isSenior !== undefined ? options.isSenior : isSenior;
+    const usePWD = options.isPWD !== undefined ? options.isPWD : isPWD;
+
     setIsProcessing(true);
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const currentTotals = totalsOverride || calculateTotals();
@@ -114,9 +151,13 @@ export const useCheckout = () => {
       customer_id: 1,
       status_id: 1,
       order_type_id: orderType,
-      tax_percentage: 0.12,
+      // Fix: Use the local variable calculated above, not the hook state directly
+      tax_percentage: useSenior || usePWD ? 0 : 0.12, 
       tax_amount: currentTotals.tax,
       subtotal: currentTotals.subtotal,
+      discount_amount: currentTotals.discount,
+      isSenior: useSenior,
+      isPWD: usePWD,
       total: currentTotals.total,
       role_id: currentUser.role_id || 1,
       location_id: currentUser.location_id || 15,
@@ -130,9 +171,9 @@ export const useCheckout = () => {
         item_id: item.item_id,
         quantity: item.quantity,
         rate: item.price,
-        tax_percentage: 0.12,
-        tax_amount: (item.price * item.quantity) * 0.12,
-        amount: (item.price * item.quantity)
+        tax_percentage: 0.12, // This might need to be dynamic based on Senior status, but usually stays 0.12 for record
+        tax_amount: (item.lineTax || 0), // Use calculated line tax
+        amount: (item.lineTotal || item.price * item.quantity)
       }))
     };
 
@@ -140,7 +181,7 @@ export const useCheckout = () => {
       const response = await apiEndpoints.orders.create(orderPayload);
       if (response.status === 201 || response.status === 200) {
         alert(`Order Created ID: ${response.data.orderid || 'New'}`);
-        setCartItems([]);
+        clearCart();
         return true; 
       }
     } catch (error) {
@@ -156,6 +197,11 @@ export const useCheckout = () => {
     cartItems,
     orderType,
     isProcessing,
+    discountType, setDiscountType,
+    discountValue, setDiscountValue,
+    isSenior, setIsSenior,
+    isPWD, setIsPWD,
+    orderNote, setOrderNote,
     setOrderType,
     addToCart,
     removeItem,
@@ -169,23 +215,32 @@ export const useCheckout = () => {
 // --- COMPONENT ---
 const Checkout = () => {
     const { processCheckout } = useCheckout();
-    
     const location = useLocation();
-    const { cartItems, totals, orderNote } = location.state || {
-        cartItems: [],
-        totals: {subtotal: 0, tax: 0, total: 0},
-        orderNote: ""
-    };
+    
+    // Safely retrieve state with defaults
+    const { 
+      cartItems = [], 
+      totals = {subtotal: 0, tax: 0, total: 0}, 
+      orderNote = "",
+      isSenior = false, // Retrieve these flags
+      isPWD = false 
+    } = location.state || {};
+
+    // Local state for Cash Input
+    const [cashReceived, setCashReceived] = useState("");
 
     const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
 
+    // Helper to trigger checkout with the correct Context
+    const handlePayment = () => {
+        // Pass the flags from location.state into the hook function
+        processCheckout(cartItems, totals, orderNote, { isSenior, isPWD });
+    };
+
     return(
       <div className='checkout-container'>
-        
-        {/* --- LEFT PANEL --- */}
+        {/* LEFT PANEL */}
         <div className='left-panel'>
-            
-            {/* Header Button */}
             <button className='add-user-btn'>
                 <div className='btn-content-left'>
                     <TbUserPlus size={26} />
@@ -194,7 +249,6 @@ const Checkout = () => {
                 <TbCirclePlus size={26} />
             </button>
 
-            {/* Scrollable List */}
             <div className='checkout-items-list'>
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => (
@@ -209,7 +263,6 @@ const Checkout = () => {
               )}
             </div>
 
-            {/* Footer Summary */}
             <div className='checkout-footer'>
               <div className='summary-row'>
                 <span>Sub-Total</span>
@@ -217,7 +270,7 @@ const Checkout = () => {
               </div>
               <div className='summary-row'>
                 <span>Discount</span>
-                <span className='summary-value'>{formatCurrency(0)}</span>
+                <span className='summary-value'>{formatCurrency(totals.discount || 0)}</span>
               </div>
               <div className='summary-row'>
                 <span>Tax</span>
@@ -226,35 +279,39 @@ const Checkout = () => {
             </div>
         </div>
 
-        {/* --- RIGHT PANEL --- */}
+        {/* RIGHT PANEL */}
         <div className='right-panel'>
             <div className='total-price-container'>
                 <span className='total-price'>{formatCurrency(totals.total)}</span>
             </div>
 
-            {/* Payment Form Wrapper */}
             <div className='payment-form-container'>
-                
-                {/* SECTION A: Cash Input Row */}
+                {/* Cash Input */}
                 <div className='cash-input-group'>
                     <div className='cash-input-wrapper'>
                         <TbCash className='input-icon' size={32} />
                         <span className='input-label'>Cash</span>
                         <input 
-                            type='text' 
+                            type='number'
+                            inputMode='decimal'
+                            step='0.01' 
                             className='custom-input' 
-                            placeholder='XXXX.XX' 
+                            placeholder='0.00'
+                            value={cashReceived}
+                            onChange={(e) => setCashReceived(e.target.value)}
+                            onFocus={(e) => e.target.select()}
                         />
                     </div>
+                    {/* Updated Button onClick */}
                     <button 
                       className='exact-btn'
-                      onClick={() => {processCheckout(cartItems, totals, orderNote)}}
+                      onClick={handlePayment} 
                     >
                         Exact
                     </button>
                 </div>
 
-                {/* SECTION B: Quick Amount Inputs */}
+                {/* Quick Amounts - wired up for UX */}
                 <div className='quick-amounts-row'>
                     <input 
                         type="text" 
@@ -273,29 +330,25 @@ const Checkout = () => {
                     />
                 </div>
 
-                {/* SECTION C: Payment Methods Stack */}
+                {/* Payment Methods */}
                 <div className='payment-methods-stack'>
-                    <button className='payment-method-btn'>
+                    <button className='payment-method-btn' onClick={handlePayment}>
                         <TbQrcode size={28} className='method-icon'/>
                         <span>QRPh</span>
                     </button>
-                    
-                    <button className='payment-method-btn'>
-                        <TbCreditCard size={48} className='method-icon'/>
+                    <button className='payment-method-btn' onClick={handlePayment}>
+                        <TbCreditCard size={28} className='method-icon'/>
                         <span>Credit Card</span>
                     </button>
-                    
-                    <button className='payment-method-btn'>
-                        <TbCreditCard size={48} className='method-icon'/>
+                    <button className='payment-method-btn' onClick={handlePayment}>
+                        <TbCreditCard size={28} className='method-icon'/>
                         <span>Debit Card</span>
                     </button>
-
-                    <button className='payment-method-btn'>
-                        <HiDotsHorizontal size={48} className='method-icon'/>
+                    <button className='payment-method-btn' onClick={handlePayment}>
+                        <HiDotsHorizontal size={28} className='method-icon'/>
                         <span>Other</span>
                     </button>
                 </div>
-
             </div>
         </div>
       </div>

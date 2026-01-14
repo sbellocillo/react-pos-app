@@ -65,7 +65,7 @@ body, html {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 110px;
+    width: 329px;
     background: white;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
@@ -84,7 +84,9 @@ body, html {
     height: 70px;
     border-bottom: 1px solid #e5e7eb;
     display: flex;
-    justify-content: center;
+
+    justify-content: flex-start;
+    padding-left: 30px;
     align-items: center;
 }
 
@@ -97,12 +99,13 @@ body, html {
     overflow-y: auto;
 }
 
-.nav-item {
+.sidebar-nav-item {
     width: 100%;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 15px 0;
+    justify-content: flex-start;
+    padding: 15px 0 15px 20px;
     background: transparent;
     border: none;
     border-left: 4px solid transparent;
@@ -110,21 +113,58 @@ body, html {
     transition: all 0.2s ease;
 }
 
-.nav-item:hover {
-    background: #fef2f2;
-    border-left: 4px solid #ef4444;
+.nav-label {
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: inherit;
+    white-space: nowrap; /* Prevents text wrapping */
 }
 
-.nav-item.active {
+/* 4. Add styles for the Icon Wrapper */
+.nav-icon-wrapper {
+    width: 41px;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 5. CRITICAL: Control the image size */
+.nav-icon {
+    width: 41px;
+    height: 41px;
+    object-fit: contain;
+}
+
+.logout-container {
+    border-top: 1px solid #D9D9D9;
+    
+    margin-top: 20px;
+    
+    padding-top: 35px; 
+    
+    margin-bottom: 20px;
+}
+
+.sidebar-nav-item:hover {
     background: #fef2f2;
-    border-left: 4px solid #ef4444;
+    border-left: 4px solid #B74C4C;
+}
+
+.sidebar-nav-item.active .nav-icon {
+    filter: brightness(0) invert(1);
+}
+
+.sidebar-nav-item.active {
+    background:#B74C4C;
+    color: white;
 }
 
 .sidebar-bottom-actions {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1rem;
 }
 
 .sidebar-footer {
@@ -550,7 +590,7 @@ body, html {
     transform: translate(-50%, -50%); 
     
     z-index: 1001;          
-    border-radius: 4px;    
+    border-radius: 7px;    
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
     display: flex;          
     flex-direction: column;
@@ -679,6 +719,12 @@ body, html {
 .preset-btn:hover {
     border-color: #B74C4C;
     background: #fff5f5;
+}
+
+.preset-btn.active {
+    background: #B74C4C;
+    color: white;
+    border-color: #B74C4C;
 }
 
 .discount-toggle-row {
@@ -811,11 +857,24 @@ body, html {
 }
 
 .table-number-display {
-    font-size: 180px;
+    width: 600px;
+    height: 156px;
+    
+    /* Input Styling */
+    border: none;
+    background: transparent; /* Ensures it looks like floating text */
+    outline: none;           /* Removes the blue focus ring */
+    
+    /* Typography */
+    font-size: 128px;
     font-weight: 400;
-    line-height: 1;
     color: #111;
     margin: 20px 0;
+    
+    /* The Correct Way to Center Input Text */
+    text-align: center;      /* Centers Horizontally */
+    line-height: 156px;      /* Trick: Sets line height equal to box height to force vertical center */
+    padding: 0;              /* Removes default padding that might push text off-center */
 }
 
 .modal-time-display{
@@ -959,6 +1018,7 @@ body, html {
     border-radius: 7px;
     background: #F5F5F5;
     transition: background 0.2s;
+    cursor: pointer;
 }
 
 .bill-item-row:hover {
@@ -1126,4 +1186,150 @@ input:checked + .slider{
 input:checked + .slider:before {
     /* 80px (Container) - 40px (Circle) - 2px (Left) - 2px (Right) = 36px Travel */
     transform: translateX(22px) !important;
+}
+
+/* --- ITEM QUANTITY MODAL (UPDATED DESIGN) --- */
+
+.qty-modal-panel {
+    width: 788px;
+    height: 535px;
+    background: white;
+    
+    position: fixed;        
+    top: 50%;               
+    left: 50%;              
+    transform: translate(-50%, -50%); 
+    
+    z-index: 1001;          
+    border-radius: 7px;    
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
+    display: flex;          
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+.qty-modal-header {
+    height: 84.07px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    border-bottom: 1px solid #D9D9D9;
+}
+
+.qty-modal-title {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* --- MAIN BODY LAYOUT --- */
+.qty-modal-body {
+    display: flex;
+    flex-direction: column; /* Stacks Name on top of Controls */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+}
+
+/* 1. Floating Name (Top) */
+.qty-floating-name {
+    font-size: 34px;
+    font-weight: 700;
+    color: #B74C4C;           /* Brand Red */
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 20px 0;       /* Margin Bottom pushes it up away from buttons */
+    letter-spacing: 1px;
+    line-height: 1.2;
+    max-width: 90%;
+}
+
+/* 2. Controls Row (Buttons + Number) */
+.qty-controls-row {
+    display: flex;
+    align-items: center;      /* Vertically aligns buttons with the number */
+    justify-content: center;
+    gap: 60px;                /* Space between Buttons and Number */
+}
+
+/* 3. The Big Number */
+.qty-display-number {
+    font-size: 130px;
+    font-weight: 500;
+    color: #1E1E1E;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    min-width: 120px;         
+    text-align: center;
+    margin-bottom: 15px;      /* Optical alignment */
+}
+
+/* 4. Circular Buttons */
+.qty-circle-btn {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 2px solid #555;   /* Dark Grey Border */
+    background: transparent;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.qty-circle-btn:hover {
+    background-color: #f3f4f6;
+    border-color: #000;
+    color: #000;
+    transform: scale(1.05);
+}
+
+.qty-circle-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- FOOTER --- */
+.qty-modal-footer {
+    display: flex;
+    width: 100%;
+    height: 84.07px;
+}
+
+/* Base Footer Button Style */
+.qty-footer-btn {
+    flex: 1;              
+    height: 100%;         
+    border: none;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    transition: background 0.2s;
+}
+
+.qty-footer-btn.secondary {
+    background: white;
+    color: #B74C4C;
+    border-top: 1px solid #D9D9D9;
+}
+
+.qty-footer-btn.primary {
+    background: #B74C4C;
+    color: white;
+    border-top: 1px solid #B74C4C;
+}
+
+.qty-footer-btn.secondary:hover { background-color: #f9fafb; }
+.qty-footer-btn.primary:hover { background-color: #a04242; }
+
+/* Chrome, Safari, Edge, Opera */
+.table-number-display::-webkit-outer-spin-button,
+.table-number-display::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

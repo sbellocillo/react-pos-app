@@ -12,7 +12,23 @@ export default function Dashboard() {
   const locationId = currentUser.location_id || 15;
   const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
 
-  const { cartItems, orderType, setOrderType, isProcessing, addToCart, removeItem, updateQuantity, calculateTotals, processCheckout, clearCart } = useCheckout();
+  const { 
+        cartItems, 
+        orderType, 
+        setOrderType, 
+        isProcessing, 
+        addToCart, 
+        removeItem, 
+        updateQuantity, 
+        calculateTotals, 
+        processCheckout, 
+        clearCart, 
+        discountType, setDiscountType,
+        discountValue, setDiscountValue,
+        isSenior, setIsSenior,
+        isPWD, setIsPWD,
+        orderNote, setOrderNote
+    } = useCheckout();
 
   const [layouts, setLayouts] = useState([]);
   const [activeLayoutId, setActiveLayoutId] = useState(null);
@@ -93,6 +109,8 @@ export default function Dashboard() {
                   </DndContext>
                 )}
               </div>
+              
+            {/*Menu Grid*/}
               <div>
                   <h3 className='section-title'>MENU</h3>
                   <div className='menu-itm-grid'>
@@ -110,7 +128,30 @@ export default function Dashboard() {
                   </div>
               </div>
             </div>
-            <OrderBillPanel cartItems={cartItems} onRemoveItem={removeItem} onUpdateQuantity={updateQuantity} orderType={orderType} setOrderType={setOrderType} onCheckout={processCheckout} totals={calculateTotals()} onClearCart={clearCart} />
+            <OrderBillPanel 
+               cartItems={cartItems} 
+               onRemoveItem={removeItem} 
+               onUpdateQuantity={updateQuantity} 
+               orderType={orderType} 
+               setOrderType={setOrderType} 
+               onCheckout={processCheckout} 
+               totals={calculateTotals()} 
+               onClearCart={clearCart}
+            
+               discountType={discountType}
+               setDiscountType={setDiscountType}
+               discountValue={discountValue}
+               setDiscountValue={setDiscountValue}
+            
+               isSenior={isSenior}
+               setIsSenior={setIsSenior}
+            
+               isPWD={isPWD}          
+               setIsPWD={setIsPWD}    
+            
+               orderNote={orderNote}   
+               setOrderNote={setOrderNote}
+            />
         </div>
     </div>
   );

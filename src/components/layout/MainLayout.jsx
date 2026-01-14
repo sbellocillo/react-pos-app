@@ -37,7 +37,7 @@ export default function MainLayout({ children }) {
   const getPageTitle = (path) => {
     switch (path) {
       case '/checkout': return 'Checkout';
-      default: return path.replace('/', '').toUpperCase();
+      default: return path.replace('/', '').toUpperCase() || 'DASHBOARD';
     }
   };
 
@@ -47,48 +47,74 @@ export default function MainLayout({ children }) {
 
   const isDashboard = location.pathname === '/';
   const isCheckout = location.pathname === '/checkout';
-  const iconStyle = { width: '30px', height: '30px' };
 
+  // --- MENU CONFIGURATION ---
   const sideMenuItems = [
-    { id: 'dashboard', icon: <img src={squaredMenuIcon} style={iconStyle} alt="Dashboard" />, path: '/' },
-    { id: 'items', icon: <img src={billIcon} style={iconStyle} alt="Items" />, path: '/items' },
-    { id: 'queue', icon: <img src={queueIcon} style={iconStyle} alt="Types" />, path: '/queue' },
-    { id: 'locations', icon: <img src={historyIcon} style={iconStyle} alt="Locations" />, path: '/locations' },
-    { id: 'customers', icon: <img src={graphIcon} style={iconStyle} alt="Customers" />, path: '/customers' },
+    { id: 'dashboard', label: 'Dashboard',     icon: <img src={squaredMenuIcon} className="nav-icon" alt="" />, path: '/' },
+    { id: 'transactions', label: 'Transactions',  icon: <img src={billIcon} className="nav-icon" alt="" />, path: '/items' },
+    { id: 'queuing',   label: 'Queuing',       icon: <img src={queueIcon} className="nav-icon" alt="" />, path: '/queue' },
+    { id: 'history',   label: 'Order History', icon: <img src={historyIcon} className="nav-icon" alt="" />, path: '/locations' },
+    { id: 'reports',   label: 'Reports',       icon: <img src={graphIcon} className="nav-icon" alt="" />, path: '/customers' },
+  ];
+
+  const bottomMenuItems = [
+    { id: 'settings',  label: 'Settings',      icon: <img src={settingsIcon} className="nav-icon" alt="" />, path: '/settings' },
+    { id: 'help',      label: 'Help',          icon: <img src={helpIcon} className="nav-icon" alt="" />, path: '/help' },
   ];
 
   return (
     <div className='main-layout-container'>
       {isSidebarOpen && <div className='sidebar-overlay' onClick={() => setIsSidebarOpen(false)} />}
       
+      {/* --- SIDEBAR --- */}
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        
+        {/* Header / Hamburger */}
         <div className='sidebar-logo'>
-          <button onClick={() => setIsSidebarOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
-            <RxHamburgerMenu style={{ width: '28px', height: '28px', color: '#333' }} />
+          <button onClick={() => setIsSidebarOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 0 }}>
+            <RxHamburgerMenu size={32} color="#333" />
           </button>
         </div>
+
+        {/* Top Navigation */}
         <nav className='sidebar-nav'>
           {sideMenuItems.map(item => (
-            <button key={item.id} onClick={() => { navigate(item.path); setIsSidebarOpen(false); }} className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}>
-              <span>{item.icon}</span>
+            <button 
+                key={item.id} 
+                onClick={() => { navigate(item.path); setIsSidebarOpen(false); }} 
+                className={`sidebar-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+            >
+              <div className='nav-icon-wrapper'>{item.icon}</div>
+              <span className='nav-label'>{item.label}</span>
             </button>
           ))}
         </nav>
+
+        {/* Bottom Actions & Logout */}
         <div className='sidebar-bottom-actions'>
-           <button onClick={() => { navigate('/settings'); setIsSidebarOpen(false); }} className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}>
-             <img src={settingsIcon} style={iconStyle} alt="Settings" />
-           </button>
-           <button onClick={() => { navigate('/help'); setIsSidebarOpen(false); }} className='nav-item'>
-             <img src={helpIcon} style={iconStyle} alt="Help" />
-           </button>
-        </div>
-        <div className='sidebar-footer'>
-          <button onClick={handleLogout} className='nav-item'>
-            <img src={signOutIcon} style={iconStyle} alt="Sign Out" />
-          </button>
+           {bottomMenuItems.map(item => (
+             <button 
+                key={item.id} 
+                onClick={() => { navigate(item.path); setIsSidebarOpen(false); }} 
+                className={`sidebar-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+             >
+               <div className='nav-icon-wrapper'>{item.icon}</div>
+               <span className='nav-label'>{item.label}</span>
+             </button>
+           ))}
+           
+           <div className='logout-container'>
+              <button onClick={handleLogout} className='sidebar-nav-item'>
+                <div className='nav-icon-wrapper'>
+                  <img src={signOutIcon} className="nav-icon" alt="Sign Out" />
+                </div>
+                <span className='nav-label'>Logout</span>
+            </button>
+           </div>
         </div>
       </div>
 
+      {/* --- MAIN CONTENT RIGHT SIDE --- */}
       <div className='right-side-wrapper'>
         <div className='dashboard-header'>
           <div className='header-search'>
@@ -96,7 +122,11 @@ export default function MainLayout({ children }) {
                onClick={() => isCheckout ? navigate('/') : setIsSidebarOpen(true)}>
               {isCheckout ? <TbArrowLeft style={{ width: '24px', height: '24px' }} /> : <RxHamburgerMenu style={{ width: '24px', height: '24px' }} />}
              </div>
-             {isDashboard ? <input type="text" className="search-input" placeholder=" " /> : <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600', color:'#300' }}>{getPageTitle(location.pathname)}</h2>}
+             {isDashboard ? (
+                <input type="text" className="search-input" placeholder=" " /> 
+             ) : (
+                <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600', color:'#300' }}>{getPageTitle(location.pathname)}</h2>
+             )}
           </div>
           <div className='header-info-group'>
             <div className="info-block">
