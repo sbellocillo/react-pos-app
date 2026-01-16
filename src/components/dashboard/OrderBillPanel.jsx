@@ -61,6 +61,9 @@ export default function OrderBillPanel({
       setIsPWD(false); // Mutually exclusive
       setDiscountValue(0); // Reset manual discount
       setDiscountType('PERCENTAGE'); 
+      setOrderNote('Senior Citizen Discount');
+    } else {
+      setOrderNote('')
     }
   };
 
@@ -71,6 +74,9 @@ export default function OrderBillPanel({
       setIsSenior(false); // Mutually exclusive
       setDiscountValue(0); // Reset manual discount
       setDiscountType('PERCENTAGE');
+      setOrderNote('PWD Discount');
+    } else {
+      setOrderNote('')
     }
   };
 
@@ -145,7 +151,6 @@ export default function OrderBillPanel({
                 <div style={{ display: 'flex', alignItems: 'center', flex: 2, minWidth: 0}}>
                   <div 
                     className='bill-item-qty' 
-                    onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} 
                     style={{cursor: 'pointer'}}
                   >
                     {item.quantity}
@@ -369,11 +374,21 @@ export default function OrderBillPanel({
               <div className='discount-note-section'>
                   <label className='note-label'>Order Note</label>
                   <input 
-                    type="text" 
+                    type='text' 
                     className='note-input' 
                     placeholder='Add Note' 
                     value={orderNote}
-                    onChange={(e) => setOrderNote(e.target.value)}
+                    onChange={(e) => {
+                      const newVal = e.target.value;
+
+                      const prefix = isSenior ? "Senior Citizen Discount " : (isPWD ? "PWD Discount " : "");
+
+                      if ( prefix && !newVal.startsWith(prefix)) {
+                        return;
+                      }
+
+                      setOrderNote(e.target.value);
+                    }}
                   />
               </div>
 

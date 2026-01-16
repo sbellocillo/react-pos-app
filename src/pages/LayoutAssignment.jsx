@@ -135,7 +135,7 @@ const LayoutAssignment = () => {
     setModalOpen(false);
   };
 
-  // --- 5. UPDATED: SAVE CHANGES VIA BULK SAVE ---
+  // --- 5. : SAVE CHANGES VIA BULK SAVE ---
   const handleSaveChanges = async () => {
     if (!activeLayoutId) return;
 
@@ -143,20 +143,20 @@ const LayoutAssignment = () => {
         setLoading(true);
 
         // 1. Prepare data for bulkSave
-        // The API expects { items: [ { layout_id, layout_indices_id, item_id } ] }
+        // The API expects { layout_id, items: [ ... ] }
         const itemsPayload = gridItems.map(item => ({
             layout_id: activeLayoutId,
             layout_indices_id: item.layout_indices_id,
             item_id: item.item_id
         }));
 
-        // 2. Clear existing templates for this layout first
-        // This ensures items removed in UI are removed from DB
-        await apiEndpoints.layoutTemplates.deleteByLayout(activeLayoutId);
-
-        // 3. Bulk Save the new configuration (if there are items)
-        if (itemsPayload.length > 0) {
-            await apiEndpoints.layoutTemplates.bulkSave({ items: itemsPayload });
+        // 2. Call Bulk Save (Sync) ONLY
+        // We pass 'layout_id' inside the body as required by your new controller logic
+        if (itemsPayload.length >= 0) { // Allow saving empty payload to clear layout
+            await apiEndpoints.layoutTemplates.bulkSave({ 
+                layout_id: activeLayoutId,
+                items: itemsPayload 
+            });
         }
 
         alert("Layout saved successfully!");
@@ -190,12 +190,6 @@ const LayoutAssignment = () => {
                 <h3 className='section-title' style={{ marginTop: 0, marginBottom: 0 }}>
                     {activeLayout ? activeLayout.name : 'Loading Layout...'}
                 </h3>
-                
-                {unsavedChanges && (
-                    <button className='save-layout-btn' onClick={handleSaveChanges}>
-                        Save Changes
-                    </button>
-                )}
             </div>
 
             <div className='assign-menu-itm-grid'>
@@ -237,6 +231,11 @@ const LayoutAssignment = () => {
                 });
               })()}
             </div>
+            {unsavedChanges && (
+                <button className='save-layout-btn' onClick={handleSaveChanges}>
+                    Save Changes
+                </button>
+              )}
           </div>
 
           <div className='assign-inspect-panel'>

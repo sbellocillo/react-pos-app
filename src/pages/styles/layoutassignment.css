@@ -29,9 +29,12 @@
 }
 
 .save-layout-btn {
+    width: 240px;
+    height: 60px;
     background-color: #16a34a; /* Green for save action */
     color: white;
     border: none;
+    margin-top: 20px;
     padding: 8px 24px;
     border-radius: 6px;
     font-size: 1rem;
@@ -41,6 +44,8 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s;
     animation: fadeIn 0.3s ease;
+
+    align-self: center;
 }
 
 .save-layout-btn:hover {

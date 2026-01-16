@@ -66,65 +66,81 @@ export const useCheckout = () => {
   };
 
   // --- LOGIC: Calculate Totals ---
-  const calculateTotals = () => {
-    const TAX_RATE = 0.12;
+const calculateTotals = () => {
+    // Constants
+    const VAT_RATE = 0.12; 
     const isSpecialDiscount = isSenior || isPWD;
+    
+    // Optimization: Calculate total quantity once
+    const totalCartQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-    // 1. Create a new array with the tax/total calculated for EACH item
+    // 1. Process each item
     const itemsWithTax = cartItems.map(item => {
-      const grossAmount = item.price * item.quantity;
-      let lineSubtotal, lineTax, lineDiscount, lineTotal;
+      // "Base Price" (Menu Price) * Quantity
+      const extendedBasePrice = item.price * item.quantity;
+      
+      let rowBase, rowTax, rowDiscount, rowPayable;
 
-      // VAT Exempt / Discount Logic
       if (isSpecialDiscount) {
-        // SC/PWD: VAT Exemption (Price / 1.12)
-        const vatExemptAmount = grossAmount / (1 + TAX_RATE);
-        // 20% Discount on the VAT Exempt Amount
-        const specialDiscountAmount = vatExemptAmount * 0.20;
-
-        lineSubtotal = vatExemptAmount; 
-        lineTax = 0;
-        lineDiscount = specialDiscountAmount;
-        lineTotal = vatExemptAmount - specialDiscountAmount;
-      } else {
-        // Regular: Logic updated to assume VAT INCLUSIVE pricing (Standard PH POS)
-        // If price is 112, Tax is 12, Net is 100.
+        // --- Scenario A: Senior/PWD (VAT Exempt + 20% Discount) ---
+        // Since base price is already exclusive (no tax), we just discount it directly.
         
-        // Calculate Discount
+        const seniorDiscountAmount = extendedBasePrice * 0.20;
+
+        rowBase = extendedBasePrice;
+        rowTax = 0;                         // Exempt
+        rowDiscount = seniorDiscountAmount;
+        rowPayable = extendedBasePrice - seniorDiscountAmount;
+        
+      } else {
+        // --- Scenario B: Regular Customer (VAT Exclusive -> Add Tax) ---
+        
+        // Step 1: Calculate Discount on Base Price
+        let calculatedDiscount = 0;
         if (discountType === 'PERCENTAGE') {
-          lineDiscount = grossAmount * (discountValue / 100);
+          calculatedDiscount = extendedBasePrice * (discountValue / 100);
         } else {
           // Prorate fixed amount
-          const totalItems = cartItems.reduce((acc, i) => acc + i.quantity, 0); 
-          lineDiscount = (discountValue / totalItems) * item.quantity;
+          calculatedDiscount = totalCartQuantity > 0 
+            ? (discountValue / totalCartQuantity) * item.quantity 
+            : 0;
         }
+        
+        // Step 2: Determine Net Base (After Discount, Before Tax)
+        const netBasePrice = extendedBasePrice - calculatedDiscount;
 
-        const netAfterDiscount = grossAmount - lineDiscount;
+        // Step 3: Calculate Tax on the Net Base
+        // Formula: NetBase * 0.12
+        const calculatedTax = netBasePrice * VAT_RATE;
+
+        rowBase = extendedBasePrice;
+        rowDiscount = calculatedDiscount;
+        rowTax = calculatedTax;
         
-        // Extract Tax from the discounted amount
-        // Formula: Amount - (Amount / 1.12)
-        const vatableAmount = netAfterDiscount / (1 + TAX_RATE);
-        lineTax = netAfterDiscount - vatableAmount;
-        
-        lineSubtotal = vatableAmount; // Net of Tax
-        lineTotal = netAfterDiscount; // Gross Total to pay
+        // Step 4: Final Payable = Net Base + Tax
+        rowPayable = netBasePrice + calculatedTax;
       }
 
       return {
         ...item,       
-        lineSubtotal,  
-        lineTax,
-        lineDiscount,       
-        lineTotal      
+        lineSubtotal: rowBase,    // Original Base Price (for reference)
+        lineTax: rowTax,          // The Tax Amount to be added
+        lineDiscount: rowDiscount,// The Discount Amount deducted
+        lineTotal: rowPayable     // Final Amount Customer Pays
       };
     });
 
+    // 2. Sum up the columns
     const subtotal = itemsWithTax.reduce((acc, item) => acc + item.lineSubtotal, 0);
-    const tax = itemsWithTax.reduce((acc, item) => acc + item.lineTax, 0);
-    const totalDiscount = itemsWithTax.reduce((acc, item) => acc + item.lineDiscount, 0)
+    const totalTax = itemsWithTax.reduce((acc, item) => acc + item.lineTax, 0);
+    const totalDiscount = itemsWithTax.reduce((acc, item) => acc + item.lineDiscount, 0);
+    
+    // 3. Final Total
+    // In this logic, 'lineTotal' already includes the tax for Regular customers.
+    // So we just sum lineTotal. We DO NOT add tax again.
     const total = itemsWithTax.reduce((acc, item) => acc + item.lineTotal, 0);
 
-    return { subtotal, tax, discount: totalDiscount, total, itemsWithTax };
+    return { subtotal, tax: totalTax, discount: totalDiscount, total, itemsWithTax };
   };
 
   // --- LOGIC: Process Checkout ---
