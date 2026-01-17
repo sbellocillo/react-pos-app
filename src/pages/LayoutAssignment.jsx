@@ -5,7 +5,7 @@ import './styles/layoutassignment.css';
 const LayoutAssignment = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const locationId = currentUser.location_id || 15;
-  const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
+  const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_GLOBAL`;
 
   const [layouts, setLayouts] = useState([]);
   const [activeLayoutId, setActiveLayoutId] = useState(null);
@@ -17,17 +17,23 @@ const LayoutAssignment = () => {
   const [sortableLayouts, setSortableLayouts] = useState([]);
   
   const [allItems, setAllItems] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [itemSearchTerm, setItemSearchTerm] = useState('');
+  const [layoutSearchTerm, setLayoutSearchTerm] = useState('')
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [newLayoutName, setNewLayoutName] = useState('');
+  const [newItemTypeId, setNewItemTypeId] = useState('');
+  const [itemTypes, setItemTypes] = useState([]);
+
   // --- 1. INITIAL FETCH: LAYOUTS ---
   useEffect(() => {
     const fetchLayouts = async () => {
       try {
-        const response = await apiEndpoints.layouts.getByLocation(locationId);
+        const response = await apiEndpoints.layouts.getAll();
         if (response.data && response.data.success) {
           const fetchedLayouts = response.data.data;
           setLayouts(fetchedLayouts);
@@ -52,7 +58,7 @@ const LayoutAssignment = () => {
       }
     };
     fetchLayouts();
-  }, [locationId, layoutOrderKey]);
+  }, [layoutOrderKey]);
 
   // --- 2. INITIAL FETCH: ALL ITEMS (For Modal) ---
   useEffect(() => {
@@ -67,6 +73,21 @@ const LayoutAssignment = () => {
         }
     };
     fetchAllItems();
+  }, []);
+
+  // --- FETCH ITEM TYPES ---
+  useEffect(() => {
+    const fetchItemTypes = async () => {
+      try {
+        const response = await apiEndpoints.itemTypes.getAll();
+        if (response.data && response.data.success) {
+          setItemTypes(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching item types:", error);
+      }
+    };
+    fetchItemTypes();
   }, []);
 
   // --- UPDATED: FETCH FROM LAYOUT TEMPLATES ---
@@ -96,13 +117,20 @@ const LayoutAssignment = () => {
 
   const handleSlotClick = (slotData) => {
     setSelectedSlot(slotData);
-    setSearchTerm('');
+    setItemSearchTerm('');
     setModalOpen(true);
   };
 
   // --- 3. ASSIGN ITEM (Local State Update) ---
   const handleAssignItem = (item) => {
     if (!selectedSlot || !activeLayoutId) return;
+
+    const isDuplicate = gridItems.some(gridItem => gridItem.item_id === item.id);
+
+    if (isDuplicate) {
+      alert(`The item "${item.name}" is already assigned to this layout`);
+      return
+    }
 
     const newAssignment = {
         layout_indices_id: selectedSlot.layout_indices_id,
@@ -172,9 +200,50 @@ const LayoutAssignment = () => {
     }
   };
 
+  // --- CREATE NEW LAYOUT HANDLER ---
+  const handleCreateLayout = async () => {
+    if (!newLayoutName || !newItemTypeId) {
+      alert("Please enter a name and select an item type.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload = {
+        name: newLayoutName,
+        item_type_id: parseInt(newItemTypeId),
+        is_active: true,
+        is_default: false
+      };
+
+      const response = await apiEndpoints.layouts.create(payload);
+
+      if (response.data && response.data.success) {
+        const newLayout = response.data.data;
+
+        setLayouts(prev => [...prev, newLayout]);
+        setSortableLayouts(prev => [...prev, newLayout]);
+
+        setActiveLayoutId(newLayout.id);
+        setGridItems([]);
+
+        setNewLayoutName('');
+        setNewItemTypeId('');
+        setCreateModalOpen(false);
+
+        alert("Layout created successfully!");
+      }
+    } catch (error) {
+        console.error("Error creating layout:", error);
+        alert("Failed to create layout: " + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredItems = allItems.filter(item =>
-    (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.sku && (item.sku || '').toLowerCase().includes(searchTerm.toLowerCase()))
+    (item.name || '').toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+    (item.sku && (item.sku || '').toLowerCase().includes(itemSearchTerm.toLowerCase()))
   );
 
   const activeLayout = layouts.find(l => l.id === activeLayoutId);
@@ -241,16 +310,30 @@ const LayoutAssignment = () => {
           <div className='assign-inspect-panel'>
             <h4 className="panel-header">Available Layouts</h4>
             <div className="layout-list-container">
-              {sortableLayouts.map((layout) => (
-                <button 
-                  key={layout.id} 
-                  className={`layout-list-item ${activeLayoutId === layout.id ? 'active' : ''}`}
-                  onClick={() => handleLayoutClick(layout)}
-                >
-                  {layout.name}
-                </button>
+              <input
+                type='text'
+                className='assign-modal-search'
+                placeholder='Search...'
+                value={layoutSearchTerm}
+                onChange={(e) => setLayoutSearchTerm(e.target.value)}
+              />
+              {sortableLayouts
+                .filter(layout => layout.name.toLowerCase().includes(layoutSearchTerm.toLowerCase()))
+                .map((layout) => (
+                  <button 
+                    key={layout.id} 
+                    className={`layout-list-item ${activeLayoutId === layout.id ? 'active' : ''}`}
+                    onClick={() => handleLayoutClick(layout)}
+                  >
+                    {layout.name}
+                  </button>
               ))}
             </div>
+            <button className='new-layout-btn'
+                    onClick={() => setCreateModalOpen(true)}
+            >
+                + New Layout
+            </button>
           </div>
         </div>
       </div>
@@ -285,29 +368,106 @@ const LayoutAssignment = () => {
                     type='text'
                     className='assign-modal-search'
                     placeholder='Search items by name or SKU...'
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={itemSearchTerm}
+                    onChange={(e) => setItemSearchTerm(e.target.value)}
                     autoFocus
                 />
 
                 <div className='assign-item-list'>
                     {filteredItems.length > 0 ? (
-                        filteredItems.map(item => (
+                        filteredItems.map(item => {
+
+                          const isAssigned = gridItems.some(g => g.item_id === item.id);
+
+                          return (
                             <button
                                 key={item.id}
-                                className='assign-item-row'
+                                className={`assign-item-row ${isAssigned ? 'disabled' : ''}`}
                                 onClick={() => handleAssignItem(item)}
+                                disabled={isAssigned}
                             >
-                                <span className='assign-item-name'>{item.name}</span>
+                                <span className='assign-item-name'>{item.name} {isAssigned ? '(Assigned)' : ''}</span>
                                 <span className='assign-item-price'>
                                     {item.price ? `₱${parseFloat(item.price).toFixed(2)}` : ''}
                                 </span>
                             </button>
-                        ))
+                          )
+                        })
                     ) : (
                         <div className='assign-no-results'>No items found.</div>
                     )}
                 </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {createModalOpen && (
+        <div className='modal-overlay'>
+          <div className='assign-modal-panel'>
+            
+            {/* Header */}
+            <div className='assign-modal-header'>
+                <h4>Create New Layout</h4>
+                <button 
+                  className='assign-modal-close' 
+                  onClick={() => setCreateModalOpen(false)}
+                >
+                  ✕
+                </button>
+            </div>
+
+            {/* Body */}
+            <div className='create-modal-body'>
+                
+                {/* Input: Layout Name */}
+                <div className='create-form-group'>
+                    <label className='create-form-label'>Layout Name</label>
+                    <input
+                        type='text'
+                        className='assign-modal-search' /* Reusing existing input style */
+                        placeholder='Ex: Main Dining Food'
+                        value={newLayoutName}
+                        onChange={(e) => setNewLayoutName(e.target.value)}
+                        autoFocus
+                    />
+                </div>
+
+                {/* Input: Item Category */}
+                <div className='create-form-group'>
+                    <label className='create-form-label'>Item Type Category</label>
+                    <select 
+                        className='assign-modal-search' /* Reusing existing input style */
+                        value={newItemTypeId}
+                        onChange={(e) => setNewItemTypeId(e.target.value)}
+                        style={{ cursor: 'pointer', appearance: 'auto' }}
+                    >
+                        <option value="">-- Select Type --</option>
+                        {itemTypes.map(type => (
+                            <option key={type.id} value={type.id}>
+                                {type.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Footer Buttons */}
+                <div className='create-action-row'>
+                    <button 
+                        className='btn-modal-cancel'
+                        onClick={() => setCreateModalOpen(false)}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        className='btn-modal-create'
+                        onClick={handleCreateLayout}
+                        disabled={loading}
+                    >
+                        {loading ? 'Creating...' : 'Create Layout'}
+                    </button>
+                </div>
+
             </div>
           </div>
         </div>

@@ -40,7 +40,6 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'Instrument Sans', sans-serif;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s;
     animation: fadeIn 0.3s ease;
@@ -141,7 +140,6 @@
     padding: 1.5rem;
     margin-top: 1rem;
     overflow: hidden;
-    font-family: 'Instrument Sans', sans-serif;
 }
 
 /* --- RIGHT PANEL LIST STYLES --- */
@@ -173,7 +171,6 @@
     color: #333;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: 'Instrument Sans', sans-serif;
 }
 
 .layout-list-item:hover {
@@ -260,7 +257,6 @@
     border-radius: 4px;
     font-size: 0.9rem;
     cursor: pointer;
-    font-family: 'Instrument Sans', sans-serif;
     transition: background 0.2s;
 }
 
@@ -276,7 +272,6 @@
     font-size: 1rem;
     margin-bottom: 1rem;
     outline: none;
-    font-family: 'Instrument Sans', sans-serif;
     box-sizing: border-box;
 }
 
@@ -300,9 +295,15 @@
     border-bottom: 1px solid #f3f4f6;
     background: white;
     cursor: pointer;
-    font-family: 'Instrument Sans', sans-serif;
     transition: background 0.1s;
     text-align: left;
+}
+
+.assign-item-row.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #eee;
+    pointer-events: none;
 }
 
 .assign-item-row:last-child {
@@ -328,4 +329,87 @@
     text-align: center;
     color: #999;
     font-style: italic;
+}
+
+.new-layout-btn {
+    height: 80px;
+    background: white;
+    border: none;
+    font-size: 28px;
+    font-weight: 700;
+    color: #989898; 
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.new-layout-btn:hover {
+    color: #B74C4C;
+}
+
+.new-layout-btn.active {
+    color: #B74C4C;
+}
+
+.create-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 20px;
+}
+
+.create-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.create-form-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #555;
+    margin-left: 2px;
+}
+
+.create-action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.btn-modal-cancel {
+    padding: 10px 20px;
+    background-color: #E0E0E0;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-modal-cancel:hover {
+    background-color: #D0D0D0;
+}
+
+.btn-modal-create {
+    padding: 10px 20px;
+    background-color: #28A745;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-modal-create:hover {
+    opacity: 0.9;
+}
+
+.btn-modal-create:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
