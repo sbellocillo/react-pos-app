@@ -439,7 +439,7 @@ body, html {
     background: transparent;
     height: 140px;
     border-radius: 7px;
-    border: 1px dashed transparent; 
+    border: 1px dashed #D9D9D9; 
 }
 
 .card-label {
