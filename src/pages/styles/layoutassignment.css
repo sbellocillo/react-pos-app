@@ -31,7 +31,7 @@
 .save-layout-btn {
     width: 240px;
     height: 60px;
-    background-color: #16a34a; /* Green for save action */
+    background-color: #15803d; /* Green for save action */
     color: white;
     border: none;
     margin-top: 20px;
@@ -48,7 +48,7 @@
 }
 
 .save-layout-btn:hover {
-    background-color: #15803d;
+    background-color: #16a34a;
     transform: translateY(-1px);
 }
 
@@ -108,10 +108,11 @@
 
 /* --- EMPTY CARD FOR GRID ALIGNMENT --- */
 .assign-menu-itm-card-empty {
-    background: white;
+    background: transparent;
     height: 140px;
     border-radius: 7px;
-    border: 1px dashed #e5e7eb; 
+    border: 1px dashed #D9D9D9; 
+    color: #D9D9D9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,11 +122,16 @@
     transition: all 0.2s;
 }
 
+.assign-menu-itm-card-empty .card-label {
+    color: inherit;
+}
+
 /* --- NEW HOVER STATE FOR EMPTY BUTTONS --- */
 .assign-menu-itm-card-empty:hover {
     border-color: #B74C4C;
     background-color: #fef2f2; /* Light red tint */
     transform: translateY(-2px);
+    color: #111;
 }
 
 .assign-inspect-panel {
@@ -189,7 +195,7 @@
     width: 500px;  
     height: 600px;
     background: white;
-    padding: 0; 
+    padding: 20px; 
     border-radius: 7px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -204,6 +210,7 @@
 
 .assign-modal-header {
     padding: 1.5rem;
+    margin-bottom: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
@@ -412,4 +419,23 @@
 .btn-modal-create:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.assign-action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.assign-action-buttons .save-layout-btn{
+    margin-top: 0;
+}
+
+.save-layout-btn.revert {
+    background-color: #B74C4C;
+}
+
+.save-layout-btn.revert:hover {
+    background-color: #d84949;
 }

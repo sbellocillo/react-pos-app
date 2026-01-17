@@ -200,6 +200,19 @@ const LayoutAssignment = () => {
     }
   };
 
+  const handleRevertChanges = async () => {
+    if (!activeLayoutId) return;
+
+    // Confirmation
+    const confirmRevert = window.confirm("Are you sure you want to discard unsaved changes? This will revert layout to its last saved state.");
+    
+    if (confirmRevert) {
+      setLoading(true);
+      await fetchGridItems(activeLayoutId);
+      setLoading(false);
+    }
+  };
+
   // --- CREATE NEW LAYOUT HANDLER ---
   const handleCreateLayout = async () => {
     if (!newLayoutName || !newItemTypeId) {
@@ -300,10 +313,23 @@ const LayoutAssignment = () => {
                 });
               })()}
             </div>
+            {/* --- ACTION BUTTONS --- */}
             {unsavedChanges && (
-                <button className='save-layout-btn' onClick={handleSaveChanges}>
+              <div className='assign-action-buttons'>
+                <button 
+                  className='save-layout-btn revert' 
+                  onClick={handleRevertChanges}
+                >
+                    Revert Changes
+                </button>
+
+                <button 
+                  className='save-layout-btn' 
+                  onClick={handleSaveChanges}
+                >
                     Save Changes
                 </button>
+              </div>
               )}
           </div>
 
