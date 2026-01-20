@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 
 // Layouts & Pages
-import MainLayout from './components/layout/MainLayout';
+import MainLayout from './components/uiLayout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Checkout from './pages/Checkout';
@@ -26,6 +26,7 @@ import OrderMenu from './pages/OrderMenu';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Queue from './pages/Queue';
+import Layouts from './pages/Layouts';
 import LayoutAssignment from './pages/LayoutAssignment';
 
 function ProtectedRoute({ children }) {
@@ -39,10 +40,10 @@ function App() {
     <div className='app-scale-wrapper'>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/ordermenu" element={<ProtectedRoute><OrderMenu onBack={() => window.history.back()} /></ProtectedRoute>} />
           
-          <Route path="/" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
 
           {/* Standard Pages wrapped in MainLayout */}
           <Route path="/items" element={<ProtectedRoute><MainLayout><Items /></MainLayout></ProtectedRoute>} />
@@ -62,6 +63,7 @@ function App() {
           <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
           <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
+          <Route path="/layouts" element={<ProtectedRoute><MainLayout><Layouts /></MainLayout></ProtectedRoute>} />
           <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>

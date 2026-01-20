@@ -195,6 +195,7 @@ export const apiEndpoints = {
         getById: (id) => api.get(`/layouts/${id}`),
         create: (data) => api.post('/layouts', data),
         update: (id, data) => api.put(`/layouts/${id}`, data),
+        remove: (id) => api.patch(`/layouts/${id}/remove`),
         delete: (id) => api.delete(`/layouts/${id}`),
     },
 
@@ -207,12 +208,14 @@ export const apiEndpoints = {
 
     layoutPosTerminal: {
         getAll: () => api.get('/layout-pos-terminal'),
-        getByLocations: (locationId) => api.get(`/layout-pos-terminal/location/${locationId}`),
+        getLayoutsByLocation: (locationId) => api.get(`/layout-pos-terminal/layouts/${locationId}`),
+        getByLocation: (locationId) => api.get(`/layout-pos-terminal/location/${locationId}`),
         getByLayoutAndLocation: (layoutId, locationId) => api.get(`/layout-pos-terminal/layout/${layoutId}/location/${locationId}`),
         getById: (id) => api.get(`/layout-pos-terminal/${id}`),
         create: (data) => api.post('/layout-pos-terminal', data),
         bulkCreate: (data) => api.post('/layout-pos-terminal/bulk', data),
         assign: (data) => api.post('/layout-pos-terminal/assign', data),
+        unassign: (data) => api.post('/layout-pos-terminal/unassign', data),
         update: (id, data) => api.put(`/layout-pos-terminal/${id}`, data),
         delete: (id) => api.delete(`/layout-pos-terminal/${id}`),
         deleteByLocation: (locationId) => api.delete(`/layout-pos-terminal/location/${locationId}`),

@@ -50,7 +50,7 @@ export default function MainLayout({ children }) {
 
   // --- MENU CONFIGURATION ---
   const sideMenuItems = [
-    { id: 'dashboard', label: 'Dashboard',     icon: <img src={squaredMenuIcon} className="nav-icon" alt="" />, path: '/' },
+    { id: 'dashboard', label: 'Dashboard',     icon: <img src={squaredMenuIcon} className="nav-icon" alt="" />, path: '/dashboard' },
     { id: 'transactions', label: 'Transactions',  icon: <img src={billIcon} className="nav-icon" alt="" />, path: '/items' },
     { id: 'queuing',   label: 'Queuing',       icon: <img src={queueIcon} className="nav-icon" alt="" />, path: '/queue' },
     { id: 'history',   label: 'Order History', icon: <img src={historyIcon} className="nav-icon" alt="" />, path: '/locations' },
@@ -119,7 +119,7 @@ export default function MainLayout({ children }) {
         <div className='dashboard-header'>
           <div className='header-search'>
              <div style={{ marginRight: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-               onClick={() => isCheckout ? navigate('/') : setIsSidebarOpen(true)}>
+               onClick={() => isCheckout ? navigate('/dashboard') : setIsSidebarOpen(true)}>
               {isCheckout ? <TbArrowLeft style={{ width: '24px', height: '24px' }} /> : <RxHamburgerMenu style={{ width: '24px', height: '24px' }} />}
              </div>
              {isDashboard ? (
@@ -142,7 +142,7 @@ export default function MainLayout({ children }) {
             <div className='user-profile'>
                 <div className='info-block'>
                     <div className='info-title'>{currentUser?.username || 'Admin'}</div>
-                    <div className='info-subtitle'>Clocked in at 08:00</div>
+                    <div className='info-subtitle'>Clocked in at {currentUser?.loginTime || '--:--'}</div>
                 </div>
                 <div className='user-avatar'>{getTheFirstCharacter(currentUser?.username)}</div>
             </div>

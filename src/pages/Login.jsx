@@ -75,17 +75,24 @@ const Login = () => {
       );
 
       if (user) {
+        // Save time logged in
+        const loginTime = new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
         // Store user data and auth token
         localStorage.setItem('authToken', `user_${user.id}_${Date.now()}`);
         localStorage.setItem('currentUser', JSON.stringify({
           id: user.id,
           username: user.username,
           role_name: user.role_name,
-          location_name: user.location_name
+          location_name: user.location_name,
+          loginTime: loginTime
         }));
 
         // Navigate to dashboard
-        navigate('/');
+        navigate('/dashboard');
       } else {
         setError('Invalid username, password, or account is inactive');
       }
