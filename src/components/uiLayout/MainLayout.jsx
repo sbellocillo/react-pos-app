@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import useServerStatus from '../../hooks/useServerStatus';
+
 import { RxHamburgerMenu } from "react-icons/rx";
 import { TbArrowLeft } from "react-icons/tb";
 
@@ -16,6 +18,7 @@ import signOutIcon from '../../assets/images/sign-out.png';
 export default function MainLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const isOnline = useServerStatus();
   const [currentUser, setCurrentUser] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -130,9 +133,24 @@ export default function MainLayout({ children }) {
           </div>
           <div className='header-info-group'>
             <div className="info-block">
-              <div className="pos-status-card">
-                <span className="signal-bars"><span className="bar b1" /><span className="bar b2" /><span className="bar b3" /><span className="bar b4" /><span className="bar b5" /></span>
-                <div className="status-text"><div className="info-subtitle">POS Status:</div><div className="info-title online">ONLINE</div></div>
+              <div className={`pos-status-card ${!isOnline ? 'offline-mode' : ''}`}>
+                <span className="signal-bars">
+                  <span className={`bar b1 ${!isOnline ? 'gray' : ''}`} />
+                  <span className={`bar b2 ${!isOnline ? 'gray' : ''}`} />
+                  <span className={`bar b3 ${!isOnline ? 'gray' : ''}`} />
+                  <span className={`bar b4 ${!isOnline ? 'gray' : ''}`} />
+                  <span className={`bar b5 ${!isOnline ? 'gray' : ''}`} />
+                </span>
+                <div className="status-text">
+                  <div className="info-subtitle">
+                    POS Status:
+                  </div>
+                  {isOnline ? (
+                    <div className='info-title online'>ONLINE</div>
+                  ) : (
+                    <div className='info-title offline' style={{ color: 'red' }}>OFFLINE</div>
+                  )}
+                </div>
               </div>
             </div>
             <div className='date-time'>

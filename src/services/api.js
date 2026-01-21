@@ -71,6 +71,11 @@ api.interceptors.response.use(
 
 // API endpoints
 export const apiEndpoints = {
+    // System Health
+    system: {
+        checkHealth: () => api.get('/health'),
+    },
+    
     // Item Types
     itemTypes: {
         getAll: () => api.get('/item-categories'),

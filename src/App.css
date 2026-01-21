@@ -262,6 +262,11 @@ body, html {
     font-size: 0.9rem;
 }
 
+.info-title.offline {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
 .info-subtitle {
     font-size: 15px;
     color: #000000;
@@ -303,6 +308,10 @@ body, html {
   width: 3px;
   background: #6c6c6c;
   border-radius: 2px;
+}
+
+.bar.gray {
+    background: #ccc;
 }
 
 .signal-bars .b1 { height: 5px; }
