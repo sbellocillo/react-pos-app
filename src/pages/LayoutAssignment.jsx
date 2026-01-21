@@ -1,25 +1,23 @@
+// src/pages/LayoutAssignment.jsx
 import React, { useState, useEffect } from 'react';
 import { apiEndpoints } from '../services/api';
-import { CiCircleRemove } from "react-icons/ci";
+import AssignmentPanel from '../components/layoutAssignment/AssignmentPanel';
+import LocationSidebar from '../components/layoutAssignment/LocationSidebar';
+import AssignLayoutModal from '../components/layoutAssignment/modals/AssignLayoutModal';
 import './styles/layouts.css';
 
 const LayoutAssignment = () => {
-    // --- State ---
+    // --- Global State ---
     const [locations, setLocations] = useState([]);
-    const [allLayouts, setAllLayouts] = useState([]); // Available menus
-    const [assignments, setAssignments] = useState([]); // Currently assigned menus
-
+    const [allLayouts, setAllLayouts] = useState([]); // All available menus
+    const [assignments, setAssignments] = useState([]); // Currently active menus
     const [selectedLocationId, setSelectedLocationId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    // Search states
-    const [locSearch, setLocSearch] = useState('');
-    const [layoutSearch, setLayoutSearch] = useState('');
 
     // Derived
     const selectedLocation = locations.find(l => l.id === selectedLocationId);
 
-    // --- Initial Data Load ---
+    // --- Init ---
     useEffect(() => {
         const initData = async () => {
             try {
@@ -36,7 +34,7 @@ const LayoutAssignment = () => {
         initData();
     }, []);
 
-    // --- Actions ---
+    // --- Logic ---
     const fetchAssignments = async (locId) => {
         setAssignments([]);
         try {
@@ -83,111 +81,31 @@ const LayoutAssignment = () => {
         <div className='assign-app-container'>
             <div className='assign-body-wrapper'>
                 
-                {/* LEFT: LOCATIONS LIST */}
-                <div className='location-list-panel'>
-                    <h3 className='section-title'>Store Branches</h3>
-                    <input 
-                        className='form-input' 
-                        placeholder='Search branches...' 
-                        value={locSearch}
-                        onChange={e => setLocSearch(e.target.value)}
-                    />
-                    <div className='scrollable-list'>
-                        {locations
-                            .filter(l => l.name.toLowerCase().includes(locSearch.toLowerCase()))
-                            .map(loc => (
-                                <div
-                                    key={loc.id}
-                                    className={`list-item-row ${selectedLocationId === loc.id ? 'active' : ''}`}
-                                    onClick={() => handleLocationSelect(loc.id)}
-                                >
-                                    {loc.name}
-                                </div>
-                            ))}
-                    </div>
-                </div>
+                {/* Left: Location List */}
+                <LocationSidebar 
+                    locations={locations}
+                    selectedLocationId={selectedLocationId}
+                    onSelect={handleLocationSelect}
+                />
 
-                {/* RIGHT: ASSIGNMENTS */}
-                <div className='layout-list-panel'>
-                    {!selectedLocation ? (
-                        <div className='panel-empty-state'>Select a location to manage menus</div>
-                    ) : (
-                        <>
-                            <div className='panel-header-row'>
-                                <div>
-                                    <h3 className='section-title'>{selectedLocation.name}</h3>
-                                    <span className='panel-subtitle'>Assigned Menus</span>
-                                </div>
-                                <button className='btn-primary' onClick={() => setIsModalOpen(true)}>
-                                    + Assign Layout
-                                </button>
-                            </div>
-
-                            <div className='scrollable-list'>
-                                {assignments.length === 0 ? (
-                                    <div className='panel-empty-state'>No layouts assigned yet.</div>
-                                ) : (
-                                    assignments.map(a => (
-                                        <div key={a.id} className='list-item-row'>
-                                            <div>
-                                                <strong>{a.name}</strong>
-                                                <div className='panel-subtitle'>{a.item_type_name}</div>
-                                            </div>
-                                            <button 
-                                                className='btn-icon-action' 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleUnassign(a.id);
-                                                }}
-                                            >
-                                                <CiCircleRemove size={28} />
-                                            </button>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </>
-                    )}
-                </div>
+                {/* Right: Active Assignments */}
+                <AssignmentPanel 
+                    selectedLocation={selectedLocation}
+                    assignments={assignments}
+                    onOpenModal={() => setIsModalOpen(true)}
+                    onUnassign={handleUnassign}
+                />
             </div>
 
-            {/* MODAL */}
-            {isModalOpen && (
-                <div className='modal-overlay'>
-                    <div className='modal-panel'>
-                        <div className='modal-header'>
-                            <h4>Assign Layout to {selectedLocation?.name}</h4>
-                            <button className='btn-icon-action' onClick={() => setIsModalOpen(false)}>✕</button>
-                        </div>
-                        <div className='modal-body'>
-                            <input 
-                                className='form-input' 
-                                placeholder='Search layouts...'
-                                value={layoutSearch}
-                                onChange={e => setLayoutSearch(e.target.value)} 
-                            />
-                            <div className='scrollable-list'>
-                                {allLayouts
-                                    .filter(l => l.name.toLowerCase().includes(layoutSearch.toLowerCase()))
-                                    .map(layout => {
-                                        const isAssigned = assignments.some(a => a.id === layout.id);
-                                        return (
-                                            <button
-                                                key={layout.id}
-                                                className={`list-item-row ${isAssigned ? 'disabled' : ''}`}
-                                                disabled={isAssigned}
-                                                onClick={() => handleAssign(layout.id)}
-                                            >
-                                                <span>{layout.name}</span>
-                                                {isAssigned && <small>(Assigned)</small>}
-                                            </button>
-                                        );
-                                    })}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Modal: Pick Layout */}
+            <AssignLayoutModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                locationName={selectedLocation?.name}
+                allLayouts={allLayouts}
+                currentAssignments={assignments}
+                onAssign={handleAssign}
+            />
         </div>
     );
 };
