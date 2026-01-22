@@ -193,7 +193,7 @@ export const apiEndpoints = {
     },
 
     layouts: {
-        getAll: () => api.get('layouts'),
+        getAll: () => api.get('/layouts'),
         getDefaults: () => api.get('/layouts/defaults'),
         getByItemType: (itemTypeId) => api.get(`/layouts/item-type/${itemTypeId}`),
         getByLocation: (locationId) => api.get(`/layouts/location/${locationId}`),

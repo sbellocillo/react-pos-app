@@ -9,7 +9,7 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-ki
 
 export default function Dashboard() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-  const locationId = currentUser.location_id || 15;
+  const locationId = currentUser.location_id || 22;
   const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
 
   const { 

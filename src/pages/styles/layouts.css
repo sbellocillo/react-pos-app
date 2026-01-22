@@ -412,3 +412,34 @@ select.form-inout {
 ::-webkit-scrollbar-thumb:active {
     background-color: #B74C4C; 
 }
+
+.th-text-center {
+    text-align: center;
+    padding: 1rem;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+}
+
+.th-text-left {
+    text-align: left;
+    padding: 1rem;
+    color: #6b7280;
+}
+
+.td-text-center {
+    text-align: center;
+    padding: 1rem;
+    color: #6b7280;
+}
+
+.td-text-left {
+    text-align: left;
+    padding: 1rem;
+    color: #6b7280;
+}
+
+.th-position {
+    position: sticky;
+    top: 0px;
+}

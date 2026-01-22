@@ -234,6 +234,45 @@
   margin-top: 0.25rem;
 }
 
+.sidebar-dropdown-group {
+  width: 100%;
+}
+
+.sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 52px;
+  margin-top: 6px;
+  gap: 6px;
+}
+
+.sidebar-submenu-item {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 15px 0 15px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-size: large;
+}
+
+.sidebar-submenu-item:hover {
+  background: #fef2f2;
+}
+
+.sidebar-submenu-item.active {
+  background:#B74C4C;
+  font-weight: 600;
+}
+
+.sidebar-submenu-bullet {
+  opacity: 0.7;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
@@ -251,3 +290,4 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
