@@ -34,7 +34,7 @@ export default function MainLayout({ children }) {
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
-    navigate('/login');
+    navigate('/');
   };
 
   const getPageTitle = (path) => {
