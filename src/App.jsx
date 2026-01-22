@@ -28,6 +28,7 @@ import Help from './pages/Help';
 import Queue from './pages/Queue';
 import Layouts from './pages/Layouts';
 import LayoutAssignment from './pages/LayoutAssignment';
+import LayoutCategory from './pages/LayoutCategory';
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = localStorage.getItem('authToken');
@@ -65,6 +66,7 @@ function App() {
           <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
           <Route path="/layouts" element={<ProtectedRoute><MainLayout><Layouts /></MainLayout></ProtectedRoute>} />
           <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
+          <Route path="/layoutcategory" element={<ProtectedRoute><MainLayout><LayoutCategory /></MainLayout></ProtectedRoute>} />
         </Routes>
       </Router>
     </div>
