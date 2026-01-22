@@ -3,7 +3,7 @@ import { apiEndpoints } from '../services/api';
 import LayoutGrid from '../components/menuLayout/LayoutGrid';
 import LayoutSidebar from '../components/menuLayout/LayoutSidebar';
 import EditSlotModal from '../components/menuLayout/modals/EditSlotModal';
-import CreateLayoutModal from '../components/menuLayout/modals/CreateFileModal';
+import CreateLayoutModal from '../components/menuLayout/modals/CreateLayoutModal';
 import './styles/layouts.css';
 
 const Layouts = () => {
