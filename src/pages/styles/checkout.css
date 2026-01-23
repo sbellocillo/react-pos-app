@@ -283,6 +283,10 @@
   margin: 0;
 }
 
+.print-only-total {
+    display: none;
+}
+
 @media print {
   /* 1. Hide the Sidebar (Navigation) */
   .sidebar, 
@@ -362,7 +366,6 @@
 
   /* 6. Style the Text Rows for readability */
   .checkout-item-row {
-    border-bottom: 1px dashed #D9D9D9; /* Dashed lines look good on receipts */
     padding: 5px 0;
     margin-bottom: 5px;
     color: black !important;
@@ -375,7 +378,6 @@
 
   /* 7. Footer / Totals Section */
   .checkout-footer {
-    border-top: 2px solid #000;
     margin-top: 10px;
     padding-top: 10px;
   }
@@ -392,5 +394,14 @@
   .receipt-header {
     text-align: center;
     margin-bottom: 20px;
+  }
+
+  .print-only-total {
+    display: flex !important;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    padding-top: 5px;
   }
 }

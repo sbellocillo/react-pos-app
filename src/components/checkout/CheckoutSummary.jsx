@@ -41,6 +41,11 @@ const CheckoutSummary = ({ cartItems, totals, formatCurrency }) => {
           <span>Tax</span>
           <span className='summary-value'>{formatCurrency(totals.tax)}</span>
         </div>
+
+        <div className='summary-row print-only-total'>
+          <span>Total</span>
+          <span className='sumary-value'>{formatCurrency(totals.total)}</span>
+        </div>
       </div>
     </div>
   );

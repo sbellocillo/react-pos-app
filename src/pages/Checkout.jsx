@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCheckout } from '../hooks/useCheckout';
+import { Receipt } from '../components/checkout/Receipt';
 import CheckoutSummary from '../components/checkout/CheckoutSummary';
 import PaymentPanel from '../components/checkout/PaymentPanel';
 import './styles/checkout.css';
@@ -9,6 +10,7 @@ const Checkout = () => {
   const { processCheckout } = useCheckout();
   const location = useLocation();
   const navigate = useNavigate();
+  const receiptRef = React.useRef();
 
   // Safely retrieve state with defaults from Router
   const {
@@ -51,6 +53,15 @@ const Checkout = () => {
         setCashReceived={setCashReceived}
         handlePayment={handlePayment}
         formatCurrency={formatCurrency}
+      />
+
+      {/* Receipt */}
+      <Receipt
+        ref={receiptRef}
+        cartItems={cartItems}
+        totals={totals}
+        orderNumber="XXX"
+        date={new Date().toLocaleString()}
       />
     </div>
   );
