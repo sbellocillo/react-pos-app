@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiEndpoints } from '../services/api';
-import { useCheckout } from './Checkout';
+import { useCheckout } from '../hooks/useCheckout';
 import OrderBillPanel from '../components/dashboard/OrderBillPanel';
 import SortableCategoryButton from '../components/dashboard/SortableCategoryButton';
 
