@@ -90,8 +90,8 @@ export default function MainLayout({ children }) {
       path: '/layout',
       children: [
         { id: 'layoutcategory', label: 'Layout Category', path: '/layoutcategory' },
-        { id: 'layout-templates', label: 'Layout Templates', path: '/layout-templates' },
-        { id: 'layout-pos', label: 'Layout POS Terminal', path: '/layout-pos' },
+        { id: 'layout-templates', label: 'Layout Templates', path: '/layouts' },
+        { id: 'layout-pos', label: 'Layout POS Terminal', path: '/layoutassignment' },
       ]
     },
   ];

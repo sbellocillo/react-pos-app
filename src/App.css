@@ -994,7 +994,7 @@ body, html {
 .bill-items-list {
     width: 474px;
     height: 369px;
-    flex: 1;
+    flex: none;
     overflow-y: auto;
     overflow-x: hidden;
     margin-bottom: .5rem;

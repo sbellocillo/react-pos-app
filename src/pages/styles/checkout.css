@@ -282,3 +282,115 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+@media print {
+  /* 1. Hide the Sidebar (Navigation) */
+  .sidebar, 
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  /* 2. Hide the Top Header (Search, Profile, POS Status) */
+  .dashboard-header {
+    display: none !important;
+  }
+
+  /* 3. Reset the wrapper so the Receipt takes the full page */
+  .main-layout-container {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  @page {
+    margin: 0; /* Remove default browser page margins */
+    size: auto; 
+  }
+
+  body {
+    background-color: white;
+    color: black;
+    font-family: 'Courier New', Courier, monospace; /* Monospace looks best on thermal */
+    font-size: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 2. Hide Non-Receipt Elements */
+  .right-panel, 
+  .add-user-btn, 
+  .navbar, /* Assuming you have a navbar class */
+  button {
+    display: none !important;
+  }
+
+  /* 3. Style the Container to fit the paper */
+  .app-scale-wrapper, 
+  .dashboard-container, 
+  .checkout-container {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    background: white !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  /* 4. Target the Left Panel (The Receipt Body) */
+  .left-panel {
+    width: 100% !important; /* Let the printer driver handle the width (58mm/80mm) */
+    max-width: none !important;
+    height: auto !important;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* 5. Force the item list to expand fully (No scrolling on paper) */
+  .checkout-items-list {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* 6. Style the Text Rows for readability */
+  .checkout-item-row {
+    border-bottom: 1px dashed #D9D9D9; /* Dashed lines look good on receipts */
+    padding: 5px 0;
+    margin-bottom: 5px;
+    color: black !important;
+  }
+
+  .item-qty {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  /* 7. Footer / Totals Section */
+  .checkout-footer {
+    border-top: 2px solid #000;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  /* Optional: Add a centered header if your component has one */
+  .receipt-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}

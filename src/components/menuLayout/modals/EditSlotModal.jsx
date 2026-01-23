@@ -46,7 +46,8 @@ const EditSlotModal = ({
             
             <div className='scrollable-list'>
                 {menuItems
-                    .filter(i => i.name.toLowerCase().includes(itemSearch.toLowerCase()))
+                    .filter(i => i.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
+                    (i.category_name && i.category_name.toLowerCase().includes(itemSearch.toLowerCase())))
                     .map(item => {
                          const isUsed = currentGridItems.some(g => g.item_id === item.id);
                          return (

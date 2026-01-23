@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCheckout } from '../hooks/useCheckout';
 import CheckoutSummary from '../components/checkout/CheckoutSummary';
 import PaymentPanel from '../components/checkout/PaymentPanel';
@@ -8,6 +8,7 @@ import './styles/checkout.css';
 const Checkout = () => {
   const { processCheckout } = useCheckout();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Safely retrieve state with defaults from Router
   const {
@@ -24,9 +25,14 @@ const Checkout = () => {
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
 
   // Helper to trigger checkout with the correct Context
-  const handlePayment = () => {
+  const handlePayment =  async () => {
     // Pass the flags from location.state into the hook function
-    processCheckout(cartItems, totals, orderNote, { isSenior, isPWD });
+    const success = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD });
+
+    if (success) {
+      window.print();
+      navigate('/dashboard');
+    }
   };
 
   return (
