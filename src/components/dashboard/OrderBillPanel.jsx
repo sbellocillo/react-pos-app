@@ -47,6 +47,14 @@ export default function OrderBillPanel({
       case 'addOrderNote':
         setActiveModalView('note');
         break;
+      case 'voidOrder':
+        if (window.confirm("Are you sure you want to VOID the entire order? This action cannot be undone")) {
+          if (onClearCart) onClearCart();
+          setActiveModalView(null);
+        }
+        if (onClearCart) onClearCart();
+        setActiveModalView(null);
+        break;
       default:
         alert(`${action} functionality not yet implemented.`);
         setActiveModalView(null);

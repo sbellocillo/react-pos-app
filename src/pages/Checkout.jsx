@@ -18,7 +18,8 @@ const Checkout = () => {
     totals = { subtotal: 0, tax: 0, total: 0 },
     orderNote = "",
     isSenior = false,
-    isPWD = false
+    isPWD = false,
+    orderType = 1
   } = location.state || {};
 
   // Local state for Cash Input
@@ -29,7 +30,7 @@ const Checkout = () => {
   // Helper to trigger checkout with the correct Context
   const handlePayment =  async () => {
     // Pass the flags from location.state into the hook function
-    const success = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD });
+    const success = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD, orderType });
 
     if (success) {
       window.print();

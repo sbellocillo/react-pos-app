@@ -131,6 +131,7 @@ export const useCheckout = () => {
     };
     
     // Determine flags: Use options if passed, otherwise use hook state
+    const useOrderType = options.orderType !== undefined ? options.orderType : orderType;
     const useSenior = options.isSenior !== undefined ? options.isSenior : isSenior;
     const usePWD = options.isPWD !== undefined ? options.isPWD : isPWD;
 
@@ -142,7 +143,7 @@ export const useCheckout = () => {
       user_id: currentUser.id || 300,
       customer_id: 1,
       status_id: 1,
-      order_type_id: orderType,
+      order_type_id: useOrderType,
       tax_percentage: useSenior || usePWD ? 0 : 0.12, 
       tax_amount: currentTotals.tax,
       subtotal: currentTotals.subtotal,
