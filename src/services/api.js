@@ -107,6 +107,7 @@ export const apiEndpoints = {
         getQueue: () => api.get('/orders/queue'),
         updateStatus: (id, statusId) => api.patch(`/orders/${id}/status`, { status_id: statusId }),
         getById: (id) => api.get(`/orders/${id}`),
+        getNextNumber: (locationId, posId) => api.get(`/orders/next-number?location_id=${locationId}&pos_terminal_number=${posId}`),
         create: (data) => api.post('/orders', data),
         update: (id, data) => api.put(`/orders/${id}`, data),
         delete: (id) => api.delete(`/orders/${id}`),
@@ -123,7 +124,7 @@ export const apiEndpoints = {
         delete: (id) => api.delete(`/order-items/${id}`),
     },
 
-    // Users
+    // Users)
     users: {
         getAll: () => api.get('/users'),
         getById: (id) => api.get(`/users/${id}`),

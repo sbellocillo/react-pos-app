@@ -9,7 +9,7 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-ki
 
 export default function Dashboard() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-  const locationId = currentUser.location_id || 15;
+  const locationId = currentUser.location_id; //change to fixed int for testing
   const layoutOrderKey = `layoutOrder_${currentUser.id || "guest"}_${locationId}`;
 
   const { 
@@ -27,7 +27,7 @@ export default function Dashboard() {
         discountValue, setDiscountValue,
         isSenior, setIsSenior,
         isPWD, setIsPWD,
-        orderNote, setOrderNote
+        orderNote, setOrderNote,
     } = useCheckout();
 
   const [layouts, setLayouts] = useState([]);
@@ -151,6 +151,7 @@ export default function Dashboard() {
             
                orderNote={orderNote}   
                setOrderNote={setOrderNote}
+               orderNumber={null}
             />
         </div>
     </div>

@@ -84,6 +84,7 @@ const Login = () => {
           id: user.id,
           username: user.username,
           role_name: user.role_name,
+          location_id: user.location_id,
           location_name: user.location_name,
           loginTime: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit' })
         };

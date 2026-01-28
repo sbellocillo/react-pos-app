@@ -30,9 +30,9 @@ const Checkout = () => {
   // Helper to trigger checkout with the correct Context
   const handlePayment =  async () => {
     // Pass the flags from location.state into the hook function
-    const success = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD, orderType });
+    const result = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD, orderType });
 
-    if (success) {
+    if (result && result.success) {
       window.print();
       navigate('/dashboard');
     }

@@ -138,6 +138,7 @@ export const useCheckout = () => {
     setIsProcessing(true);
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const currentTotals = totalsOverride || calculateTotals();
+    const currentPosId = parseInt(localStorage.getItem('pos_terminal_id') || '1');
 
     const orderPayload = {
       user_id: currentUser.id || 300,
@@ -159,6 +160,7 @@ export const useCheckout = () => {
       card_network_id: null,
       created_by: currentUser.id || 1,
       memo: note || null,
+      pos_terminal_number: currentPosId,
       items: itemsToProcess.map(item => ({
         item_id: item.item_id,
         quantity: item.quantity,
@@ -172,9 +174,10 @@ export const useCheckout = () => {
     try {
       const response = await apiEndpoints.orders.create(orderPayload);
       if (response.status === 201 || response.status === 200) {
-        alert(`Order Created ID: ${response.data.orderid || 'New'}`);
+        const { orderId, orderNumber } = response.data;
+        alert(`Order Created! #${orderNumber}`);
         clearCart();
-        return true; 
+        return { success: true, orderId, orderNumber }; 
       }
     } catch (error) {
       console.error("Checkout Error:", error);

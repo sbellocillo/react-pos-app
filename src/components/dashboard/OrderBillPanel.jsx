@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TbDots, TbX, TbToolsKitchen2, TbShoppingBag, TbTruckDelivery, TbMinus, TbPlus } from "react-icons/tb";
+import { apiEndpoints } from '../../services/api';
 
 export default function OrderBillPanel({ 
   cartItems, 
@@ -21,11 +22,14 @@ export default function OrderBillPanel({
   isPWD,
   setIsPWD,
   orderNote,
-  setOrderNote
+  setOrderNote,
+  orderNumber
 }) {
   const navigate = useNavigate();
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
-  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const locationId = currentUser.location_id;
+  const currentPosNum = localStorage.getItem('pos_terminal_number') || '1';
 
   // Local UI State
   const [activeModalView, setActiveModalView] = useState(null); // 'menu' or 'note'
@@ -33,6 +37,23 @@ export default function OrderBillPanel({
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
   const [isQuantityModalOpen, setIsQuantityModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [nextOrderNum, setNextOrderNum] = useState('...');
+
+  useEffect(() => {
+    const fetchNextNumber = async () => {
+      try {
+        const response = await apiEndpoints.orders.getNextNumber(locationId, currentPosNum);
+        const data = await response.data;
+        if (data.success) {
+          setNextOrderNum(data.nextNumber);
+        }
+      } catch (error) {
+        console.error("Faled to fetch next order number:", error);
+      }
+    };
+
+    fetchNextNumber();
+  }, [cartItems]);
 
   const [tableNumber, setTableNumber] = useState(0);
 
@@ -135,7 +156,7 @@ export default function OrderBillPanel({
 
         {/* --- INFO GRID --- */}
         <div className='bill-info-grid'>
-          <span className='bill-info-label'>Order Number</span> <span className='bill-info-value'>#NEW</span>
+          <span className='bill-info-label'>Order Number</span> <span className='bill-info-value'>{nextOrderNum}</span>
           <span className='bill-info-label'>Date</span> <span className='bill-info-value'>{new Date().toLocaleDateString()}</span>
           <span className='bill-info-label'>Time</span> <span className='bill-info-value'>{new Date().toLocaleTimeString()}</span>
           <span className='bill-info-label'>Cashier</span> <span className='bill-info-value'>{currentUser?.username || 'Admin'}</span>
