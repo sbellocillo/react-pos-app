@@ -39,9 +39,26 @@ const PaymentPanel = ({
 
         {/* Quick Amounts */}
         <div className='quick-amounts-row'>
-          <input type="text" className='quick-amount-input' placeholder='XXXX.XX' />
-          <input type="text" className='quick-amount-input' placeholder='XXXX.XX' />
-          <input type="text" className='quick-amount-input' placeholder='XXXX.XX' />
+          <button 
+            className='quick-amount-input'
+            onClick={() => setCashReceived("100.00")}
+          >
+            ₱ 100.00
+          </button>
+
+          <button 
+            className='quick-amount-input'
+            onClick={() => setCashReceived("200.00")}
+          >
+            ₱ 200.00
+          </button>
+
+          <button 
+            className='quick-amount-input'
+            onClick={() => setCashReceived("500.00")}
+          >
+            ₱ 500.00
+          </button>
         </div>
 
         {/* Payment Methods */}

@@ -234,6 +234,15 @@ export const apiEndpoints = {
         bulkSave: (data) => api.post('/layout-templates/bulk', data),
         delete: (id) => api.delete(`/layout-templates/${id}`),
         deleteByLayout: (layoutId) => api.delete(`/layout-templates/layouts/${layoutId}`),
+    },
+
+    posTerminals: {
+        getAll: () => api.get('/pos-terminals'),
+        getByLocation: (locationId) => api.get(`/pos-terminals/location/${locationId}`),
+        getById: (id) => api.get(`/pos-terminals/${id}`),
+        create: (data) => api.post('/pos-terminals', data),
+        update: (id, data) => api.put(`/pos-terminals/${id}`,data),
+        delete: (id) => api.delete(`/pos-terminals/${id}`),
     }
 };
 

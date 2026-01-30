@@ -231,6 +231,7 @@
     color: #D9D9D9;
     outline: none; 
     transition: border-color 0.2s;
+    cursor: pointer;
 }
 
 .quick-amount-input::placeholder {
@@ -238,7 +239,8 @@
     font-weight: 700;
 }
 
-.quick-amount-input:focus {
+.quick-amount-input:focus,
+.quick-amount-input:hover {
     border-color: #B74C4C; 
     color: #333;
 }

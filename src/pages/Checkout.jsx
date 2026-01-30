@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCheckout } from '../hooks/useCheckout';
+import { apiEndpoints } from '../services/api';
 import { Receipt } from '../components/checkout/Receipt';
 import CheckoutSummary from '../components/checkout/CheckoutSummary';
 import PaymentPanel from '../components/checkout/PaymentPanel';
@@ -11,6 +12,8 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const receiptRef = React.useRef();
+  const [generatedOrderNumber, setGeneratedOrderNumber] = useState(null);
+  const [ terminalData, setTerminalData ] = useState(null);
 
   // Safely retrieve state with defaults from Router
   const {
@@ -27,14 +30,34 @@ const Checkout = () => {
 
   const formatCurrency = (amount) => `₱ ${Number(amount).toFixed(2)}`;
 
+  useEffect(() => {
+    const fetchTerminalData = async () => {
+      const currentPosId = localStorage.getItem('pos_terminal_number') || '1';
+
+      try {
+        const response = await apiEndpoints.posTerminals.getById(currentPosId);
+        if (response.data && response.data.success) {
+          setTerminalData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to load terminal settings:", error);
+      }
+    };
+
+    fetchTerminalData();
+  },[]);
+
   // Helper to trigger checkout with the correct Context
   const handlePayment =  async () => {
     // Pass the flags from location.state into the hook function
     const result = await processCheckout(cartItems, totals, orderNote, { isSenior, isPWD, orderType });
 
     if (result && result.success) {
-      window.print();
-      navigate('/dashboard');
+      setGeneratedOrderNumber(result.orderNumber);
+      setTimeout(() => {
+        window.print();
+        navigate('/dashboard');
+      }, 500);
     }
   };
 
@@ -61,8 +84,10 @@ const Checkout = () => {
         ref={receiptRef}
         cartItems={cartItems}
         totals={totals}
-        orderNumber="XXX"
+        orderNumber={generatedOrderNumber}
         date={new Date().toLocaleString()}
+        terminalData={terminalData}
+        cashReceived={cashReceived}
       />
     </div>
   );

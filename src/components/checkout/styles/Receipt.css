@@ -12,11 +12,32 @@
     padding: 10px;
   }
   
-  .receipt-header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed black; }
-  .receipt-item-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-  .name { flex: 1; margin-left: 10px; }
-  .row { display: flex; justify-content: space-between; }
-  .total { font-weight: bold; font-size: 1.2em; border-top: 1px solid black; margin-top: 10px; }
+  .receipt-header { 
+    text-align: center; 
+    margin-bottom: 20px; 
+  }
+
+  .receipt-item-row { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 5px; 
+  }
+
+  .name { 
+    flex: 1; 
+    margin-left: 10px; 
+  }
+  .row { 
+    display: flex; 
+    justify-content: space-between; 
+  }
+
+  .total { 
+    font-weight: bold; 
+    font-size: 1.2em; 
+    border-top: 1px dashed black; 
+    margin-top: 10px; 
+  }
   
   /* CRITICAL: Hide everything else on the page when this prints */
   body * {
