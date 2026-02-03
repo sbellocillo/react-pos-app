@@ -30,6 +30,7 @@ import Queue from './pages/Queue';
 import Layouts from './pages/Layouts';
 import LayoutAssignment from './pages/LayoutAssignment';
 import LayoutCategory from './pages/LayoutCategory';
+import SyncManager from './components/SyncManager';
 
 // 2. UPDATE PROTECTED ROUTE TO USE CONTEXT
 function ProtectedRoute({ children }) {
@@ -44,37 +45,38 @@ function App() {
   return (
     <div className='app-scale-wrapper'>
       <Router>
-        {/* WRAP EVERYTHING INSIDE AUTHPROVIDER */}
-        <AuthProvider> 
-          <Routes>
-            <Route path="/" element={<Login />} />
-            
-            <Route path="/ordermenu" element={<ProtectedRoute><OrderMenu onBack={() => window.history.back()} /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+        <SyncManager/>
+          {/* WRAP EVERYTHING INSIDE AUTHPROVIDER */}
+          <AuthProvider> 
+            <Routes>
+              <Route path="/" element={<Login />} />
+              
+              <Route path="/ordermenu" element={<ProtectedRoute><OrderMenu onBack={() => window.history.back()} /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
 
-            {/* Standard Pages */}
-            <Route path="/items" element={<ProtectedRoute><MainLayout><Items /></MainLayout></ProtectedRoute>} />
-            <Route path="/itemtypes" element={<ProtectedRoute><MainLayout><ItemTypes /></MainLayout></ProtectedRoute>} />
-            <Route path="/locations" element={<ProtectedRoute><MainLayout><Locations /></MainLayout></ProtectedRoute>} />
-            <Route path="/customers" element={<ProtectedRoute><MainLayout><Customers /></MainLayout></ProtectedRoute>} />
-            <Route path="/orders" element={<ProtectedRoute><MainLayout><Orders /></MainLayout></ProtectedRoute>} />
-            <Route path="/orderitems" element={<ProtectedRoute><MainLayout><OrderItems /></MainLayout></ProtectedRoute>} />
-            <Route path="/ordertypes" element={<ProtectedRoute><MainLayout><OrderTypes /></MainLayout></ProtectedRoute>} />
-            <Route path="/paymentmethods" element={<ProtectedRoute><MainLayout><PaymentMethods /></MainLayout></ProtectedRoute>} />
-            <Route path="/roles" element={<ProtectedRoute><MainLayout><Roles /></MainLayout></ProtectedRoute>} />
-            <Route path="/creditcards" element={<ProtectedRoute><MainLayout><CreditCards /></MainLayout></ProtectedRoute>} />
-            <Route path="/status" element={<ProtectedRoute><MainLayout><Status /></MainLayout></ProtectedRoute>} />
-            <Route path="/users" element={<ProtectedRoute><MainLayout><Users /></MainLayout></ProtectedRoute>} />
-            <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
-            <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
-            <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
-            <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
-            <Route path="/layouts" element={<ProtectedRoute><MainLayout><Layouts /></MainLayout></ProtectedRoute>} />
-            <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
-            <Route path="/layoutcategory" element={<ProtectedRoute><MainLayout><LayoutCategory /></MainLayout></ProtectedRoute>} />
-          </Routes>
-        </AuthProvider>
+              {/* Standard Pages */}
+              <Route path="/items" element={<ProtectedRoute><MainLayout><Items /></MainLayout></ProtectedRoute>} />
+              <Route path="/itemtypes" element={<ProtectedRoute><MainLayout><ItemTypes /></MainLayout></ProtectedRoute>} />
+              <Route path="/locations" element={<ProtectedRoute><MainLayout><Locations /></MainLayout></ProtectedRoute>} />
+              <Route path="/customers" element={<ProtectedRoute><MainLayout><Customers /></MainLayout></ProtectedRoute>} />
+              <Route path="/orders" element={<ProtectedRoute><MainLayout><Orders /></MainLayout></ProtectedRoute>} />
+              <Route path="/orderitems" element={<ProtectedRoute><MainLayout><OrderItems /></MainLayout></ProtectedRoute>} />
+              <Route path="/ordertypes" element={<ProtectedRoute><MainLayout><OrderTypes /></MainLayout></ProtectedRoute>} />
+              <Route path="/paymentmethods" element={<ProtectedRoute><MainLayout><PaymentMethods /></MainLayout></ProtectedRoute>} />
+              <Route path="/roles" element={<ProtectedRoute><MainLayout><Roles /></MainLayout></ProtectedRoute>} />
+              <Route path="/creditcards" element={<ProtectedRoute><MainLayout><CreditCards /></MainLayout></ProtectedRoute>} />
+              <Route path="/status" element={<ProtectedRoute><MainLayout><Status /></MainLayout></ProtectedRoute>} />
+              <Route path="/users" element={<ProtectedRoute><MainLayout><Users /></MainLayout></ProtectedRoute>} />
+              <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+              <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
+              <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
+              <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
+              <Route path="/layouts" element={<ProtectedRoute><MainLayout><Layouts /></MainLayout></ProtectedRoute>} />
+              <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
+              <Route path="/layoutcategory" element={<ProtectedRoute><MainLayout><LayoutCategory /></MainLayout></ProtectedRoute>} />
+            </Routes>
+          </AuthProvider>
       </Router>
     </div>
   );

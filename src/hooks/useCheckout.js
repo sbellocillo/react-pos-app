@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { apiEndpoints } from '../services/api';
+import { v4 as uuidv4 } from 'uuid';
+import { OfflineQueue } from '../services/OfflineQueue';
 
 export const useCheckout = () => {
   // --- STATE ---
@@ -141,6 +143,7 @@ export const useCheckout = () => {
     const currentPosId = parseInt(localStorage.getItem('pos_terminal_id') || '1');
 
     const orderPayload = {
+      offline_uuid: uuidv4(),
       user_id: currentUser.id || 300,
       customer_id: 1,
       status_id: 1,
@@ -171,18 +174,33 @@ export const useCheckout = () => {
       }))
     };
 
+    // --- REMOVED THE FIRST DUPLICATE TRY/CATCH BLOCK HERE ---
+
+    // --- KEPT THE CORRECT BLOCK WITH OFFLINE LOGIC ---
     try {
       const response = await apiEndpoints.orders.create(orderPayload);
       if (response.status === 201 || response.status === 200) {
-        const { orderId, orderNumber } = response.data;
+        const { orderNumber } = response.data;
         alert(`Order Created! #${orderNumber}`);
         clearCart();
-        return { success: true, orderId, orderNumber }; 
+        // Return success with server ID
+        return { success: true, orderId: response.data.server_id, orderNumber }; 
       }
     } catch (error) {
-      console.error("Checkout Error:", error);
-      alert("Failed to create order.");
-      return false; 
+      console.warn("Connection failed. Attempting offline save...", error);
+
+      // --- START FALLBACK LOGIC ---
+      const saved = OfflineQueue.add(orderPayload);
+
+      if (saved) {
+        clearCart();
+        alert("OFFLINE MODE: Order saved locally. It will upload automatically when internet returns.");
+        return { success: true, offline: true };
+      } else {
+        alert("ERROR: Could not save order. Device storage may be full.");
+        return false;
+      }
+      // --- END FALLBACK LOGIC ---
     } finally {
       setIsProcessing(false);
     }

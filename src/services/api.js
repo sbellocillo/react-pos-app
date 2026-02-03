@@ -109,6 +109,9 @@ export const apiEndpoints = {
         getById: (id) => api.get(`/orders/${id}`),
         getNextNumber: (locationId, posId) => api.get(`/orders/next-number?location_id=${locationId}&pos_terminal_number=${posId}`),
         create: (data) => api.post('/orders', data),
+        // --- NEW SYNC ENDPOINT ---
+        sync: (data) => api.post('/sync/orders', data),
+        // -------------------------
         update: (id, data) => api.put(`/orders/${id}`, data),
         delete: (id) => api.delete(`/orders/${id}`),
         getByDateRange: (from, to) => api.get(`/orders/date-range?from=${from}&to=${to}`),
@@ -124,7 +127,7 @@ export const apiEndpoints = {
         delete: (id) => api.delete(`/order-items/${id}`),
     },
 
-    // Users)
+    // Users
     users: {
         getAll: () => api.get('/users'),
         getById: (id) => api.get(`/users/${id}`),
@@ -208,7 +211,8 @@ export const apiEndpoints = {
     layoutIndices: {
         getAll: () => api.get('/layout-indices'),
         getActive: () => api.get('/layout-indices/active'),
-        getById: () => api.get(`/layout-indices/${id}`),
+        // Fixed: Added 'id' parameter to function call
+        getById: (id) => api.get(`/layout-indices/${id}`),
         getByGridIndex: (gridIndex) => api.get(`layout-indices/grid/${gridIndex}`),
     },
 
