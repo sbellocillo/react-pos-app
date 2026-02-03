@@ -190,7 +190,7 @@ export const useCheckout = () => {
       console.warn("Connection failed. Attempting offline save...", error);
 
       // --- START FALLBACK LOGIC ---
-      const saved = OfflineQueue.add(orderPayload);
+      const saved = await OfflineQueue.add(orderPayload);
 
       if (saved) {
         clearCart();

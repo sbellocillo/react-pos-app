@@ -1,58 +1,49 @@
-const QUEUE_KEY = 'offline_orders_queue';
+import { database } from "../db";
+import { Q } from '@nozbe/watermelondb';
 
 export const OfflineQueue = {
-    // Save an order to the queue
-    add: (OrderPayload) => {
+    // Save order
+    add: async (orderPayload) => {
         try {
-            // Get existing queue
-            const existing = localStorage.getItem(QUEUE_KEY);
-            const queue = existing ? JSON.parse(existing) : [];
-
-            // Add new order
-            queue.push(OrderPayload);
-
-            // Save back to storage
-            localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+            await database.write(async () => {
+                await database.get('offline_orders').create(record => {
+                    record.offline_uuid = orderPayload.offline_uuid;
+                    record.payload = JSON.stringify(orderPayload);
+                    record.created_at = new Date();
+                });
+            });
             return true;
         } catch (error) {
-            console.error("Failed to save offline order:", error);
+            console.error("DB Save Failed:", error);
             return false;
         }
     },
 
-    // Get all pending orders
-    getAll: () => {
+    // Get all
+    getAll: async () => {
         try {
-            const existing = localStorage.getItem(QUEUE_KEY);
-            return existing ? JSON.parse(existing) : [];
+            const records = await database.get('offline_orders').query().fetch();
+            return records.map(r => JSON.parse(r.payload));
         } catch (error) {
             return [];
         }
     },
 
-    // Remove a specific order
-    remove: (offline_uuid) => {
-        try {
-            const existing = localStorage.getItem(QUEUE_KEY);
-            if (!existing) return;
+    // Remove after sync
+    remove: async (uuid) => {
+        await database.write(async () => {
+            const records = await database.get('offline_orders').query(
+                Q.where('offline_uuid', uuid)
+            ).fetch();
 
-            const queue = JSON.parse(existing);
-            // Filter out the synced order
-            const updatedQueue = queue.filter(order => order.offline_uuid !== offline_uuid);
-
-            localStorage.setItem(QUEUE_KEY, JSON.stringify(updatedQueue));
-        } catch (error) {
-            console.error("Failed to update queue:", error);
-        }
+            for (const record of records) {
+                await record.markAsDeleted();
+                await record.destroyPermanently();
+            }
+        });
     },
 
-    // Count for UI
-    count: () => {
-        try {
-            const existing = localStorage.getItem(QUEUE_KEY);
-            return existing ? JSON.parse(existing).length : 0;
-        } catch (error) {
-            return 0;
-        }
+    count: async () => {
+        return await database.get('offline_orders').query().fetchCount();
     }
 };

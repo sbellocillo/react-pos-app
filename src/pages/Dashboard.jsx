@@ -3,6 +3,7 @@ import { apiEndpoints } from '../services/api';
 import { useCheckout } from '../hooks/useCheckout';
 import OrderBillPanel from '../components/dashboard/OrderBillPanel';
 import SortableCategoryButton from '../components/dashboard/SortableCategoryButton';
+import { MenuSync } from '../services/MenuSync';
 
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -48,39 +49,60 @@ export default function Dashboard() {
     });
   };
 
-  useEffect (() => {
+  // 1. Fetch Layouts (Smart Logic)
+ useEffect (() => {
     const fetchLayouts = async () => {
+      setLoading(true); // Start Loading
       try {
+        // --- ONLINE ATTEMPT ---
         const response = await apiEndpoints.layouts.getByLocation(locationId);
+        
         if (response.data && response.data.success) {
           const fetchedLayouts = response.data.data;
+          
           setLayouts(fetchedLayouts);
-          const savedOrder = JSON.parse(localStorage.getItem(layoutOrderKey) || "[]");
-
-          if (savedOrder.length > 0) {
-            const ordered = [
-              ...fetchedLayouts.filter((l) => savedOrder.includes(l.id)).sort((a, b) => savedOrder.indexOf(a.id) - savedOrder.indexOf(b.id)),
-              ...fetchedLayouts.filter((l) => !savedOrder.includes(l.id)),
-            ];
-            setSortableLayouts(ordered);
-            if (ordered.length > 0) handleLayoutClick(ordered[0]);
-          } else {
-            setSortableLayouts(fetchedLayouts);
-            if (fetchedLayouts.length > 0) handleLayoutClick(fetchedLayouts[0]);
+          setSortableLayouts(fetchedLayouts);
+          
+          // Trigger click on first item if exists
+          if (fetchedLayouts.length > 0) {
+              handleLayoutClick(fetchedLayouts[0]);
           }
+
+          // Background Sync (Don't await)
+          MenuSync.syncMenu(locationId); 
         }
       } catch (error) {
-        console.error("Error fetching layouts:", error);
+        console.warn("⚠️ Offline: Switching to Local Database");
+        
+        // --- OFFLINE FALLBACK ---
+        // 1. Load Categories
+        const offlineLayouts = await MenuSync.getLayouts();
+        
+        if (offlineLayouts.length > 0) {
+            setLayouts(offlineLayouts);
+            setSortableLayouts(offlineLayouts);
+
+            // 2. Load Items for the FIRST category immediately
+            const firstLayout = offlineLayouts[0];
+            setActiveLayoutId(firstLayout.id);
+            
+            // Manually fetch items for the first category
+            const offlineItems = await MenuSync.getItems(firstLayout.id);
+            setGridItems(offlineItems);
+        }
       } finally {
         setLoading(false);
       }
     };
+    
     fetchLayouts();
   }, []);
 
+  // 2. Handle Click (Smart Logic)
   const handleLayoutClick = async (layout) => {
     setActiveLayoutId(layout.id);
     try {
+      // 1. TRY SERVER
       const response = await apiEndpoints.layoutPosTerminal.getByLayoutAndLocation(layout.id, locationId);
       if (response.data && response.data.success) {
         setGridItems(response.data.data);
@@ -88,8 +110,11 @@ export default function Dashboard() {
         setGridItems([]);
       }
     } catch (error) {
-      console.error("Error fetching grid items:", error);
-      setGridItems([]);
+      console.warn(`⚠️ Offline: Loading items for layout ${layout.name}`);
+      
+      // 2. FAILOVER: Load from DB
+      const offlineItems = await MenuSync.getItems(layout.id);
+      setGridItems(offlineItems);
     }
   };
 
