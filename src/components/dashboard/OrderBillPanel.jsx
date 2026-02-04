@@ -42,21 +42,44 @@ export default function OrderBillPanel({
   const [isQuantityModalOpen, setIsQuantityModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [nextOrderNum, setNextOrderNum] = useState('...');
-  const [tableNumber, setTableNumber] = useState(0);
+  const [tableNumber, setTableNumber] = useState(null);
 
   // --- EFFECTS ---
   useEffect(() => {
     const fetchNextNumber = async () => {
+      // 1. Define a unique key for this terminal's counter
+      const storageKey = `offline_sequence_counter_${currentPosNum}`;
+
       try {
+        // 2. Try fetching from Server
         const response = await apiEndpoints.orders.getNextNumber(locationId, currentPosNum);
+        
         if (response.data?.success) {
-          setNextOrderNum(response.data.nextNumber);
+          const orderNum = response.data.nextNumber;
+          setNextOrderNum(orderNum);
+          
+          // ONLINE SUCCESS: Sync local memory to match server
+          localStorage.setItem(storageKey, orderNum);
         }
       } catch (error) {
-        console.error("Failed to fetch next order number:", error);
+        console.warn("⚠️ Offline: Loading locally saved order number...");
+
+        // 3. OFFLINE FALLBACK: Read from Browser Memory
+        const localNum = localStorage.getItem(storageKey);
+
+        if (localNum) {
+          setNextOrderNum(localNum);
+        } else {
+          // 4. FIRST TIME SETUP: Default to "1-1000" if memory is empty
+          setNextOrderNum(100);
+          localStorage.setItem(storageKey, 100);
+        }
       }
     };
+
     fetchNextNumber();
+    
+    // Add cartItems to dependency so it refreshes after checkout
   }, [cartItems, locationId, currentPosNum]);
 
   // --- HANDLERS ---

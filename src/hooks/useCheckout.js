@@ -189,13 +189,22 @@ export const useCheckout = () => {
     } catch (error) {
       console.warn("Connection failed. Attempting offline save...", error);
 
+      const storageKey = `offline_sequence_counter_${localStorage.getItem('pos_terminal_number') || '1'}`;
+
+      let currentOrderNum = parseInt(localStorage.getItem(storageKey) || '100');
+
       // --- START FALLBACK LOGIC ---
       const saved = await OfflineQueue.add(orderPayload);
 
       if (saved) {
         clearCart();
+
+        const nextOrderNum = currentOrderNum + 1;
+
+        localStorage.setItem(storageKey, nextOrderNum);
+
         alert("OFFLINE MODE: Order saved locally. It will upload automatically when internet returns.");
-        return { success: true, offline: true };
+        return { success: true, offline: true, orderNumber: currentOrderNum };
       } else {
         alert("ERROR: Could not save order. Device storage may be full.");
         return false;
