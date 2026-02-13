@@ -1,13 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext'; // 1. IMPORT THIS
-import './App.css';
+import './styles/app.css';
 
 // Layouts & Pages
 import MainLayout from './components/uiLayout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Checkout from './pages/Checkout';
 
 // ... (Keep all your other page imports exactly as they are) ...
 import Items from './pages/Items';
@@ -25,11 +24,8 @@ import TaxConfig from './pages/TaxConfig';
 import CreditCards from './pages/CreditCards';
 import OrderMenu from './pages/OrderMenu';
 import Settings from './pages/Settings';
-import Help from './pages/Help';
-import Queue from './pages/Queue';
 import Layouts from './pages/Layouts';
 import LayoutAssignment from './pages/LayoutAssignment';
-import LayoutCategory from './pages/LayoutCategory';
 import SyncManager from './components/SyncManager';
 
 // 2. UPDATE PROTECTED ROUTE TO USE CONTEXT
@@ -69,12 +65,8 @@ function App() {
               <Route path="/users" element={<ProtectedRoute><MainLayout><Users /></MainLayout></ProtectedRoute>} />
               <Route path="/taxconfig" element={<ProtectedRoute><MainLayout><TaxConfig /></MainLayout></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
-              <Route path="/help" element={<ProtectedRoute><MainLayout><Help /></MainLayout></ProtectedRoute>} />
-              <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
-              <Route path="/queue" element={<ProtectedRoute><MainLayout><Queue /></MainLayout></ProtectedRoute>} />
               <Route path="/layouts" element={<ProtectedRoute><MainLayout><Layouts /></MainLayout></ProtectedRoute>} />
               <Route path="/layoutassignment" element={<ProtectedRoute><MainLayout><LayoutAssignment /></MainLayout></ProtectedRoute>} />
-              <Route path="/layoutcategory" element={<ProtectedRoute><MainLayout><LayoutCategory /></MainLayout></ProtectedRoute>} />
             </Routes>
           </AuthProvider>
       </Router>

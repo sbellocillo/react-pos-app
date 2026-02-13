@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import "./styles/settings.css";
+import "../styles/settings.css";
 
 const Settings = () => {
   const [profile, setProfile] = useState({

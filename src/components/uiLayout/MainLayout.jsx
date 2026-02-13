@@ -3,19 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useServerStatus from '../../hooks/useServerStatus';
 
 import { RxHamburgerMenu } from "react-icons/rx";
-import { TbArrowLeft } from "react-icons/tb";
-import { IoChevronDown, IoChevronUp } from "react-icons/io5";
+import { TbArrowLeft, TbBox, TbClipboard, TbMapPin, TbUsers, TbFileInvoice,
+  TbShoppingCart, TbCash, TbUser, TbBolt, TbReceipt, TbCreditCard } from "react-icons/tb";
+import { LuLayoutList } from "react-icons/lu";
 
 // Update these paths based on your actual folder structure
 import squaredMenuIcon from '../../assets/images/squared-menu.png';
 import billIcon from '../../assets/images/bill.png';
-import queueIcon from '../../assets/images/queue.png';
-import historyIcon from '../../assets/images/history.png';
-import graphIcon from '../../assets/images/graph.png';
 import settingsIcon from '../../assets/images/settings.png';
 import helpIcon from '../../assets/images/help.png';
 import signOutIcon from '../../assets/images/sign-out.png';
-import layoutIcon from '../../assets/images/layouticon.png';
 
 export default function MainLayout({ children }) {
   const location = useLocation();
@@ -34,8 +31,6 @@ export default function MainLayout({ children }) {
     if (activeItem) setSelectedMenuId(activeItem.id);
   }, [location.pathname]);
 
-  const [openMenus, setOpenMenus] = useState({ layout: false });
-
   useEffect(() => {
     const userData = localStorage.getItem('currentUser');
     if (userData) setCurrentUser(JSON.parse(userData));
@@ -43,11 +38,6 @@ export default function MainLayout({ children }) {
     const timer = setInterval(() => setCurrentDate(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    const isOnLayoutRoute = location.pathname.startsWith('/layout');
-    setOpenMenus(prev => ({ ...prev, layout: isOnLayoutRoute }));
-  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -69,31 +59,24 @@ export default function MainLayout({ children }) {
   const isDashboard = location.pathname === '/';
   const isCheckout = location.pathname === '/checkout';
 
-  const toggleMenu = (id) => {
-    setOpenMenus(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const isPathActive = (path) => location.pathname === path;
-
   // --- MENU CONFIGURATION ---
   const sideMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <img src={squaredMenuIcon} className="nav-icon" alt="" />, path: '/dashboard' },
-    { id: 'transactions', label: 'Transactions', icon: <img src={billIcon} className="nav-icon" alt="" />, path: '/items' },
-    { id: 'queuing', label: 'Queuing', icon: <img src={queueIcon} className="nav-icon" alt="" />, path: '/queue' },
-    { id: 'history', label: 'Order History', icon: <img src={historyIcon} className="nav-icon" alt="" />, path: '/locations' },
-    { id: 'reports', label: 'Reports', icon: <img src={graphIcon} className="nav-icon" alt="" />, path: '/customers' },
-
-    {
-      id: 'layout',
-      label: 'Layouts',
-      icon: <img src={layoutIcon} className="nav-icon" alt="" />,
-      path: '/layout',
-      children: [
-        { id: 'layoutcategory', label: 'Layout Category', path: '/layoutcategory' },
-        { id: 'layout-templates', label: 'Layout Templates', path: '/layouts' },
-        { id: 'layout-pos', label: 'Layout POS Terminal', path: '/layoutassignment' },
-      ]
-    },
+    { id: 'ordermenu', label: 'Order Menu', icon: <img src={billIcon} className="nav-icon" alt="" />, path: '/ordermenu' },
+    { id: 'orders', label: 'Orders', icon: <TbFileInvoice className="nav-icon" />, path: '/orders' },
+    { id: 'items', label: 'Items', icon: <TbBox className="nav-icon" />, path: '/items' },
+    { id: 'itemtypes', label: 'Item Types', icon: <TbClipboard className="nav-icon" />, path: '/itemtypes' },
+    { id: 'locations', label: 'Locations', icon: <TbMapPin className="nav-icon" />, path: '/locations' },
+    { id: 'customers', label: 'Customers', icon: <TbUsers className="nav-icon" />, path: '/customers' },
+    { id: 'orderitems', label: 'Order Items', icon: <TbShoppingCart className="nav-icon" />, path: '/orderitems' },
+    { id: 'ordertypes', label: 'Order Types', icon: <TbClipboard className="nav-icon" />, path: '/ordertypes' },
+    { id: 'paymentmethods', label: 'Payment Methods', icon: <TbCash className="nav-icon" />, path: '/paymentmethods' },
+    { id: 'creditcards', label: 'Credit Cards', icon: <TbCreditCard className="nav-icon" />, path: '/creditcards' },
+    { id: 'roles', label: 'Roles', icon: <TbUsers className="nav-icon" />, path: '/roles' },
+    { id: 'status', label: 'Status', icon: <TbBolt className="nav-icon" />, path: '/status' },
+    { id: 'users', label: 'Users', icon: <TbUser className="nav-icon" />, path: '/users' },
+    { id: 'taxconfig', label: 'Tax Config', icon: <TbReceipt className="nav-icon" />, path: '/taxconfig' },
+    { id: 'layout-templates', label: 'Menu Layouts', icon: <LuLayoutList className="nav-icon" />, path: '/layouts' },
   ];
 
   const bottomMenuItems = [
@@ -117,65 +100,20 @@ export default function MainLayout({ children }) {
 
         {/* Top Navigation */}
         <nav className='sidebar-nav'>
-          {sideMenuItems.map(item => {
-            const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-            const isParentActive = selectedMenuId === item.id || location.pathname.startsWith(item.path);
-
-            if (!hasChildren) {
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setSelectedMenuId(item.id);
-                    navigate(item.path);
-                    setIsSidebarOpen(false);
-                  }}
-                  className={`sidebar-nav-item ${selectedMenuId === item.id ? 'active' : ''}`}
-                >
-                  <div className='nav-icon-wrapper'>{item.icon}</div>
-                  <span className='nav-label'>{item.label}</span>
-                </button>
-              );
-            }
-
-            return (
-              <div key={item.id} className="sidebar-dropdown-group">
-                <button
-                  onClick={() => {
-                    setSelectedMenuId(item.id);
-                    toggleMenu(item.id);
-                  }}
-                  className={`sidebar-nav-item ${isParentActive ? 'active' : ''}`}
-                >
-                  <div className='nav-icon-wrapper'>{item.icon}</div>
-                  <span className='nav-label'>{item.label}</span>
-
-                  <span style={{ marginLeft: '7rem', display: 'flex', alignItems: 'center' }}>
-                    {openMenus[item.id] ? <IoChevronUp /> : <IoChevronDown />}
-                  </span>
-                </button>
-
-                {openMenus[item.id] && (
-                  <div className="sidebar-submenu">
-                    {item.children.map(child => (
-                      <button
-                        key={child.id}
-                        onClick={() => {
-                          setSelectedMenuId('layout'); 
-                          navigate(child.path);
-                          setIsSidebarOpen(false);
-                        }}
-                        className={`sidebar-submenu-item ${isPathActive(child.path) ? 'active' : ''}`}
-                      >
-                        <span className="sidebar-submenu-bullet">•</span>
-                        <span>{child.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {sideMenuItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setSelectedMenuId(item.id);
+                navigate(item.path);
+                setIsSidebarOpen(false);
+              }}
+              className={`sidebar-nav-item ${selectedMenuId === item.id ? 'active' : ''}`}
+            >
+              <div className='nav-icon-wrapper'>{item.icon}</div>
+              <span className='nav-label'>{item.label}</span>
+            </button>
+          ))}
         </nav>
 
         {/* Bottom Actions & Logout */}
@@ -227,35 +165,10 @@ export default function MainLayout({ children }) {
           </div>
 
           <div className='header-info-group'>
-            <div className="info-block">
-              <div className={`pos-status-card ${!isOnline ? 'offline-mode' : ''}`}>
-                <span className="signal-bars">
-                  <span className={`bar b1 ${!isOnline ? 'gray' : ''}`} />
-                  <span className={`bar b2 ${!isOnline ? 'gray' : ''}`} />
-                  <span className={`bar b3 ${!isOnline ? 'gray' : ''}`} />
-                  <span className={`bar b4 ${!isOnline ? 'gray' : ''}`} />
-                  <span className={`bar b5 ${!isOnline ? 'gray' : ''}`} />
-                </span>
-                <div className="status-text">
-                  <div className="info-subtitle">POS Status:</div>
-                  {isOnline ? (
-                    <div className='info-title online'>ONLINE</div>
-                  ) : (
-                    <div className='info-title offline' style={{ color: 'red' }}>OFFLINE</div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className='date-time'>
-              <div className='info-subtitle'>{formatDate(currentDate)}</div>
-              <div className='info-subtitle'>{formatTime(currentDate)}</div>
-            </div>
 
             <div className='user-profile'>
               <div className='info-block'>
                 <div className='info-title'>{currentUser?.username || 'Admin'}</div>
-                <div className='info-subtitle'>Clocked in at {currentUser?.loginTime || '--:--'}</div>
               </div>
               <div className='user-avatar'>{getTheFirstCharacter(currentUser?.username)}</div>
             </div>

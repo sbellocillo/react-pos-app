@@ -4,7 +4,7 @@ import { apiEndpoints } from '../services/api';
 import AssignmentPanel from '../components/layoutAssignment/AssignmentPanel';
 import LocationSidebar from '../components/layoutAssignment/LocationSidebar';
 import AssignLayoutModal from '../components/layoutAssignment/modals/AssignLayoutModal';
-import './styles/layouts.css';
+import '../styles/layouts.css';
 
 const LayoutAssignment = () => {
     // --- Global State ---

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { apiEndpoints } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import './styles/login.css'
+import '../styles/login.css'
 
 const Login = () => {
   const { login } = useAuth();

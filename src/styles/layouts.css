@@ -1,0 +1,345 @@
+/* ==========================================================================
+   LAYOUTS PAGE STYLES
+   Moved from: src/pages/styles/layouts.css
+   Globals extracted to global.css: modal-overlay, modal-header, modal-footer,
+   form-input, btn-primary, scrollbar
+   ========================================================================== */
+
+/* ==========================================================================
+   1. MAIN LAYOUT & PANELS
+   ========================================================================== */
+.assign-app-container {
+  padding: 0 20px 0 20px;
+}
+
+.assign-body-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.assign-left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Panel Base Styles --- */
+.location-list-panel,
+.layout-list-panel,
+.assign-inspect-panel {
+  background: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.location-list-panel {
+  height: 948.63px;
+  width: 35%;
+}
+
+.layout-list-panel {
+  height: 948.63px;
+  width: 65%;
+}
+
+.assign-inspect-panel {
+  flex-shrink: 0;
+  width: 588.47px;
+  height: 948.63px;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+/* --- Empty States --- */
+.panel-empty-state {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 1.1rem;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ==========================================================================
+   2. HEADERS & TYPOGRAPHY
+   ========================================================================== */
+.panel-header,
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-header {
+  margin: 0 0 1.5rem 0;
+}
+
+.panel-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ==========================================================================
+   3. GRID SYSTEM (Left Panel)
+   ========================================================================== */
+.layout-grid {
+  width: 100%;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.grid-card {
+  height: 140px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+  padding: 10px;
+  font-weight: 600;
+}
+
+.grid-card.filled {
+  background: #B74C4C;
+  border: 1px solid #B74C4C;
+  color: white;
+}
+
+.grid-card.filled:hover {
+  border-color: #dc2626;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+.grid-card.empty {
+  background: transparent;
+  border: 1px dashed #D9D9D9;
+  color: #D9D9D9;
+}
+
+.grid-card.empty:hover {
+  border-color: #B74C4C;
+  background-color: #fef2f2;
+  transform: translateY(-2px);
+  color: #111;
+}
+
+.unsaved-dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: #fbbf24;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+}
+
+/* ==========================================================================
+   4. SCROLLABLE LISTS & ROWS
+   ========================================================================== */
+.scrollable-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+  gap: 0;
+  padding: 4px;
+}
+
+.assign-inspect-panel .scrollable-list {
+  gap: 10px;
+}
+
+.list-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.modal-body .list-item-row {
+  padding: 12px 15px;
+  margin-bottom: 0;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.list-item-row:hover {
+  background: #f9fafb;
+  border-color: #B74C4C;
+}
+
+.list-item-row.active {
+  background: #B74C4C;
+  color: white;
+  border-color: #B74C4C;
+}
+
+.list-item-row.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #eee;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   5. INPUTS & BUTTONS (layout-specific)
+   ========================================================================== */
+select.form-inout {
+  appearance: auto;
+  cursor: pointer;
+  background-color: white;
+}
+
+/* --- Danger Red Buttons --- */
+.btn-danger {
+  background-color: #B74C4C;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+/* --- Icon / Ghost Buttons --- */
+.btn-icon-action {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0.6;
+}
+
+.btn-icon-action:hover {
+  opacity: 1;
+  color: #dc2626;
+}
+
+.list-item-row.active .btn-icon-action:hover {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+/* --- Large Dashed Button (New Layout) --- */
+.btn-large-dashed {
+  height: 80px;
+  width: 100%;
+  background: white;
+  border: none;
+  font-size: 28px;
+  font-weight: 700;
+  color: #989898;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.btn-large-dashed:hover {
+  color: #B74C4C;
+}
+
+/* ==========================================================================
+   6. MODALS (layout-specific)
+   ========================================================================== */
+.modal-panel {
+  width: 500px;
+  max-height: 800px;
+  background: white;
+  padding: 20px;
+  border-radius: 7px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 1001;
+}
+
+.modal-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #111;
+}
+
+.modal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   7. TABLE HELPERS
+   ========================================================================== */
+.th-text-center {
+  text-align: center;
+  padding: 1rem;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.th-text-left {
+  text-align: left;
+  padding: 1rem;
+  color: #6b7280;
+}
+
+.td-text-center {
+  text-align: center;
+  padding: 1rem;
+  color: #6b7280;
+}
+
+.td-text-left {
+  text-align: left;
+  padding: 1rem;
+  color: #6b7280;
+}
+
+.th-position {
+  position: sticky;
+  top: 0px;
+}

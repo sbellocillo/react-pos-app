@@ -19,9 +19,9 @@ const EditSlotModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className='modal-overlay'>
+    <div className='global-modal-overlay'>
       <div className='modal-panel'>
-        <div className='modal-header'>
+        <div className='global-modal-header'>
             <h4>Edit Slot #{selectedSlot?.layout_indices_id}</h4>
             <button className='btn-icon-action' onClick={onClose}>✕</button>
         </div>
@@ -37,7 +37,7 @@ const EditSlotModal = ({
             )}
             
             <input 
-                className='form-input' 
+                className='global-form-input' 
                 placeholder='Search items...' 
                 value={itemSearch} 
                 onChange={e => setItemSearch(e.target.value)}

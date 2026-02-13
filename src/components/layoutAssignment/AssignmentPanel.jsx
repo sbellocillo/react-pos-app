@@ -19,7 +19,7 @@ const AssignmentPanel = ({ selectedLocation, assignments, onOpenModal, onUnassig
                     <h3 className='section-title'>{selectedLocation.name}</h3>
                     <span className='panel-subtitle'>Assigned Menus</span>
                 </div>
-                <button className='btn-primary' onClick={onOpenModal}>
+                <button className='global-btn-primary' onClick={onOpenModal}>
                     + Assign Layout
                 </button>
             </div>

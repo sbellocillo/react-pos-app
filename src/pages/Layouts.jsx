@@ -4,7 +4,8 @@ import LayoutGrid from '../components/menuLayout/LayoutGrid';
 import LayoutSidebar from '../components/menuLayout/LayoutSidebar';
 import EditSlotModal from '../components/menuLayout/modals/EditSlotModal';
 import CreateLayoutModal from '../components/menuLayout/modals/CreateLayoutModal';
-import './styles/layouts.css';
+import UpdateLayoutModal from '../components/menuLayout/modals/UpdateLayoutModal';
+import '../styles/layouts.css';
 
 const Layouts = () => {
   // --- Global State ---
@@ -20,6 +21,7 @@ const Layouts = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   
   // --- Selection State ---
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -65,6 +67,19 @@ const Layouts = () => {
       setGridItems([]);
     }
   };
+
+  // ✅ FIXED: Now takes two arguments and updates state instead of deleting
+  const handleUpdateLayout = async (layoutId, updateData) => {
+    try {
+      const res = await apiEndpoints.layouts.update(layoutId, updateData);
+      if (res.data?.success) {
+        setLayouts(prev => prev.map(l => l.id === layoutId ? res.data.data : l));
+        setIsUpdateModalOpen(false);
+      }
+    } catch (err) {
+      alert("Failed to update layout");
+    }
+  }
 
   const handleDeleteLayout = async (layoutId) => {
     if (!window.confirm("Delete layout?")) return;
@@ -173,6 +188,7 @@ const Layouts = () => {
           onSelect={handleLayoutSelect}
           onDelete={handleDeleteLayout}
           onCreateClick={() => setIsCreateModalOpen(true)}
+          onUpdateClick={() => setIsUpdateModalOpen(true)}
         />
       </div>
 
@@ -192,6 +208,15 @@ const Layouts = () => {
         onClose={() => setIsCreateModalOpen(false)}
         itemTypes={itemTypes}
         onCreate={handleCreateLayout}
+      />
+
+       {/* ✅ FIXED: Uses correct state, passes activeLayoutId, and uses onUpdate */}
+       <UpdateLayoutModal 
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        itemTypes={itemTypes}
+        activeLayoutId={activeLayoutId}
+        onUpdate={handleUpdateLayout}
       />
     </div>
   );

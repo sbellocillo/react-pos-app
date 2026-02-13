@@ -43,7 +43,7 @@ const LayoutGrid = ({
         {hasUnsavedChanges && (
           <div style={{ display:'flex', gap:'10px'}}>
             <button className='btn-danger' onClick={onRevert}>Revert</button>
-            <button className='btn-primary' onClick={onSave}>Save Changes</button>
+            <button className='global-btn-primary' onClick={onSave}>Save Changes</button>
           </div>
         )}
       </div>

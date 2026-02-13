@@ -12,7 +12,7 @@ const LocationSidebar = ({ locations, selectedLocationId, onSelect }) => {
         <div className='location-list-panel'>
             <h3 className='section-title'>Store Branches</h3>
             <input 
-                className='form-input' 
+                className='global-form-input' 
                 placeholder='Search branches...' 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}

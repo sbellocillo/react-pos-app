@@ -1,3 +1,9 @@
+/* ==========================================================================
+   LOGIN PAGE STYLES
+   Moved from: src/pages/styles/login.css
+   Note: Login keeps its own form styles (different aesthetic: rounder, thicker)
+   ========================================================================== */
+
 .login-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
@@ -49,8 +55,8 @@
     font-size: 1rem;
 }
 
-/* --- Form Section ---*/
-.login-form{
+/* --- Form Section --- */
+.login-form {
     text-align: left;
 }
 
@@ -62,7 +68,7 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #374151
+    color: #374151;
 }
 
 .form-input {
@@ -80,7 +86,7 @@
     border-color: #dc2626;
 }
 
-/* --- Error Message ---*/
+/* --- Error Message --- */
 .error-message {
     background: #fef2f2;
     color: #dc2626;
@@ -119,7 +125,7 @@
 }
 
 /* --- Demo Credentials --- */
-.demo-credentials{
+.demo-credentials {
     margin-top: 2rem;
     padding: 1rem;
     background: #f8fafc;

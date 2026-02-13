@@ -19,15 +19,15 @@ const AssignLayoutModal = ({
     if (!isOpen) return null;
 
     return (
-        <div className='modal-overlay'>
+        <div className='global-modal-overlay'>
             <div className='modal-panel'>
-                <div className='modal-header'>
+                <div className='global-modal-header'>
                     <h4>Assign Layout to {locationName}</h4>
                     <button className='btn-icon-action' onClick={onClose}>✕</button>
                 </div>
                 <div className='modal-body'>
                     <input 
-                        className='form-input' 
+                        className='global-form-input' 
                         placeholder='Search layouts...'
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)} 

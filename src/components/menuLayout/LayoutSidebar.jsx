@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdNavigateNext } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
 
 const LayoutSidebar = ({ 
   layouts, 
   activeLayoutId, 
   onSelect, 
   onDelete, 
-  onCreateClick 
+  onCreateClick,
+  onUpdateClick 
 }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,7 +29,7 @@ const LayoutSidebar = ({
       </div>
 
       <input 
-        className='form-input' 
+        className='global-form-input' 
         placeholder='Search layouts...'
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
@@ -40,6 +43,16 @@ const LayoutSidebar = ({
                 onClick={() => onSelect(layout)}
             >
                 <span>{layout.name}</span>
+                <div className='global-btn-row'>
+                  <button 
+                    className='btn-icon-action'
+                    onClick={(e) => {
+                        e.stopPropagation(); // ✅ Prevents row click from firing
+                        onUpdateClick();
+                    }}
+                >
+                    <MdOutlineEdit  size={16}/>
+                </button>
                 <button 
                     className='btn-icon-action'
                     onClick={(e) => {
@@ -47,8 +60,9 @@ const LayoutSidebar = ({
                         onDelete(layout.id);
                     }}
                 >
-                    ✕
+                    <MdDeleteOutline size={16}/>
                 </button>
+                </div>
             </div>
         ))}
       </div>
