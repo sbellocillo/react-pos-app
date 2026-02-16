@@ -248,8 +248,8 @@ const PaymentMethods = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{
+    <div className="page-container" style={{ padding: '2rem' }}>
+      <div className="page-header-row" style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -273,7 +273,7 @@ const PaymentMethods = () => {
         </button>
       </div>
       <div>Total Records:  {paymentMethods.length}</div>
-      <div style={{
+      <div className="page-table-card" style={{
         background: 'white',
         borderRadius: '12px',
         overflow: 'auto',

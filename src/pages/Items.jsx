@@ -13,16 +13,23 @@ const Items = () => {
   const [items, setItems] = useState([]);
   const [itemTypes, setItemTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // UPDATED: Destructure the setter so we can change the limit
   const [itemsPerPage, setItemsPerPage] = useState(10); 
   
+  // Search & Filter States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
 
   const fetchData = async () => {
     try {
@@ -38,13 +45,11 @@ const Items = () => {
     }
   };
 
-  // --- NEW: Handle Rows Per Page Change ---
   const handleLimitChange = (e) => {
     setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to page 1 to avoid empty views
+    setCurrentPage(1); 
   };
 
-  // --- CREATE / UPDATE ---
   const handleCreateOrUpdate = async (formData) => {
     const now = new Date().toISOString();
     const typeName =
@@ -85,7 +90,6 @@ const Items = () => {
     }
   };
 
-  // --- BULK IMPORT ---
   const handleBulkImport = async (parsedData) => {
     let successCount = 0;
     try {
@@ -111,10 +115,26 @@ const Items = () => {
     }
   };
 
-  // Pagination Logic
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  // Derived state for filtering items
+  const filteredItems = items.filter((item) => {
+    const matchesSearch = 
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.sku?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = selectedCategory 
+      ? item.category_id?.toString() === selectedCategory.toString() 
+      : true;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  // Pagination Logic uses filteredItems
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = items.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  // --- NEW: Check if any filters are currently active ---
+  const hasFilters = Boolean(searchQuery || selectedCategory);
 
   return (
     <div className="items-page-container">
@@ -127,20 +147,55 @@ const Items = () => {
         itemTypes={itemTypes}
       />
 
-      {/* NEW: Controls Bar */}
-      <div className="controls-bar" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', alignItems: 'center', gap: '8px' }}>
-        <label htmlFor="rows-select" style={{ fontSize: '14px', color: '#374151' }}>Rows per page:</label>
-        <select 
-          id="rows-select"
-          value={itemsPerPage} 
-          onChange={handleLimitChange}
-          style={{ padding: '6px', borderRadius: '4px', border: '1px solid #d1d5db' }}
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
+      <div className="controls-bar">
+        {/* Left side: Search & Filter */}
+        <div className="controls-left">
+          <input 
+            type="text" 
+            placeholder="Search items or SKU..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="items-search-input"
+          />
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="items-category-select"
+          >
+            <option value="">All Categories</option>
+            {itemTypes.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+
+          {/* UPDATED: Dynamic Clear Filter Button */}
+          <button 
+            onClick={() => { setSearchQuery(""); setSelectedCategory(""); }}
+            disabled={!hasFilters}
+            className={hasFilters ? "btn-danger" : "btn-secondary"}
+            style={!hasFilters ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+          >
+            Clear Filter
+          </button>
+        </div>
+
+        {/* Right side: Rows per page */}
+        <div className="controls-right">
+          <label htmlFor="rows-select" className="rows-label">Rows per page:</label>
+          <select 
+            id="rows-select"
+            value={itemsPerPage} 
+            onChange={handleLimitChange}
+            className="rows-select"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
       </div>
 
       <ItemsList
@@ -156,9 +211,9 @@ const Items = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-        totalRecords={items.length}
+        totalRecords={filteredItems.length}
         startIndex={startIndex}
-        endIndex={Math.min(startIndex + itemsPerPage, items.length)}
+        endIndex={Math.min(startIndex + itemsPerPage, filteredItems.length)}
       />
 
       <ItemModal

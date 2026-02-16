@@ -3,13 +3,13 @@
    Moved from: src/pages/styles/settings.css
    ========================================================================== */
 
-.settings-header {
+.settings-page-wrapper {
+  padding: 24px 32px; /* Master padding for the whole settings page */
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
   height: 100%;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .settings-header-top {
@@ -246,4 +246,82 @@
 
 .switch input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ---- MOBILE (<640px) ---- */
+@media (max-width: 639px) {
+  .settings-header-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .settings-topbar-actions {
+    justify-content: flex-end;
+  }
+
+  .settings-navbar {
+    gap: 6px;
+    padding: 4px 0 8px;
+  }
+
+  .nav-item {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+ .settings-layout {
+  flex: 1; /* Takes up remaining height */
+  width: 100%;
+  overflow-y: auto; /* Allows scrolling only inside the content area */
+}
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .avatar-preview {
+    height: 180px;
+    max-width: 220px;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .settings-content {
+    width: 100%;
+    padding-bottom: 40px; /* Gives some breathing room at the bottom */
+    box-sizing: border-box;
+  }
+
+  .form-actions,
+  .footer-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn,
+  .footer-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ---- TABLET (640px - 1023px) ---- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .settings-layout {
+    position: static;
+    top: auto;
+  }
+
+  .profile-grid {
+    grid-template-columns: 180px 1fr;
+  }
 }

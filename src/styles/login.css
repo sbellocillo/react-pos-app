@@ -145,3 +145,35 @@
 .demo-credentials p {
     margin: 0.25rem 0;
 }
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ---- MOBILE (<640px) ---- */
+@media (max-width: 639px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    margin: 0 0.5rem;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .logo-image {
+    width: 50px;
+    height: 45px;
+  }
+
+  .submit-btn {
+    padding: 0.875rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .form-input {
+    min-height: 48px;
+  }
+}

@@ -22,7 +22,6 @@ import Status from './pages/Status';
 import Users from './pages/Users';
 import TaxConfig from './pages/TaxConfig';
 import CreditCards from './pages/CreditCards';
-import OrderMenu from './pages/OrderMenu';
 import Settings from './pages/Settings';
 import Layouts from './pages/Layouts';
 import LayoutAssignment from './pages/LayoutAssignment';
@@ -46,8 +45,6 @@ function App() {
           <AuthProvider> 
             <Routes>
               <Route path="/" element={<Login />} />
-              
-              <Route path="/ordermenu" element={<ProtectedRoute><OrderMenu onBack={() => window.history.back()} /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
 
               {/* Standard Pages */}

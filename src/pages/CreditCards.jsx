@@ -138,13 +138,13 @@ const CreditCards = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div style={{ padding: '2rem', background: '#f8fafc', minHeight: '100vh' }}>
+    <div className="page-container" style={{ padding: '2rem', background: '#f8fafc', minHeight: '100vh' }}>
       <div style={{
         maxWidth: '1400px',
         margin: '0 auto'
       }}>
         {/* Header */}
-        <div style={{
+        <div className="page-header-row" style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -182,7 +182,7 @@ const CreditCards = () => {
         </div>
 
         {/* Table */}
-        <div style={{
+        <div className="page-table-card" style={{
           background: 'white',
           borderRadius: '12px',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',

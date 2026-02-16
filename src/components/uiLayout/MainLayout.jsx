@@ -62,7 +62,6 @@ export default function MainLayout({ children }) {
   // --- MENU CONFIGURATION ---
   const sideMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <img src={squaredMenuIcon} className="nav-icon" alt="" />, path: '/dashboard' },
-    { id: 'ordermenu', label: 'Order Menu', icon: <img src={billIcon} className="nav-icon" alt="" />, path: '/ordermenu' },
     { id: 'orders', label: 'Orders', icon: <TbFileInvoice className="nav-icon" />, path: '/orders' },
     { id: 'items', label: 'Items', icon: <TbBox className="nav-icon" />, path: '/items' },
     { id: 'itemtypes', label: 'Item Types', icon: <TbClipboard className="nav-icon" />, path: '/itemtypes' },
@@ -150,6 +149,7 @@ export default function MainLayout({ children }) {
         <div className='dashboard-header'>
           <div className='header-search'>
             <div
+              className="header-hamburger"
               style={{ marginRight: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
               onClick={() => isCheckout ? navigate('/dashboard') : setIsSidebarOpen(true)}
             >

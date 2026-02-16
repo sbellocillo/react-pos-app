@@ -286,8 +286,8 @@ const OrderItems = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{
+    <div className="page-container" style={{ padding: '2rem' }}>
+      <div className="page-header-row" style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -311,14 +311,14 @@ const OrderItems = () => {
         </button>
       </div>
 
-      <div style={{
+      <div className="page-table-card" style={{
         background: 'white',
         borderRadius: '12px',
         overflow: 'auto',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         height: '650px'
       }}>
-        <div style={{ overflowX: 'auto' }}>
+        <div className="page-table-scroll" style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1100px' }}>
             <thead style={{ background: '#f8fafc' }}>
               <tr>
@@ -470,7 +470,7 @@ const OrderItems = () => {
             </h3>
 
             <form onSubmit={handleSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="responsive-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#374151' }}>
                     Order *
@@ -523,7 +523,7 @@ const OrderItems = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="responsive-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#374151' }}>
                     Status *
@@ -570,7 +570,7 @@ const OrderItems = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="responsive-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#374151' }}>
                     Rate *

@@ -789,15 +789,9 @@ const OrderMenu = ({ onBack }) => {
     }; return (
       <div>
         <h2 style={{ margin: '0 0 2rem 0', color: '#1e293b' }}>{title}</h2>
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '1.5rem',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          height: '650px',
-          overflowY: 'auto'
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="ordermenu-table-container" style={{ height: '650px' }}>
+          <div className="page-table-scroll">
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
                 <th style={{ padding: '1rem', textAlign: 'left', color: '#374151', fontWeight: '600' }}>Order ID</th>
@@ -876,6 +870,7 @@ const OrderMenu = ({ onBack }) => {
               No {title.toLowerCase()} found
             </div>
           )}
+          </div>
         </div>
         {/* Pagination */}
         {renderPagination()}
@@ -884,16 +879,9 @@ const OrderMenu = ({ onBack }) => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#f8fafc' }}>
+    <div className="ordermenu-root">
       {/* Left Navigation */}
-      <div style={{
-        width: '280px',
-        background: 'white',
-        borderRight: '1px solid #e5e7eb',
-        display: 'flex',
-        flexDirection: 'column',
-        boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
-      }}>
+      <div className="ordermenu-left-nav">
         {/* Header */}
         <div style={{
           padding: '1.5rem',
@@ -1099,8 +1087,27 @@ const OrderMenu = ({ onBack }) => {
         </div>
       </div>
 
+      {/* Mobile Navigation Tab Bar */}
+      <div className="ordermenu-mobile-nav">
+        <button onClick={() => setCurrentView('menu')} className={currentView === 'menu' ? 'active' : ''}>
+          New Order
+        </button>
+        <button onClick={() => switchToOrderView('completed')} className={currentView === 'completed' ? 'active' : ''}>
+          Completed
+        </button>
+        <button onClick={() => switchToOrderView('dineIn')} className={currentView === 'dineIn' ? 'active' : ''}>
+          Dine In
+        </button>
+        <button onClick={() => switchToOrderView('takeOut')} className={currentView === 'takeOut' ? 'active' : ''}>
+          Take Out
+        </button>
+        <button onClick={onBack} className="">
+          Dashboard
+        </button>
+      </div>
+
       {/* Main Content Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div className="ordermenu-main-content">
         {/* Top Header */}
         <div style={{
           background: 'white',
@@ -1126,20 +1133,11 @@ const OrderMenu = ({ onBack }) => {
         {/* Content Area */}
         <div style={{ flex: 1, overflow: 'auto' }}>
           {currentView === 'menu' ? (
-            <div style={{ display: 'flex', height: '100%' }}>
+            <div className="ordermenu-split">
               {/* Left Side - Menu Items (60%) */}
-              <div style={{
-                flex: '0 0 60%',
-                background: 'white',
-                padding: '2rem',
-                borderRight: '1px solid #e5e7eb',
-                overflow: 'auto'
-              }}>
+              <div className="ordermenu-menu-panel">
                 {/* Top Row - Customer, Payment Method, Order Type, Search */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '1rem',
+                <div className="ordermenu-form-grid" style={{
                   marginBottom: '2rem',
                   padding: '1.5rem',
                   background: 'white',
@@ -1485,13 +1483,7 @@ const OrderMenu = ({ onBack }) => {
               </div>
 
               {/* Current Order Section - 40% */}
-              <div style={{
-                flex: '0 0 40%',
-                background: 'white',
-                padding: '2rem',
-                borderLeft: '1px solid #e5e7eb',
-                overflow: 'auto'
-              }}>
+              <div className="ordermenu-order-panel">
                 {/* Order Items */}
                 <div style={{
                   maxHeight: '350px',

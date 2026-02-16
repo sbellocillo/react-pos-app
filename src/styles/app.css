@@ -36,7 +36,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 329px;
+  width: 25vh;
   background: white;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -75,7 +75,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 15px 0 15px 20px;
+  padding: 10px 0 10px 15px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -99,7 +99,7 @@
 }
 
 .nav-label {
-  font-size: clamp(12px, 1.3vw, 26px);
+  font-size: clamp(12px, 1vw, 26px);
   font-weight: 500;
   letter-spacing: 0.5px;
   color: inherit;
@@ -109,7 +109,7 @@
 }
 
 .nav-icon-wrapper {
-  width: 41px;
+  width: 32px;
   margin-right: 15px;
   display: flex;
   justify-content: center;
@@ -117,8 +117,8 @@
 }
 
 .nav-icon {
-  width: 41px;
-  height: 41px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 
@@ -792,8 +792,374 @@
   opacity: 0.7;
 }
 
-/* --- Media Queries (from index.css) --- */
-@media (max-width: 768px) {
+/* ==========================================================================
+   ORDER MENU PAGE - Responsive CSS classes
+   Used alongside inline styles in OrderMenu.jsx
+   ========================================================================== */
+.ordermenu-root {
+  display: flex;
+  height: 100vh;
+  background: #f8fafc;
+}
+
+.ordermenu-left-nav {
+  width: 280px;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.ordermenu-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ordermenu-split {
+  display: flex;
+  height: 100%;
+}
+
+.ordermenu-menu-panel {
+  flex: 0 0 60%;
+  background: white;
+  padding: 2rem;
+  border-right: 1px solid #e5e7eb;
+  overflow: auto;
+}
+
+.ordermenu-order-panel {
+  flex: 0 0 40%;
+  background: white;
+  padding: 2rem;
+  border-left: 1px solid #e5e7eb;
+  overflow: auto;
+}
+
+.ordermenu-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ordermenu-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+/* --- Mobile navigation tab bar for OrderMenu --- */
+.ordermenu-mobile-nav {
+  display: none;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 8px;
+  gap: 8px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ordermenu-mobile-nav button {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.ordermenu-mobile-nav button.active {
+  background: #B74C4C;
+  color: white;
+  border-color: #B74C4C;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS - App Shell
+   ========================================================================== */
+
+/* ---- MOBILE (<640px) ---- */
+@media (max-width: 639px) {
+  /* Sidebar */
+  .sidebar {
+    width: 85vw;
+    max-width: 329px;
+  }
+
+  .sidebar-logo {
+    height: 60px;
+    padding-left: 20px;
+  }
+
+  .sidebar-nav-item {
+    padding: 12px 0 12px 16px;
+  }
+
+  .nav-icon, .nav-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+  }
+
+  /* Header */
+  .dashboard-header {
+    height: var(--header-height);
+    padding: 0 1rem;
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: none;
+    height: 38px;
+    font-size: 0.875rem;
+  }
+
+  .header-info-group {
+    gap: 1rem;
+  }
+
+  .date-time,
+  .pos-status-card {
+    display: none;
+  }
+
+  .info-title {
+    font-size: 0.8rem;
+  }
+
+  .header-hamburger {
+    margin-right: 1rem !important;
+  }
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Main content */
+  .main-content-scroll-area {
+    overflow-y: auto;
+  }
+
+  /* Category buttons */
+  .itm-cat-btn {
+    width: auto;
+    min-width: 140px;
+    height: 48px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+  }
+
+  /* Menu grid */
+  .menu-itm-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .menu-itm-card,
+  .menu-itm-card-empty {
+    height: 100px;
+  }
+
+  .card-label {
+    font-size: 16px;
+  }
+
+  /* Dashboard container (menu + bill split) */
+  .dashboard-container {
+    flex-direction: column;
+    padding: 0 12px;
+    gap: 12px;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .menu-section {
+    padding-right: 0;
+  }
+
+  /* Bill panel */
+  .bill-panel {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    padding: 1rem;
+    margin-top: 0;
+  }
+
+  .bill-header::after {
+    width: 100%;
+  }
+
+  .bill-title {
+    font-size: 16px;
+    margin: 5px 0 15px 10px;
+  }
+
+  /* Progress/stats grids */
+  .container {
+    padding: 0.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .progress-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Section title */
+  .section-title {
+    font-size: 16px;
+  }
+
+  /* OrderMenu responsive */
+  .ordermenu-left-nav {
+    display: none;
+  }
+
+  .ordermenu-left-nav.mobile-open {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 85vw;
+    max-width: 300px;
+    z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .ordermenu-mobile-nav {
+    display: flex;
+  }
+
+  .ordermenu-split {
+    flex-direction: column;
+  }
+
+  .ordermenu-menu-panel {
+    flex: none;
+    width: 100%;
+    padding: 1rem;
+    border-right: none;
+  }
+
+  .ordermenu-order-panel {
+    flex: none;
+    width: 100%;
+    padding: 1rem;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .ordermenu-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ordermenu-table-container {
+    height: auto !important;
+    max-height: 500px;
+    padding: 1rem;
+  }
+
+  /* Modals */
+  .modal-save-btn {
+    padding: 0 20px;
+    min-height: 44px;
+  }
+}
+
+/* ---- TABLET (640px - 1023px) ---- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Sidebar */
+  .sidebar {
+    width: 300px;
+  }
+
+  /* Header */
+  .dashboard-header {
+    height: var(--header-height);
+    padding: 0 1.5rem;
+  }
+
+  .search-input {
+    width: 400px;
+  }
+
+  .header-info-group {
+    gap: 3rem;
+  }
+
+  /* Main content */
+  .main-content-scroll-area {
+    overflow-y: auto;
+  }
+
+  /* Category buttons */
+  .itm-cat-btn {
+    width: auto;
+    min-width: 180px;
+    height: 54px;
+    padding: 0.75rem 1.5rem;
+    font-size: 16px;
+  }
+
+  /* Menu grid */
+  .menu-itm-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .menu-itm-card,
+  .menu-itm-card-empty {
+    height: 120px;
+  }
+
+  .card-label {
+    font-size: 20px;
+  }
+
+  /* Dashboard container */
+  .dashboard-container {
+    flex-direction: column;
+    padding: 0 16px;
+    gap: 16px;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .menu-section {
+    padding-right: 0;
+  }
+
+  /* Bill panel */
+  .bill-panel {
+    width: 100%;
+    height: auto;
+    min-height: 500px;
+    padding: 1.25rem;
+  }
+
+  .bill-header::after {
+    width: 95%;
+  }
+
+  /* Progress/stats grids */
   .container {
     padding: 1rem;
   }
@@ -808,5 +1174,54 @@
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* OrderMenu responsive */
+  .ordermenu-left-nav {
+    width: 220px;
+  }
+
+  .ordermenu-split {
+    flex-direction: column;
+  }
+
+  .ordermenu-menu-panel {
+    flex: none;
+    width: 100%;
+    padding: 1.5rem;
+    border-right: none;
+  }
+
+  .ordermenu-order-panel {
+    flex: none;
+    width: 100%;
+    padding: 1.5rem;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+    max-height: 500px;
+  }
+
+  .ordermenu-table-container {
+    height: auto !important;
+    max-height: 600px;
+  }
+}
+
+/* ---- SMALL DESKTOP (1024px - 1536px) ---- */
+@media (min-width: 1024px) and (max-width: 1536px) {
+  .header-info-group {
+    gap: 6rem;
+  }
+
+  .search-input {
+    width: 500px;
+  }
+
+  .menu-itm-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .bill-panel {
+    width: 450px;
   }
 }

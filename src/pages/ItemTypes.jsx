@@ -260,8 +260,8 @@ const ItemTypes = () => {
     };
 
     return (
-        <div>
-            <div style={{
+        <div className="page-container">
+            <div className="page-header-row" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -292,7 +292,7 @@ const ItemTypes = () => {
             </div>
             <div>Total Records:  {itemTypes.length}</div>
             {/* Item Types Table */}
-            <div style={{
+            <div className="page-table-card" style={{
                 background: 'white',
                 borderRadius: '12px',
                 overflow: 'auto',

@@ -298,9 +298,9 @@ const Customers = () => {
     };
 
     return (
-        <div style={{ padding: '2rem', background: '#f8fafc', minHeight: '100vh' }}>
+        <div className="page-container" style={{ padding: '2rem', background: '#f8fafc', minHeight: '100vh' }}>
             {/* Header */}
-            <div style={{
+            <div className="page-header-row" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -355,7 +355,7 @@ const Customers = () => {
             </div>
 
             {/* Customers Table */}
-            <div style={{
+            <div className="page-table-card" style={{
                 background: 'white',
                 borderRadius: '12px',
                 boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
@@ -363,7 +363,7 @@ const Customers = () => {
                 overflow: 'auto',
                 height: '400px'
             }}>
-                <div style={{
+                <div className="page-table-scroll" style={{
                     overflowX: 'auto'
                 }}>
                     <table style={{
@@ -553,7 +553,7 @@ const Customers = () => {
                         </div>
 
                         <form onSubmit={handleSubmit}>
-                            <div style={{
+                            <div className="responsive-form-grid" style={{
                                 display: 'grid',
                                 gridTemplateColumns: '1fr 1fr',
                                 gap: '1rem',

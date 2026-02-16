@@ -248,8 +248,8 @@ const OrderTypes = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{
+    <div className="page-container" style={{ padding: '2rem' }}>
+      <div className="page-header-row" style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -273,7 +273,7 @@ const OrderTypes = () => {
         </button>
       </div>
       <div>Total Records:  {orderTypes.length}</div>
-      <div style={{
+      <div className="page-table-card" style={{
         background: 'white',
         borderRadius: '12px',
         overflow: 'auto',

@@ -10,14 +10,20 @@
    ========================================================================== */
 .assign-app-container {
   padding: 20px;
+  height: 100%; /* Force it to fill the screen */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .assign-body-wrapper {
   display: flex;
   flex-direction: row;
   gap: 20px;
-  align-items: flex-start;
+  align-items: stretch; /* Changed from flex-start so columns stretch to equal height */
   width: 100%;
+  flex: 1; /* Takes up all remaining vertical space */
+  min-height: 0; /* Crucial: allows child panels to scroll instead of breaking out */
 }
 
 .assign-left-col {
@@ -36,22 +42,21 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
+  min-height: 0;
 }
 
 .location-list-panel {
-  height: 948.63px;
   width: 35%;
 }
 
 .layout-list-panel {
-  height: 948.63px;
   width: 65%;
 }
 
 .assign-inspect-panel {
   flex-shrink: 0;
   width: 588.47px;
-  height: 948.63px;
+  height: 100%;
   padding: 1.5rem;
   overflow: hidden;
 }
@@ -78,7 +83,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -104,7 +108,7 @@
 }
 
 .grid-card {
-  height: 140px;
+  height: 125px;
   border-radius: 7px;
   cursor: pointer;
   display: flex;
@@ -357,4 +361,114 @@ select.form-inout {
 
 .layout-form-input:focus {
   border-color: #B74C4C;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ---- MOBILE (<640px) ---- */
+@media (max-width: 639px) {
+  .assign-app-container {
+    padding: 12px;
+  }
+
+  .assign-body-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .location-list-panel {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+
+  .layout-list-panel {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+  }
+
+  .assign-inspect-panel {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    padding: 1rem;
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .grid-card {
+    height: 90px;
+    font-size: 0.8rem;
+  }
+
+  .modal-panel {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .list-item-row {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-large-dashed {
+    height: 60px;
+    font-size: 22px;
+  }
+}
+
+/* ---- TABLET (640px - 1023px) ---- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .assign-body-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .location-list-panel {
+    width: 100%;
+    height: auto;
+    max-height: 350px;
+  }
+
+  .layout-list-panel {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+  }
+
+  .assign-inspect-panel {
+    width: 100%;
+    height: auto;
+    max-height: 600px;
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .grid-card {
+    height: 110px;
+  }
+}
+
+/* ---- SMALL DESKTOP (1024px - 1536px) ---- */
+@media (min-width: 1024px) and (max-width: 1536px) {
+  .assign-inspect-panel {
+    width: 450px;
+    height: auto;
+    max-height: 800px;
+  }
+
+  .location-list-panel,
+  .layout-list-panel {
+    height: auto;
+    max-height: 800px;
+  }
 }

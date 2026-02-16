@@ -164,3 +164,73 @@
   color: #6b7280;
   font-size: 0.9rem;
 }
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ---- MOBILE (<640px) ---- */
+@media (max-width: 639px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dashboard-stat-card {
+    padding: 1.25rem;
+  }
+
+  .dashboard-stat-value {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-quick-access-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .dashboard-menu-card {
+    padding: 1rem;
+    min-height: 100px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard-menu-card-icon {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-order-menu-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    min-width: 200px;
+  }
+
+  .dashboard-order-menu-wrapper {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .dashboard-header-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* ---- TABLET (640px - 1023px) ---- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-quick-access-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dashboard-order-menu-btn {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.3rem;
+  }
+}
