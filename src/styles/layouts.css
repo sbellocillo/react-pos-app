@@ -257,9 +257,31 @@ select.form-inout {
   opacity: 0.6;
 }
 
+.left-align {
+  align-self: flex-start;
+  margin-top: 11px;
+}
+
 .btn-icon-action:hover {
   opacity: 1;
   color: #dc2626;
+}
+
+/* Add this to layouts.css */
+.sidebar-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  gap: 8px;            
+  margin-bottom: 20px;  
+  height: 40px;
+}
+
+/* Optional: Remove bottom margin from title so it centers better */
+.sidebar-header .section-title {
+  margin-bottom: 0;     /* Removes default margins that push text down */
+  line-height: 1;       /* Ensures the text box doesn't have extra "air" on top/bottom */
+  font-size: 1.25rem
 }
 
 .list-item-row.active .btn-icon-action:hover {

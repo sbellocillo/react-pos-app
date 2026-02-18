@@ -105,6 +105,7 @@ export const apiEndpoints = {
     orders: {
         getAll: () => api.get('/orders'),
         getQueue: () => api.get('/orders/queue'),
+        getZReading: (posId) => api.get(`/orders/z-reading/${posId}`),
         updateStatus: (id, statusId) => api.patch(`/orders/${id}/status`, { status_id: statusId }),
         getById: (id) => api.get(`/orders/${id}`),
         getNextNumber: (locationId, posId) => api.get(`/orders/next-number?location_id=${locationId}&pos_terminal_number=${posId}`),
