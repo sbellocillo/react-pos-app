@@ -54,13 +54,13 @@ const ItemsList = ({ data, onEdit, onDelete }) => {
               <td>{formatDate(item.updated_at)}</td>
               <td className="actions-cell">
                 <button
-                  className="btn-sm btn-edit"
+                  className="global-btn-sm global-btn-edit"
                   onClick={() => onEdit(item)}
                 >
                   Edit
                 </button>
                 <button
-                  className="btn-sm btn-delete"
+                  className="global-btn-sm global-btn-delete"
                   onClick={() => onDelete(item.id)}
                 >
                   Delete

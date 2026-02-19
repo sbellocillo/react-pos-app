@@ -6,7 +6,7 @@ import { apiEndpoints } from "../services/api";
 import ItemModal from "../components/items/ItemModal";
 import ItemsHeader from "../components/items/ItemsHeader";
 import ItemsList from "../components/items/ItemsList";
-import Pagination from "../components/items/Pagination";
+import Pagination from "../components/Pagination";
 import "../styles/items.css"; 
 
 const Items = () => {
@@ -174,7 +174,7 @@ const Items = () => {
           <button 
             onClick={() => { setSearchQuery(""); setSelectedCategory(""); }}
             disabled={!hasFilters}
-            className={hasFilters ? "btn-danger" : "btn-secondary"}
+            className={hasFilters ? "global-btn global-btn-danger" : "global-btn global-btn-disabled"}
             style={!hasFilters ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
             Clear Filter

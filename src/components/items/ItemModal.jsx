@@ -50,7 +50,7 @@ const ItemModal = ({ isOpen, onClose, onSubmit, editingItem, itemTypes }) => {
       <div className="global-modal-content">
         <div className="global-modal-header">
           <h2>{editingItem ? "Edit Item" : "Create New Item"}</h2>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <button className="global-btn-close" onClick={onClose}>&times;</button>
         </div>
 
         <form onSubmit={handleSubmit}>

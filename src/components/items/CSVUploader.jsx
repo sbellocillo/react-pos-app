@@ -87,7 +87,7 @@ const CSVUploader = ({ onImport, itemTypes }) => {
         onChange={handleFileChange}
       />
       <button
-        className="btn-secondary"
+        className="global-btn global-btn-secondary"
         onClick={() => fileInputRef.current.click()}
         disabled={loading}
       >
